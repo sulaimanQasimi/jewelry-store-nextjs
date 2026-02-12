@@ -1,26 +1,66 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  direction: rtl;
+  text-align: right;
+  background-color: oklch(97% 0.001 106.424);
+}
+
+::-webkit-scrollbar{
+    display: none;
+}
+
+@font-face {
+    font-family: "vazirmatn";
+    src: url("/assets/fonts/Vazirmatn/Vazirmatn-VariableFont_wght.ttf") format("truetype");
+}
+@font-face {
+    font-family: "naskh";
+    src: url("/assets/fonts/Naskh/NotoNaskhArabic-VariableFont_wght.ttf") format("truetype");
+}
+@font-face {
+    font-family: "iransans";
+    src: url("/assets/fonts/IRANSansWeb.ttf") format("truetype");
+}
+
+*{
+  font-family: 'iransans';
+}
+.active div{
+    opacity: 1;
+    color: white;
+}
+
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .print-root,
+  .print-root * {
+    visibility: visible;
+  }
+
+  .print-root {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .print-label {
+    width: 5cm;
+    height: 2.5cm;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  @page {
+    size: 5cm 2.5cm;
+    margin: 0;
+  }
 }
