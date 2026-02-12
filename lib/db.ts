@@ -14,8 +14,8 @@ let connectionConfig: mysql.PoolOptions = {
   keepAliveInitialDelay: 0
 }
 
-// Parse DATABASE_URL if provided
-if (process.env.DATABASE_URL) {
+// Parse DATABASE_URL if provided, but individual variables take precedence
+if (process.env.DATABASE_URL && !process.env.DB_PASSWORD) {
   try {
     const url = new URL(process.env.DATABASE_URL)
     connectionConfig.host = url.hostname
@@ -29,6 +29,13 @@ if (process.env.DATABASE_URL) {
     console.error('Error parsing DATABASE_URL:', error)
   }
 }
+
+// Individual environment variables take precedence
+if (process.env.DB_HOST) connectionConfig.host = process.env.DB_HOST
+if (process.env.DB_USER) connectionConfig.user = process.env.DB_USER
+if (process.env.DB_PASSWORD) connectionConfig.password = process.env.DB_PASSWORD
+if (process.env.DB_NAME) connectionConfig.database = process.env.DB_NAME
+if (process.env.DB_PORT) connectionConfig.port = parseInt(process.env.DB_PORT)
 
 // Create connection pool
 const pool = mysql.createPool(connectionConfig)
