@@ -12,16 +12,27 @@ npm install
 
 ### 2. Database Setup
 
-1. Create a MySQL database named `jewelry_store`
-2. Update `.env` file with your MySQL connection string:
-   ```
-   DATABASE_URL="mysql://user:password@localhost:3306/jewelry_store"
+1. Create a MySQL database:
+   ```sql
+   CREATE DATABASE jewelry_store;
    ```
 
-3. Generate Prisma client and run migrations:
+2. Run the SQL schema file:
    ```bash
-   npx prisma generate
-   npx prisma migrate dev --name init
+   mysql -u root -p jewelry_store < db.sql
+   ```
+   
+   Or import `db.sql` using your MySQL client (phpMyAdmin, MySQL Workbench, etc.)
+
+3. Update `.env` file with your MySQL connection details:
+   ```env
+   DATABASE_URL="mysql://user:password@localhost:3306/jewelry_store"
+   # OR use individual variables:
+   DB_HOST="localhost"
+   DB_USER="root"
+   DB_PASSWORD="password"
+   DB_NAME="jewelry_store"
+   DB_PORT="3306"
    ```
 
 ### 3. Environment Variables
@@ -29,10 +40,23 @@ npm install
 Create a `.env` file in the root directory:
 
 ```env
+# Database Connection
 DATABASE_URL="mysql://root:password@localhost:3306/jewelry_store"
+# OR use individual variables:
+DB_HOST="localhost"
+DB_USER="root"
+DB_PASSWORD="password"
+DB_NAME="jewelry_store"
+DB_PORT="3306"
+
+# JWT
 JWT_SECRET="galaxy"
+
+# Admin
 ADMIN_EMAIL="admin@gmail.com"
 ADMIN_PASSWORD="admin"
+
+# Upload Directory
 NEXT_PUBLIC_UPLOAD_DIR="/uploads"
 ```
 
@@ -56,15 +80,44 @@ jewelry-store-nextjs/
 │   └── page.tsx          # Home page (redirects to login)
 ├── components/           # React components (migrated from frontend)
 ├── lib/                  # Utilities
-│   ├── db.ts            # Prisma client
+│   ├── db.ts            # MySQL connection pool
 │   ├── utils.ts         # Utility functions
 │   └── context/         # Context providers
 │       └── AppContext.tsx
-├── prisma/               # Prisma schema and migrations
-│   └── schema.prisma
+├── db.sql                # MySQL database schema
 ├── public/               # Static assets
 │   └── assets/          # Images, fonts, etc.
 └── middleware.ts         # Auth middleware
+```
+
+## Database
+
+The project uses **MySQL** with raw SQL queries via `mysql2`. The database schema is defined in `db.sql`.
+
+### Database Connection
+
+The database connection is managed in `lib/db.ts` using a connection pool. You can use either:
+- `DATABASE_URL` environment variable (MySQL connection string)
+- Individual `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT` variables
+
+### Query Helper
+
+Use the `query` helper function from `lib/db.ts`:
+
+```typescript
+import { query } from '@/lib/db'
+
+// Simple query
+const results = await query('SELECT * FROM customers')
+
+// Parameterized query
+const results = await query('SELECT * FROM customers WHERE id = ?', [customerId])
+
+// Insert
+const result = await query(
+  'INSERT INTO customers (customerName, phone) VALUES (?, ?)',
+  [name, phone]
+)
 ```
 
 ## Migration Status
@@ -72,8 +125,8 @@ jewelry-store-nextjs/
 ### Completed
 
 - ✅ Next.js project structure with TypeScript and Tailwind CSS
-- ✅ Prisma schema with all MySQL models
-- ✅ Database connection utility
+- ✅ MySQL database schema (db.sql)
+- ✅ Database connection utility (mysql2)
 - ✅ Core API routes (admin, company, customer, product, transaction, currency, expense, supplier)
 - ✅ Authentication middleware
 - ✅ File upload handling
@@ -88,7 +141,7 @@ jewelry-store-nextjs/
 
 1. **Update Component Imports**: All components need their imports updated:
    - Change `import { AppContext } from '../context/AppContext'` to `import { AppContext } from '@/lib/context/AppContext'`
-   - Change `import { assets } from '../assets/assets'` to `import { assets } from '@/../public/assets/assets'` or use Next.js Image component
+   - Change `import { assets } from '../assets/assets'` to use Next.js Image component or `/assets/...` paths
    - Update all `backendUrl + '/api/...'` to `/api/...`
 
 2. **Migrate Pages**: Convert React Router pages to Next.js pages:
@@ -96,19 +149,9 @@ jewelry-store-nextjs/
    - Update routing from React Router to Next.js file-based routing
    - Update navigation from `useNavigate()` to `useRouter()` from `next/navigation`
 
-3. **Create Remaining API Routes**: Some routes still need to be created:
-   - Purchase routes
-   - Trader routes
-   - Trade routes
-   - Fragment routes
-   - Loan report routes
-   - Person routes
-   - Personal expense routes
-   - Storage routes
-   - Supplier product routes
-   - Pasa routes
-   - Receipt pasa routes
-   - Fragment report routes
+3. **Update API Routes**: Convert remaining Prisma queries to raw SQL:
+   - All API routes need to be updated to use `query()` from `lib/db.ts` instead of Prisma
+   - Use parameterized queries to prevent SQL injection
 
 4. **Update Component API Calls**: Update all axios calls in components:
    - Remove `backendUrl` usage
@@ -117,12 +160,13 @@ jewelry-store-nextjs/
 
 ## Key Changes from Original
 
-1. **Database**: MongoDB → MySQL with Prisma ORM
+1. **Database**: MongoDB → MySQL with raw SQL queries
 2. **Backend**: Express.js → Next.js API Routes
 3. **Frontend**: React Router → Next.js App Router
 4. **File Uploads**: Multer → Next.js FormData handling
 5. **API Calls**: Absolute URLs → Relative paths
 6. **Routing**: React Router → Next.js file-based routing
+7. **ORM**: Prisma → Raw SQL with mysql2
 
 ## Development Notes
 
@@ -132,10 +176,8 @@ jewelry-store-nextjs/
 - Use `'use client'` directive for client components
 - Use Next.js `Image` component instead of `<img>` tags
 - Use `useRouter()` from `next/navigation` instead of `useNavigate()`
-
-## Database Schema
-
-All models have been migrated to Prisma schema. See `prisma/schema.prisma` for details.
+- Use parameterized SQL queries to prevent SQL injection
+- Database connection uses connection pooling for better performance
 
 ## API Endpoints
 
@@ -149,11 +191,36 @@ All API endpoints maintain the same structure as the original Express.js backend
 - `/api/currency/*` - Currency rates
 - `/api/expense/*` - Expense management
 
+## Database Schema
+
+All tables are defined in `db.sql`. The schema includes:
+- companies
+- products
+- customers
+- transactions
+- suppliers
+- product_masters
+- purchases
+- purchase_items
+- traders
+- trades
+- fragments
+- expenses
+- currency_rates
+- loan_reports
+- persons
+- personal_expenses
+- storages
+- supplier_products
+- pasas
+- receipt_pasas
+- fragment_reports
+
 ## Next Steps
 
-1. Update all component imports and API calls
-2. Migrate remaining pages to Next.js App Router
-3. Create remaining API routes
+1. Update all API routes to use raw SQL queries instead of Prisma
+2. Update all component imports and API calls
+3. Migrate remaining pages to Next.js App Router
 4. Test all functionality
 5. Update image paths to use Next.js Image component
 6. Add proper TypeScript types throughout

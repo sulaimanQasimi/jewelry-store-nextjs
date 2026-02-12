@@ -1,19 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { query } from '@/lib/db'
 
 export async function GET(request: NextRequest) {
   try {
     const today = new Date().toISOString().split('T')[0]
 
-    const rate = await prisma.currencyRate.findUnique({
-      where: { date: today }
-    })
+    const rates = await query(
+      'SELECT * FROM currency_rates WHERE date = ?',
+      [today]
+    ) as any[]
 
-    if (!rate) {
+    if (!rates || rates.length === 0) {
       return NextResponse.json({ success: false, message: 'نرخ را تعیین کنید' })
     }
 
-    return NextResponse.json({ success: true, rate })
+    return NextResponse.json({ success: true, rate: rates[0] })
   } catch (error: any) {
     console.log(error)
     return NextResponse.json({ success: false, message: error.message })
@@ -25,13 +26,20 @@ export async function POST(request: NextRequest) {
     const { usdToAfn } = await request.json()
     const today = new Date().toISOString().split('T')[0]
 
-    const rate = await prisma.currencyRate.upsert({
-      where: { date: today },
-      update: { usdToAfn },
-      create: { date: today, usdToAfn }
-    })
+    // Use INSERT ... ON DUPLICATE KEY UPDATE for upsert
+    await query(
+      `INSERT INTO currency_rates (date, usdToAfn) 
+       VALUES (?, ?) 
+       ON DUPLICATE KEY UPDATE usdToAfn = ?`,
+      [today, usdToAfn, usdToAfn]
+    )
 
-    return NextResponse.json({ success: true, rate })
+    const rates = await query(
+      'SELECT * FROM currency_rates WHERE date = ?',
+      [today]
+    ) as any[]
+
+    return NextResponse.json({ success: true, rate: rates[0] })
   } catch (error: any) {
     console.log(error)
     return NextResponse.json({ success: false, message: error.message })

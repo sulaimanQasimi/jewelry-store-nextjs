@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { query } from '@/lib/db'
 
 export async function GET(request: NextRequest) {
   try {
-    const customers = await prisma.customer.findMany({
-      orderBy: { id: 'desc' }
-    })
+    const customers = await query(
+      'SELECT * FROM customers ORDER BY id DESC'
+    ) as any[]
 
     if (!customers || customers.length === 0) {
       return NextResponse.json({ success: false, message: 'دیتا وجود ندارد' })
