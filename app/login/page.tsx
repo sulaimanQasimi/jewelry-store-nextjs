@@ -20,7 +20,14 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
-      const { data } = await axios.post('/api/admin/login', { password, email })
+      // Support both email and username login
+      const loginData = {
+        email: email,
+        username: email, // Also send as username in case user enters username
+        password: password
+      }
+
+      const { data } = await axios.post('/api/admin/login', loginData)
       if (data.success) {
         console.log(data)
         if (typeof window !== 'undefined') {
@@ -28,13 +35,15 @@ export default function LoginPage() {
         }
         setToken(data.token)
         toast.success('ورود موفقیت‌آمیز بود')
-        router.push('/company-information')
+        setTimeout(() => {
+          router.push('/company-information')
+        }, 500)
       } else {
         toast.error(data.message || 'اطلاعات ورود نادرست است')
       }
     } catch (error: any) {
       console.log(error)
-      toast.error(error.message || 'خطا در اتصال به سرور')
+      toast.error(error.response?.data?.message || error.message || 'خطا در اتصال به سرور')
     } finally {
       setIsLoading(false)
     }
@@ -80,10 +89,10 @@ export default function LoginPage() {
 
           {/* Login form */}
           <form onSubmit={onSubmitHandler} className="space-y-6">
-            {/* Email input */}
+            {/* Email/Username input */}
             <div className="space-y-2">
               <label className="block text-right text-slate-300 text-sm font-medium">
-                ایمیل
+                ایمیل یا نام کاربری
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -92,11 +101,11 @@ export default function LoginPage() {
                   </svg>
                 </div>
                 <input
-                  type="email"
+                  type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pr-10 pl-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all duration-300"
-                  placeholder="ایمیل خود را وارد کنید"
+                  placeholder="ایمیل یا نام کاربری خود را وارد کنید"
                   required
                 />
               </div>
