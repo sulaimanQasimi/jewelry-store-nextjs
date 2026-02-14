@@ -1,12 +1,13 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import axios from 'axios'
-import { toast } from 'react-toastify'
-import FormField from '@/components/ui/FormField'
 import FilterBar from '@/components/ui/FilterBar'
 import DataTable from '@/components/ui/DataTable'
 import type { ColumnDef } from '@/components/ui/DataTable'
+import CustomerFormModal from '@/components/customer/CustomerFormModal'
+import type { CustomerFormData } from '@/components/customer/CustomerFormModal'
 
 interface Customer {
   id: number
@@ -15,23 +16,28 @@ interface Customer {
   email: string | null
   address: string | null
   date: string
+  image?: string | null
+  secondaryPhone?: string | null
+  companyName?: string | null
+  notes?: string | null
+  birthDate?: string | null
+  nationalId?: string | null
+  facebookUrl?: string | null
+  instagramUrl?: string | null
+  whatsappUrl?: string | null
+  telegramUrl?: string | null
 }
 
 export default function CustomerRegistrationPage() {
+  const router = useRouter()
   const [data, setData] = useState<Customer[]>([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(10)
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(false)
-
-  const [form, setForm] = useState({
-    customerName: '',
-    phone: '',
-    email: '',
-    address: ''
-  })
-  const [submitting, setSubmitting] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null)
 
   const fetchCustomers = useCallback(async () => {
     setLoading(true)
@@ -56,84 +62,79 @@ export default function CustomerRegistrationPage() {
     fetchCustomers()
   }, [fetchCustomers])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!form.customerName.trim() || !form.phone.trim()) {
-      toast.error('نام و شماره تماس الزامی است')
-      return
-    }
-    setSubmitting(true)
-    try {
-      const { data: res } = await axios.post('/api/customer/new-customer', {
-        ...form,
-        date: new Date().toISOString()
-      })
-      if (res.success) {
-        toast.success(res.message ?? 'ثبت شد')
-        setForm({ customerName: '', phone: '', email: '', address: '' })
-        fetchCustomers()
-      } else toast.error(res.message)
-    } catch (err: any) {
-      toast.error(err.response?.data?.message ?? err.message)
-    } finally {
-      setSubmitting(false)
-    }
+  const openCreate = () => {
+    setEditingCustomer(null)
+    setModalOpen(true)
+  }
+
+  const openEdit = (row: Customer) => {
+    setEditingCustomer(row)
+    setModalOpen(true)
   }
 
   const columns: ColumnDef<Customer>[] = [
+    {
+      key: 'image',
+      label: 'عکس',
+      render: (r) => (
+        <div className="w-10 h-10 rounded-lg border border-gold-200 bg-gold-50/50 overflow-hidden flex items-center justify-center shrink-0">
+          {r.image ? (
+            <img
+              src={r.image.startsWith('http') ? r.image : (typeof window !== 'undefined' ? window.location.origin : '') + r.image}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-charcoal-soft text-xs">—</span>
+          )}
+        </div>
+      )
+    },
     { key: 'id', label: '#' },
     { key: 'customerName', label: 'نام مشتری' },
     { key: 'phone', label: 'شماره تماس' },
     { key: 'email', label: 'ایمیل', render: (r) => r.email ?? '—' },
-    { key: 'address', label: 'آدرس', render: (r) => r.address ?? '—' }
+    { key: 'secondaryPhone', label: 'شماره ثانوی', render: (r) => r.secondaryPhone ?? '—' },
+    { key: 'address', label: 'آدرس', render: (r) => (r.address ? String(r.address).slice(0, 30) + (String(r.address).length > 30 ? '…' : '') : '—') },
+    {
+      key: 'actions',
+      label: 'عملیات',
+      render: (r) => (
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => openEdit(r)}
+            className="btn-luxury btn-luxury-outline py-1.5 px-3 text-sm"
+          >
+            ویرایش
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push(`/customer-registration/${r.id}`)}
+            className="btn-luxury btn-luxury-primary py-1.5 px-3 text-sm"
+          >
+            مشاهده
+          </button>
+        </div>
+      )
+    }
   ]
 
   return (
     <div className="space-y-8">
-      <header>
-        <h1 className="font-heading text-2xl font-semibold text-charcoal">ثبت مشتریان</h1>
-        <p className="mt-1 text-sm text-charcoal-soft">مشتری جدید اضافه کنید و لیست را با فیلتر و صفحه‌بندی مشاهده کنید.</p>
+      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="font-heading text-2xl font-semibold text-charcoal">ثبت مشتریان</h1>
+          <p className="mt-1 text-sm text-charcoal-soft">لیست مشتریان را با فیلتر و صفحه‌بندی مشاهده کنید.</p>
+        </div>
+        <button
+          type="button"
+          onClick={openCreate}
+          className="btn-luxury btn-luxury-primary px-6 py-2 shrink-0"
+        >
+          افزودن مشتری
+        </button>
       </header>
-
-      <section className="card-luxury rounded-2xl border border-gold-200/50 p-6">
-        <h2 className="font-heading text-lg font-semibold text-charcoal mb-4">افزودن مشتری</h2>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <FormField label="نام مشتری">
-            <input
-              className="input-luxury w-full"
-              value={form.customerName}
-              onChange={(e) => setForm((f) => ({ ...f, customerName: e.target.value }))}
-            />
-          </FormField>
-          <FormField label="شماره تماس">
-            <input
-              className="input-luxury w-full"
-              value={form.phone}
-              onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-            />
-          </FormField>
-          <FormField label="ایمیل">
-            <input
-              type="email"
-              className="input-luxury w-full"
-              value={form.email}
-              onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-            />
-          </FormField>
-          <FormField label="آدرس">
-            <input
-              className="input-luxury w-full"
-              value={form.address}
-              onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
-            />
-          </FormField>
-          <div className="sm:col-span-2 lg:col-span-4 flex justify-end">
-            <button type="submit" disabled={submitting} className="btn-luxury btn-luxury-primary px-6 py-2">
-              {submitting ? 'در حال ثبت...' : 'ثبت مشتری'}
-            </button>
-          </div>
-        </form>
-      </section>
 
       <section>
         <h2 className="font-heading text-lg font-semibold text-charcoal mb-4">لیست مشتریان</h2>
@@ -157,9 +158,18 @@ export default function CustomerRegistrationPage() {
               onPageChange: setPage,
               onLimitChange: setLimit
             }}
+            minWidth="800px"
           />
         </div>
       </section>
+
+      <CustomerFormModal
+        open={modalOpen}
+        onClose={() => { setModalOpen(false); setEditingCustomer(null) }}
+        mode={editingCustomer ? 'edit' : 'create'}
+        initialData={editingCustomer ? (editingCustomer as CustomerFormData) : null}
+        onSuccess={fetchCustomers}
+      />
     </div>
   )
 }

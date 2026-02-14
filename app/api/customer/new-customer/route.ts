@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/lib/db'
-import { writeFile } from 'fs/promises'
+import { writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
 
 function getString(formData: FormData, key: string): string {
@@ -56,7 +56,9 @@ export async function POST(request: NextRequest) {
         const bytes = await imageFile.arrayBuffer()
         const buffer = Buffer.from(bytes)
         const uploadDir = join(process.cwd(), 'public', 'uploads')
-        const filename = `customer-${Date.now()}-${(imageFile as File).name}`
+        await mkdir(uploadDir, { recursive: true })
+        const ext = (imageFile as File).name?.split('.').pop() || 'png'
+        const filename = `customer-${Date.now()}.${ext}`
         imagePath = `/uploads/${filename}`
         await writeFile(join(uploadDir, filename), buffer)
       }

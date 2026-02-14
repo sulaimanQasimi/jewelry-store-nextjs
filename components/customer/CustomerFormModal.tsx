@@ -164,7 +164,7 @@ export default function CustomerFormModal({
   const title = mode === 'create' ? 'افزودن مشتری' : 'ویرایش مشتری'
 
   return (
-    <Modal open={open} onClose={onClose} title={title}>
+    <Modal open={open} onClose={onClose} title={title} size="xl">
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="flex flex-col sm:flex-row gap-6">
           <div className="shrink-0">

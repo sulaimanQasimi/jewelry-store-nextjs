@@ -7,9 +7,11 @@ interface ModalProps {
   onClose: () => void
   title?: string
   children: React.ReactNode
+  size?: 'default' | 'xl'
 }
 
-export default function Modal({ open, onClose, title, children }: ModalProps) {
+export default function Modal({ open, onClose, title, children, size = 'default' }: ModalProps) {
+  const maxWidthClass = size === 'xl' ? 'max-w-4xl' : 'max-w-2xl'
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -38,7 +40,7 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
-        className="card-luxury bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-[0_24px_48px_-12px_rgba(28,28,28,0.18)] transition-transform duration-200 scale-100"
+        className={`card-luxury bg-white rounded-2xl w-full ${maxWidthClass} max-h-[90vh] overflow-hidden flex flex-col shadow-[0_24px_48px_-12px_rgba(28,28,28,0.18)] transition-transform duration-200 scale-100`}
         onClick={(e) => e.stopPropagation()}
       >
         {title && (
