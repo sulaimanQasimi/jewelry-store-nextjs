@@ -1,77 +1,79 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { query } from '@/lib/db'
 import { generateBarcode } from '@/lib/utils'
-import { writeFile } from 'fs/promises'
+import { writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
 
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
-    const productName = formData.get('productName') as string
-    const type = formData.get('type') as string
-    const gram = parseFloat(formData.get('gram') as string)
-    const karat = parseFloat(formData.get('karat') as string)
-    const bellNumber = formData.get('bellNumber') ? parseInt(formData.get('bellNumber') as string) : null
-    const wage = parseFloat(formData.get('wage') as string)
-    const auns = parseFloat(formData.get('auns') as string)
+    const productName = (formData.get('productName') as string) ?? ''
+    const type = (formData.get('type') as string) ?? ''
+    const gram = parseFloat((formData.get('gram') as string) || '0')
+    const karat = parseFloat((formData.get('karat') as string) || '0')
+    const bellNumber = formData.get('bellNumber') ? parseInt(formData.get('bellNumber') as string, 10) : null
+    const wage = parseFloat((formData.get('wage') as string) || '0')
+    const auns = parseFloat((formData.get('auns') as string) || '0')
     const imageFile = formData.get('image') as File | null
 
-    if (!gram || !karat || !wage || !auns) {
-      return NextResponse.json({ success: false, message: 'لطفا موارد مهم را برسانید' })
+    if (!productName.trim() || !gram || !karat) {
+      return NextResponse.json({ success: false, message: 'لطفا نام جنس، وزن و عیار را وارد کنید' })
     }
 
     const barcode = generateBarcode()
     let imagePath: string | null = null
 
-    if (imageFile) {
+    if (imageFile && imageFile.size > 0) {
       const bytes = await imageFile.arrayBuffer()
       const buffer = Buffer.from(bytes)
       const uploadDir = join(process.cwd(), 'public', 'uploads')
-      const filename = `${Date.now()}-${imageFile.name}`
+      await mkdir(uploadDir, { recursive: true })
+      const filename = `${Date.now()}-${(imageFile.name || 'image').replace(/[^a-zA-Z0-9.-]/g, '_')}`
       imagePath = `/uploads/${filename}`
       await writeFile(join(uploadDir, filename), buffer)
     }
 
     const today = new Date().toISOString().split('T')[0]
-    const rate = await prisma.currencyRate.findUnique({
-      where: { date: today }
-    })
-
-    if (!rate) {
+    const rates = (await query('SELECT * FROM currency_rates WHERE date = ? LIMIT 1', [today])) as { usdToAfn?: number }[]
+    const rate = rates?.[0]
+    if (!rate?.usdToAfn) {
       return NextResponse.json({
         success: false,
         message: 'نرخ امروز دالر ثبت نشده'
       })
     }
 
-    const purchase = (Number(auns / 12.15 / 24) * (Number(karat) + 0.12) + Number(wage)) * Number(rate.usdToAfn) * Number(gram)
+    const purchasePriceToAfn = (Number(auns / 12.15 / 24) * (Number(karat) + 0.12) + Number(wage)) * Number(rate.usdToAfn) * Number(gram)
 
-    const newProduct = await prisma.product.create({
-      data: {
+    await query(
+      `INSERT INTO products (productName, type, gram, karat, purchasePriceToAfn, bellNumber, isSold, barcode, image, wage, auns, isFragment)
+       VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, 0)`,
+      [
         productName,
         type,
         gram,
         karat,
-        purchasePriceToAfn: purchase,
-        bellNumber,
-        isSold: false,
+        purchasePriceToAfn,
+        bellNumber ?? null,
         barcode,
-        image: imagePath,
-        wage,
-        auns
-      }
-    })
+        imagePath ?? null,
+        wage || null,
+        auns || null
+      ]
+    )
+    const inserted = (await query('SELECT * FROM products WHERE barcode = ? ORDER BY id DESC LIMIT 1', [barcode])) as Record<string, unknown>[]
+    const newProduct = inserted?.[0] ?? null
 
     return NextResponse.json({
       success: true,
       message: 'دیتا موفقانه ثبت شد',
       newProduct
     })
-  } catch (error: any) {
-    console.log(error)
+  } catch (error: unknown) {
+    console.error(error)
     return NextResponse.json({
       success: false,
-      message: error.message
+      message: error instanceof Error ? error.message : 'خطا'
     })
   }
 }

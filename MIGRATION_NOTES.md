@@ -22,7 +22,7 @@ All API routes need to be updated from Prisma to raw SQL. Here's the pattern:
 
 ### Before (Prisma):
 ```typescript
-import { prisma } from '@/lib/db'
+import { query } from '@/lib/db'
 
 const products = await prisma.product.findMany({
   where: { isSold: false },

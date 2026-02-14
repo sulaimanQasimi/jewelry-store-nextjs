@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { query } from '@/lib/db'
 import { generateBarcode } from '@/lib/utils'
 import { writeFile } from 'fs/promises'
 import { join } from 'path'

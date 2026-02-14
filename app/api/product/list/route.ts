@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const listParams: any[] = []
 
     if (isSold !== undefined && isSold !== '') {
-      const sold = isSold === 'true'
+      const sold = isSold === 'true' ? 1 : 0
       conditions.push('isSold = ?')
       countParams.push(sold)
       listParams.push(sold)
@@ -34,9 +34,9 @@ export async function GET(request: NextRequest) {
     )) as any[]
     const total = Number(countResult?.[0]?.total ?? 0)
 
-    listParams.push(limit, offset)
+    // LIMIT/OFFSET must be literals (mysql2 prepared statement limitation)
     const data = (await query(
-      `SELECT * FROM products ${whereSql} ORDER BY createdAt DESC LIMIT ? OFFSET ?`,
+      `SELECT * FROM products ${whereSql} ORDER BY createdAt DESC LIMIT ${limit} OFFSET ${offset}`,
       listParams
     )) as any[]
 

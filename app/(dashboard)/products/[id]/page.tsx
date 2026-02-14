@@ -1,0 +1,221 @@
+'use client'
+
+import React, { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import axios from 'axios'
+import ProductFormModal from '@/components/product/ProductFormModal'
+import type { ProductFormData } from '@/components/product/ProductFormModal'
+
+interface Product {
+  id: number
+  productName: string
+  type: string
+  gram: number
+  karat: number
+  purchasePriceToAfn: number
+  bellNumber?: number | null
+  isSold: boolean
+  image?: string | null
+  barcode: string
+  wage?: number | null
+  auns?: number | null
+  createdAt?: string
+  updatedAt?: string
+}
+
+function formatDate(d: string | null | undefined) {
+  if (!d) return '—'
+  try {
+    return new Date(d).toLocaleDateString('fa-IR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  } catch {
+    return d
+  }
+}
+
+export default function ProductDetailPage() {
+  const params = useParams()
+  const id = params?.id as string | undefined
+  const [product, setProduct] = useState<Product | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [notFound, setNotFound] = useState(false)
+  const [editModalOpen, setEditModalOpen] = useState(false)
+
+  useEffect(() => {
+    if (!id) {
+      setNotFound(true)
+      setLoading(false)
+      return
+    }
+    let cancelled = false
+    axios
+      .get<{ success: boolean; data?: Record<string, unknown> }>(`/api/product/${id}`)
+      .then(({ data: res }) => {
+        if (!cancelled && res.success && res.data) {
+          const r = res.data
+          setProduct({
+            id: Number(r.id),
+            productName: String(r.productName ?? r.productname ?? ''),
+            type: String(r.type ?? ''),
+            gram: Number(r.gram ?? 0),
+            karat: Number(r.karat ?? 0),
+            purchasePriceToAfn: Number(r.purchasePriceToAfn ?? r.purchasepricetoafn ?? 0),
+            bellNumber: r.bellNumber != null || r.bellnumber != null ? Number(r.bellNumber ?? r.bellnumber) : null,
+            isSold: Boolean(r.isSold ?? r.issold),
+            image: r.image != null ? String(r.image) : null,
+            barcode: String(r.barcode ?? ''),
+            wage: r.wage != null ? Number(r.wage) : null,
+            auns: r.auns != null ? Number(r.auns) : null,
+            createdAt: r.createdAt != null ? String(r.createdAt) : undefined,
+            updatedAt: r.updatedAt != null ? String(r.updatedAt) : undefined
+          })
+        } else if (!cancelled) setNotFound(true)
+      })
+      .catch(() => {
+        if (!cancelled) setNotFound(true)
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => { cancelled = true }
+  }, [id])
+
+  const refresh = () => {
+    if (id) {
+      axios.get<{ success: boolean; data?: Record<string, unknown> }>(`/api/product/${id}`).then(({ data: res }) => {
+        if (res.success && res.data) {
+          const r = res.data
+          setProduct({
+            id: Number(r.id),
+            productName: String(r.productName ?? r.productname ?? ''),
+            type: String(r.type ?? ''),
+            gram: Number(r.gram ?? 0),
+            karat: Number(r.karat ?? 0),
+            purchasePriceToAfn: Number(r.purchasePriceToAfn ?? r.purchasepricetoafn ?? 0),
+            bellNumber: r.bellNumber != null || r.bellnumber != null ? Number(r.bellNumber ?? r.bellnumber) : null,
+            isSold: Boolean(r.isSold ?? r.issold),
+            image: r.image != null ? String(r.image) : null,
+            barcode: String(r.barcode ?? ''),
+            wage: r.wage != null ? Number(r.wage) : null,
+            auns: r.auns != null ? Number(r.auns) : null,
+            createdAt: r.createdAt != null ? String(r.createdAt) : undefined,
+            updatedAt: r.updatedAt != null ? String(r.updatedAt) : undefined
+          })
+        }
+      })
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[40vh]">
+        <p className="text-charcoal-soft">در حال بارگذاری...</p>
+      </div>
+    )
+  }
+
+  if (notFound || !product) {
+    return (
+      <div className="space-y-6">
+        <Link href="/products" className="text-gold-600 hover:underline text-sm">
+          بازگشت به لیست اجناس
+        </Link>
+        <p className="text-charcoal-soft">محصول یافت نشد.</p>
+      </div>
+    )
+  }
+
+  const imgSrc = product.image
+    ? product.image.startsWith('http')
+      ? product.image
+      : (typeof window !== 'undefined' ? window.location.origin : '') + product.image
+    : null
+
+  return (
+    <div className="space-y-6">
+      <Link href="/products" className="inline-flex items-center gap-1 text-gold-600 hover:underline text-sm">
+        بازگشت به لیست اجناس
+      </Link>
+
+      <div className="card-luxury rounded-2xl border border-gold-200/50 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gold-200 bg-gold-50/50 flex flex-row items-center justify-between">
+          <h1 className="font-heading text-2xl font-semibold text-charcoal">{product.productName}</h1>
+          <button
+            type="button"
+            onClick={() => setEditModalOpen(true)}
+            className="btn-luxury btn-luxury-primary py-2 px-4"
+          >
+            ویرایش
+          </button>
+        </div>
+        <div className="p-6 flex flex-col sm:flex-row gap-6">
+          {imgSrc && (
+            <div className="shrink-0 w-48 h-48 rounded-xl border border-gold-200 overflow-hidden bg-gold-50/50">
+              <img src={imgSrc} alt="" className="w-full h-full object-cover" />
+            </div>
+          )}
+          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm flex-1">
+            <div>
+              <dt className="text-charcoal-soft">نوع</dt>
+              <dd className="font-medium text-charcoal">{product.type || '—'}</dd>
+            </div>
+            <div>
+              <dt className="text-charcoal-soft">وزن (گرام)</dt>
+              <dd className="font-medium text-charcoal">{product.gram.toLocaleString('fa-IR')}</dd>
+            </div>
+            <div>
+              <dt className="text-charcoal-soft">عیار</dt>
+              <dd className="font-medium text-charcoal">{product.karat.toLocaleString('fa-IR')}</dd>
+            </div>
+            <div>
+              <dt className="text-charcoal-soft">قیمت خرید (افغانی)</dt>
+              <dd className="font-medium text-charcoal">{product.purchasePriceToAfn?.toLocaleString('fa-IR') ?? '—'}</dd>
+            </div>
+            <div>
+              <dt className="text-charcoal-soft">بارکود</dt>
+              <dd className="font-medium text-charcoal phone-ltr" dir="ltr">{product.barcode || '—'}</dd>
+            </div>
+            <div>
+              <dt className="text-charcoal-soft">شماره بل</dt>
+              <dd className="font-medium text-charcoal">{product.bellNumber ?? '—'}</dd>
+            </div>
+            <div>
+              <dt className="text-charcoal-soft">وضعیت</dt>
+              <dd className="font-medium">{product.isSold ? <span className="text-rose-600">فروخته شده</span> : <span className="text-green-600">موجود</span>}</dd>
+            </div>
+            <div>
+              <dt className="text-charcoal-soft">اجرت</dt>
+              <dd className="font-medium text-charcoal">{product.wage != null ? product.wage.toLocaleString('fa-IR') : '—'}</dd>
+            </div>
+            <div>
+              <dt className="text-charcoal-soft">اونس</dt>
+              <dd className="font-medium text-charcoal">{product.auns != null ? product.auns.toLocaleString('fa-IR') : '—'}</dd>
+            </div>
+            <div>
+              <dt className="text-charcoal-soft">تاریخ ثبت</dt>
+              <dd className="font-medium text-charcoal">{formatDate(product.createdAt)}</dd>
+            </div>
+            <div>
+              <dt className="text-charcoal-soft">آخرین به‌روزرسانی</dt>
+              <dd className="font-medium text-charcoal">{formatDate(product.updatedAt)}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <ProductFormModal
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        mode="edit"
+        initialData={product as ProductFormData}
+        onSuccess={() => { refresh(); setEditModalOpen(false) }}
+      />
+    </div>
+  )
+}

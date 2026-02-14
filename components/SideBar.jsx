@@ -12,6 +12,7 @@ import {
   CreditCard,
   Hammer,
   PackagePlus,
+  Package,
   Users,
   UserPlus,
   Handshake,
@@ -23,6 +24,7 @@ import {
 
 const items = [
   { href: '/sale-product', icon: Gem, label: 'فروش جنس', color: 'from-pink-500 to-rose-500' },
+  { href: '/products', icon: Package, label: 'اجناس', color: 'from-amber-500 to-yellow-600' },
   { href: '/product-from-supplier', icon: ShoppingBag, label: 'خرید جنس از تمویل کننده', color: 'from-sky-500 to-blue-600' },
   { href: '/add-fragment', icon: Puzzle, label: 'خرید شکسته', color: 'from-amber-400 to-orange-500' },
   { href: '/ware-house', icon: Warehouse, label: 'انبار', color: 'from-emerald-400 to-green-600' },
