@@ -124,7 +124,8 @@ export default function SupplierFormModal({
           <FormField label="شماره تماس">
             <input
               name="phone"
-              className="input-luxury w-full"
+              className="input-luxury w-full phone-ltr"
+              dir="ltr"
               value={form.phone}
               onChange={handleChange}
               placeholder="شماره تماس"

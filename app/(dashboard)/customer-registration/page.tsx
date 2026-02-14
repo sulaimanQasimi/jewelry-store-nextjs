@@ -92,9 +92,9 @@ export default function CustomerRegistrationPage() {
     },
     { key: 'id', label: '#' },
     { key: 'customerName', label: 'نام مشتری' },
-    { key: 'phone', label: 'شماره تماس' },
+    { key: 'phone', label: 'شماره تماس', className: 'phone-ltr' },
     { key: 'email', label: 'ایمیل', render: (r) => r.email ?? '—' },
-    { key: 'secondaryPhone', label: 'شماره ثانوی', render: (r) => r.secondaryPhone ?? '—' },
+    { key: 'secondaryPhone', label: 'شماره ثانوی', className: 'phone-ltr', render: (r) => r.secondaryPhone ?? '—' },
     { key: 'address', label: 'آدرس', render: (r) => (r.address ? String(r.address).slice(0, 30) + (String(r.address).length > 30 ? '…' : '') : '—') },
     {
       key: 'actions',

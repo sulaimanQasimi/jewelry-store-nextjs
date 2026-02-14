@@ -96,7 +96,7 @@ export default function TraderShowPage() {
           </div>
           <div>
             <dt className="text-charcoal-soft">شماره تماس</dt>
-            <dd className="font-medium text-charcoal">{trader.phone}</dd>
+            <dd className="font-medium text-charcoal phone-ltr" dir="ltr">{trader.phone}</dd>
           </div>
           {trader.address && (
             <div className="sm:col-span-2">

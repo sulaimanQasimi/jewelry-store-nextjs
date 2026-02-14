@@ -65,7 +65,7 @@ export default function NewTradePage() {
   const columns: ColumnDef<Trader>[] = [
     { key: 'id', label: '#' },
     { key: 'name', label: 'نام' },
-    { key: 'phone', label: 'شماره تماس' },
+    { key: 'phone', label: 'شماره تماس', className: 'phone-ltr' },
     {
       key: 'address',
       label: 'آدرس',

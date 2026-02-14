@@ -64,7 +64,7 @@ export default function SuppliersPage() {
   const columns: ColumnDef<Supplier>[] = [
     { key: 'id', label: '#' },
     { key: 'name', label: 'نام' },
-    { key: 'phone', label: 'شماره تماس' },
+    { key: 'phone', label: 'شماره تماس', className: 'phone-ltr' },
     { key: 'address', label: 'آدرس', render: (r) => (r.address ? String(r.address).slice(0, 40) + (String(r.address).length > 40 ? '…' : '') : '—') },
     {
       key: 'isActive',

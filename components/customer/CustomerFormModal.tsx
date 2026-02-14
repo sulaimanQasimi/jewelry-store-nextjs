@@ -195,13 +195,13 @@ export default function CustomerFormModal({
               <input name="customerName" className="input-luxury w-full" value={form.customerName} onChange={handleChange} required />
             </FormField>
             <FormField label="شماره تماس">
-              <input name="phone" className="input-luxury w-full" value={form.phone} onChange={handleChange} required />
+              <input name="phone" className="input-luxury w-full phone-ltr" dir="ltr" value={form.phone} onChange={handleChange} required />
             </FormField>
             <FormField label="ایمیل">
               <input type="email" name="email" className="input-luxury w-full" value={form.email ?? ''} onChange={handleChange} />
             </FormField>
             <FormField label="شماره ثانوی">
-              <input name="secondaryPhone" className="input-luxury w-full" value={form.secondaryPhone ?? ''} onChange={handleChange} />
+              <input name="secondaryPhone" className="input-luxury w-full phone-ltr" dir="ltr" value={form.secondaryPhone ?? ''} onChange={handleChange} />
             </FormField>
           </div>
         </div>

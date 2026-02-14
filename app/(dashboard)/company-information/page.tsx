@@ -28,7 +28,7 @@ export default function CompanyInformationPage() {
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow p-6 space-y-4">
             <p className="dark:text-slate-200"><span className="font-medium text-slate-600 dark:text-slate-400">نام شرکت:</span> {companyData.companyName}</p>
             <p className="dark:text-slate-200"><span className="font-medium text-slate-600 dark:text-slate-400">شعار:</span> {companyData.slogan || '-'}</p>
-            <p className="dark:text-slate-200"><span className="font-medium text-slate-600 dark:text-slate-400">تلفن:</span> {companyData.phone}</p>
+            <p className="dark:text-slate-200"><span className="font-medium text-slate-600 dark:text-slate-400">تلفن:</span> <span className="phone-ltr" dir="ltr">{companyData.phone}</span></p>
             <p className="dark:text-slate-200"><span className="font-medium text-slate-600 dark:text-slate-400">ایمیل:</span> {companyData.email || '-'}</p>
             <p className="dark:text-slate-200"><span className="font-medium text-slate-600 dark:text-slate-400">آدرس:</span> {companyData.address}</p>
           </div>

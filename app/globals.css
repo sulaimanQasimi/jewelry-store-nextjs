@@ -51,6 +51,12 @@
   --radius-2xl: 1.5rem;
 }
 
+/* Phone numbers: always LTR everywhere */
+.phone-ltr {
+  direction: ltr;
+  text-align: left;
+}
+
 body {
   direction: rtl;
   text-align: right;

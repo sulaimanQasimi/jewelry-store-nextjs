@@ -83,7 +83,7 @@ export default function SupplierShowPage() {
           </div>
           <div>
             <dt className="text-charcoal-soft">شماره تماس</dt>
-            <dd className="font-medium text-charcoal">{supplier.phone}</dd>
+            <dd className="font-medium text-charcoal phone-ltr" dir="ltr">{supplier.phone}</dd>
           </div>
           {supplier.address && (
             <div className="sm:col-span-2">

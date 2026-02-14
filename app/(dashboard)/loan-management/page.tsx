@@ -52,7 +52,7 @@ export default function LoanManagementPage() {
   const columns: ColumnDef<LoanRow>[] = [
     { key: 'customerId', label: '#' },
     { key: 'customerName', label: 'نام مشتری' },
-    { key: 'customerPhone', label: 'شماره تماس' },
+    { key: 'customerPhone', label: 'شماره تماس', className: 'phone-ltr' },
     { key: 'totalAmount', label: 'مجموع مبلغ', render: (r) => r.totalAmount?.toLocaleString() ?? '—' },
     { key: 'totalLoan', label: 'باقی‌مانده قرض', render: (r) => r.totalLoan?.toLocaleString() ?? '—' },
     { key: 'totalPaid', label: 'پرداخت شده', render: (r) => r.totalPaid?.toLocaleString() ?? '—' },

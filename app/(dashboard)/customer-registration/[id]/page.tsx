@@ -115,12 +115,12 @@ export default function CustomerShowPage() {
             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
               <div>
                 <dt className="text-charcoal-soft">شماره تماس</dt>
-                <dd className="font-medium text-charcoal">{customer.phone}</dd>
+                <dd className="font-medium text-charcoal phone-ltr" dir="ltr">{customer.phone}</dd>
               </div>
               {customer.secondaryPhone && (
                 <div>
                   <dt className="text-charcoal-soft">شماره ثانوی</dt>
-                  <dd className="font-medium text-charcoal">{customer.secondaryPhone}</dd>
+                  <dd className="font-medium text-charcoal phone-ltr" dir="ltr">{customer.secondaryPhone}</dd>
                 </div>
               )}
               {customer.email && (
