@@ -47,9 +47,31 @@ CREATE TABLE IF NOT EXISTS customers (
     email VARCHAR(255),
     address VARCHAR(500),
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    image VARCHAR(500),
+    secondaryPhone VARCHAR(50),
+    companyName VARCHAR(255),
+    notes TEXT,
+    birthDate DATE,
+    nationalId VARCHAR(50),
+    facebookUrl VARCHAR(500),
+    instagramUrl VARCHAR(500),
+    whatsappUrl VARCHAR(500),
+    telegramUrl VARCHAR(500),
     INDEX idx_phone (phone),
     INDEX idx_customerName (customerName)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Migration: run these ALTERs if customers table already exists without new columns
+-- ALTER TABLE customers ADD COLUMN image VARCHAR(500) NULL AFTER date;
+-- ALTER TABLE customers ADD COLUMN secondaryPhone VARCHAR(50) NULL AFTER image;
+-- ALTER TABLE customers ADD COLUMN companyName VARCHAR(255) NULL AFTER secondaryPhone;
+-- ALTER TABLE customers ADD COLUMN notes TEXT NULL AFTER companyName;
+-- ALTER TABLE customers ADD COLUMN birthDate DATE NULL AFTER notes;
+-- ALTER TABLE customers ADD COLUMN nationalId VARCHAR(50) NULL AFTER birthDate;
+-- ALTER TABLE customers ADD COLUMN facebookUrl VARCHAR(500) NULL AFTER nationalId;
+-- ALTER TABLE customers ADD COLUMN instagramUrl VARCHAR(500) NULL AFTER facebookUrl;
+-- ALTER TABLE customers ADD COLUMN whatsappUrl VARCHAR(500) NULL AFTER instagramUrl;
+-- ALTER TABLE customers ADD COLUMN telegramUrl VARCHAR(500) NULL AFTER whatsappUrl;
 
 -- Transactions Table
 CREATE TABLE IF NOT EXISTS transactions (
@@ -323,20 +345,29 @@ CREATE TABLE IF NOT EXISTS fragment_reports (
     INDEX idx_date (date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Users/Admin Table
+-- Users/Admin Table (password_hash only; no plain password)
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('admin','user') DEFAULT 'admin',
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_username (username),
     INDEX idx_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Insert test user (username: testuser, password: 123)
--- Note: In production, passwords should be hashed. This is for testing only.
-INSERT INTO users (username, email, password) 
-VALUES ('testuser', 'testuser@example.com', '123')
-ON DUPLICATE KEY UPDATE password = '123';
+-- Insert test user (username: testuser, password: 123) — bcrypt hash of '123'
+INSERT INTO users (username, email, password_hash, role)
+VALUES ('testuser', 'testuser@example.com', '$2b$10$Vic6hyvwWLdQSyb7VYm75u/zoIE6W7sVCQzu3MUtWiapfjDzqV7m6', 'admin')
+ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash);
+
+-- If you still have the OLD users table (with "password" column instead of "password_hash"):
+-- 1. Either run the migration below, or
+-- 2. Login with existing user (plain password is supported for old schema).
+-- Migration (run once): add new columns and copy password into password_hash, then you can drop password later.
+-- ALTER TABLE users ADD COLUMN password_hash VARCHAR(255) NULL, ADD COLUMN role ENUM('admin','user') DEFAULT 'admin', ADD COLUMN is_active BOOLEAN DEFAULT TRUE;
+-- UPDATE users SET password_hash = password WHERE password_hash IS NULL;
+-- Then insert/update test user: run the INSERT above (after ensuring password_hash column exists).

@@ -1,78 +1,64 @@
 'use client'
 
-import React, { useState, useEffect, useContext } from 'react'
-import { AppContext } from '@/lib/context/AppContext'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react'
+import { signIn, useSession } from 'next-auth/react'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
 export default function LoginPage() {
-  const { token, setToken } = useContext(AppContext)
+  const { data: session, status } = useSession()
   const router = useRouter()
-
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
+  useEffect(() => {
+    if (status === 'authenticated') router.push('/company-information')
+  }, [status, router])
+
   const onSubmitHandler = async (event: React.FormEvent) => {
     event.preventDefault()
     setIsLoading(true)
-
     try {
-      // Support both email and username login
-      const loginData = {
-        email: email,
-        username: email, // Also send as username in case user enters username
-        password: password
-      }
-
-      const { data } = await axios.post('/api/admin/login', loginData)
-      if (data.success) {
-        console.log(data)
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('token', data.token)
-        }
-        setToken(data.token)
+      const result = await signIn('credentials', {
+        email: email.trim(),
+        password,
+        redirect: false
+      })
+      if (result?.ok) {
         toast.success('ورود موفقیت‌آمیز بود')
-        setTimeout(() => {
-          router.push('/company-information')
-        }, 500)
+        router.push('/company-information')
+        return
+      }
+      if (result?.error) {
+        toast.error(result.error === 'CredentialsSignin' ? 'اطلاعات ورود نادرست است' : result.error)
       } else {
-        toast.error(data.message || 'اطلاعات ورود نادرست است')
+        toast.error('اطلاعات ورود نادرست است')
       }
     } catch (error: any) {
-      console.log(error)
-      toast.error(error.response?.data?.message || error.message || 'خطا در اتصال به سرور')
+      toast.error(error?.message || 'خطا در اتصال به سرور')
     } finally {
       setIsLoading(false)
     }
   }
 
-  useEffect(() => {
-    if (token) {
-      router.push('/company-information')
-    }
-  }, [token, router])
-
   return (
-    <div className="min-h-screen w-full flex justify-center items-center relative overflow-hidden">
-      {/* Elegant gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"></div>
-      
-      {/* Animated gold shimmer overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-500/10 to-transparent animate-pulse"></div>
-      
-      {/* Decorative elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-yellow-400/20 to-transparent rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-purple-500/20 to-transparent rounded-full blur-3xl"></div>
+    <div className="min-h-screen w-full flex justify-center items-center relative overflow-hidden bg-cream">
+      {/* Soft gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-cream via-champagne-light to-gold-50"></div>
+      {/* Subtle gold shimmer */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-200/10 to-transparent animate-pulse"></div>
+      {/* Decorative soft orbs */}
+      <div className="absolute top-0 right-0 w-[32rem] h-[32rem] bg-gradient-to-br from-gold-200/15 to-transparent rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 left-0 w-[28rem] h-[28rem] bg-gradient-to-tr from-gold-300/10 to-transparent rounded-full blur-3xl"></div>
 
       {/* Main login card */}
       <div className="relative z-10 w-full max-w-md mx-4">
-        <div className="bg-gradient-to-br from-slate-800/95 via-slate-900/95 to-slate-800/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-yellow-500/20 p-8 md:p-10">
+        <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_4px_24px_-4px_rgba(28,28,28,0.08),0_12px_32px_-8px_rgba(198,167,94,0.12)] border border-gold-200/50 p-8 md:p-10 card-luxury">
           {/* Logo/Brand section */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 mb-4 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 shadow-lg shadow-yellow-500/50">
+            <div className="inline-flex items-center justify-center w-20 h-20 mb-4 rounded-2xl bg-gradient-to-br from-gold-400 to-gold-600 shadow-[0_8px_24px_-4px_rgba(198,167,94,0.4)]">
               <Image
                 src="/assets/gemify.png"
                 alt="Logo"
@@ -81,22 +67,21 @@ export default function LoginPage() {
                 className="object-contain"
               />
             </div>
-            <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 mb-2">
+            <h1 className="font-heading text-3xl font-bold text-charcoal mb-2 tracking-wide">
               سیستم مدیریت زرگری
             </h1>
-            <p className="text-slate-400 text-sm">ورود به پنل مدیریت</p>
+            <p className="text-charcoal-soft/80 text-sm">ورود به پنل مدیریت</p>
           </div>
 
           {/* Login form */}
           <form onSubmit={onSubmitHandler} className="space-y-6">
-            {/* Email/Username input */}
             <div className="space-y-2">
-              <label className="block text-right text-slate-300 text-sm font-medium">
+              <label className="block text-right text-charcoal text-sm font-medium">
                 ایمیل یا نام کاربری
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <svg className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </div>
@@ -104,21 +89,20 @@ export default function LoginPage() {
                   type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pr-10 pl-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all duration-300"
+                  className="input-luxury w-full pr-10 pl-4 py-3 text-charcoal placeholder-gold-300/70"
                   placeholder="ایمیل یا نام کاربری خود را وارد کنید"
                   required
                 />
               </div>
             </div>
 
-            {/* Password input */}
             <div className="space-y-2">
-              <label className="block text-right text-slate-300 text-sm font-medium">
+              <label className="block text-right text-charcoal text-sm font-medium">
                 رمز عبور
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <svg className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                 </div>
@@ -126,18 +110,17 @@ export default function LoginPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pr-10 pl-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500/50 transition-all duration-300"
+                  className="input-luxury w-full pr-10 pl-4 py-3 text-charcoal placeholder-gold-300/70"
                   placeholder="رمز عبور خود را وارد کنید"
                   required
                 />
               </div>
             </div>
 
-            {/* Submit button */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-500 hover:from-yellow-400 hover:via-yellow-500 hover:to-yellow-400 text-slate-900 font-bold rounded-xl shadow-lg shadow-yellow-500/50 hover:shadow-yellow-500/70 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="btn-luxury btn-luxury-primary w-full py-3 px-4 font-bold rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isLoading ? (
                 <>
@@ -158,29 +141,26 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Footer */}
-          <div className="mt-8 pt-6 border-t border-slate-700/50">
-            <p className="text-center text-slate-500 text-xs">
-              <span className="text-yellow-500">©</span>{' '}
+          <div className="mt-8 pt-6 border-t border-gold-200/50">
+            <p className="text-center text-charcoal-soft/70 text-xs">
+              <span className="text-gold-500">©</span>{' '}
               تمام حقوق متعلق به شرکت گلگسی تکنالوچی می‌باشد
             </p>
           </div>
         </div>
 
-        {/* Decorative bottom accent */}
         <div className="mt-6 flex justify-center">
-          <div className="h-1 w-24 bg-gradient-to-r from-transparent via-yellow-500 to-transparent rounded-full"></div>
+          <div className="h-1 w-24 bg-gradient-to-r from-transparent via-gold-400 to-transparent rounded-full"></div>
         </div>
       </div>
 
-      {/* Floating jewelry icons decoration */}
-      <div className="absolute top-20 left-20 w-16 h-16 opacity-20 animate-bounce delay-300">
-        <svg viewBox="0 0 24 24" fill="currentColor" className="text-yellow-400">
+      <div className="absolute top-20 left-20 w-16 h-16 opacity-15">
+        <svg viewBox="0 0 24 24" fill="currentColor" className="text-gold-500">
           <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
         </svg>
       </div>
-      <div className="absolute bottom-20 right-20 w-12 h-12 opacity-20 animate-bounce delay-700">
-        <svg viewBox="0 0 24 24" fill="currentColor" className="text-yellow-400">
+      <div className="absolute bottom-20 right-20 w-12 h-12 opacity-15">
+        <svg viewBox="0 0 24 24" fill="currentColor" className="text-gold-500">
           <circle cx="12" cy="12" r="10"/>
         </svg>
       </div>

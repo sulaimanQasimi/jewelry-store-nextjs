@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useContext } from "react";
-import { AppContext } from "../context/AppContext";
+import { AppContext } from '@/lib/context/AppContext'
 import { useCart } from "../context/CartContext";
 
 const ProductCart = ({ product }) => {
@@ -37,8 +37,9 @@ const ProductCart = ({ product }) => {
   return (
     <div className="w-full flex justify-center">
       <button
+        type="button"
         onClick={() => updateIsSold(product._id, true)}
-        className="bg-sky-700 text-white py-1 px-3 rounded mt-2"
+        className="btn-luxury btn-luxury-primary py-2 px-4 rounded-[10px] mt-2"
       >
         ثبت فروش
       </button>

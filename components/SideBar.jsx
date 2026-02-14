@@ -1,122 +1,50 @@
-import React, { useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
-import { assets } from '../assets/assets'
+'use client'
+
+import React from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+
+const items = [
+  { href: '/sale-product', icon: '/assets/jewelery.png', label: 'فروش جنس' },
+  { href: '/product-from-supplier', icon: '/assets/buy.png', label: 'خرید جنس از تمویل کننده' },
+  { href: '/add-fragment', icon: '/assets/broken.png', label: 'خرید شکسته' },
+  { href: '/ware-house', icon: '/assets/warehouse.png', label: 'انبار' },
+  { href: '/expenses', icon: '/assets/money.png', label: 'مصارف' },
+  { href: '/loan-management', icon: '/assets/loan.png', label: 'بلانس مشتریان' },
+  { href: '/register-product', icon: '/assets/fragment.png', label: 'ثبت اجناس شکسته' },
+  { href: '/register-supplier-product', icon: '/assets/new-product.png', label: 'ثبت اجناس' },
+  { href: '/suppliers', icon: '/assets/buy.png', label: 'لیست تمویل کنندگان' },
+  { href: '/customer-registration', icon: '/assets/client1.png', label: 'ثبت مشتریان' },
+  { href: '/new-trade', icon: '/assets/trader.png', label: 'معامله داران' },
+  { href: '/daily-report', icon: '/assets/daily.png', label: 'گزارش یومیه' },
+  { href: '/report', icon: '/assets/report_card.svg', label: 'گزارشات' },
+  { href: '/company-information', icon: '/assets/info.svg', label: 'درباره ما' },
+]
 
 const SideBar = () => {
+  const pathname = usePathname()
 
-    const navigate = useNavigate()
-
-
-    return (
-        <div className=' w-12 flex flex-col gap-6 px-2 py-4 bg-linear-to-r bg-cyan-900 backdrop-blur-md'>
-            <div className='group relative cursor-pointer' >
-                <div className='flex gap-4 items-center'><img onClick={() => navigate('/sale-product')} className='w-7' src={assets.jewelery_icon} alt="" /></div>
-                <div className='absolute right-8 top-1 hidden group-hover:block bg-black text-white py-0.5 px-2 text-center rounded z-20'>
-                    <p>فروش جنس</p>
-                </div>
-
-            </div>
-
-            {/* <div className='group relative cursor-pointer' >
-                <div className='flex gap-4 items-center'><img onClick={()=>navigate('/buy-product')} className='w-7' src={assets.buy_icon} alt="" /></div>
-                <div className='absolute right-8 top-1 hidden group-hover:block bg-black text-white py-0.5 px-2 text-center rounded'>
-                    <p>خرید جنس از مشتری</p>
-                </div>
-            </div> */}
-
-            <div className='group relative cursor-pointer' >
-                <div className='flex gap-4 items-center'><img onClick={()=>navigate('/product-from-supplier')} className='w-7' src={assets.buy_icon} alt="" /></div>
-                <div className='absolute right-8 top-1 hidden group-hover:block bg-black text-white py-0.5 px-2 text-center rounded'>
-                    <p>خرید جنس از تمویل کننده</p>
-                </div>
-            </div>
-
-            <div className='group relative cursor-pointer' >
-                <div className='flex gap-4 items-center'><img onClick={()=>navigate('/add-fragment')} className='w-7' src={assets.broken_icon} alt="" /></div>
-                <div className='absolute right-8 top-1 hidden group-hover:block bg-black text-white py-0.5 px-2 text-center rounded'>
-                    <p>خرید شکسته</p>
-                </div>
-            </div>
-
-            <div className='group relative cursor-pointer' >
-                <div className='flex gap-4 items-center'><img onClick={()=>navigate('/ware-house')} className='w-7' src={assets.warehouse_icon} alt="" /></div>
-                <div className='absolute right-8 top-1 hidden group-hover:block bg-black text-white py-0.5 px-2 text-center rounded'>
-                    <p>انبار</p>
-                </div>
-            </div>
-
-            <div className='group relative cursor-pointer' >
-                <div className='flex gap-4 items-center'><img onClick={()=>navigate('/expenses')} className='w-7' src={assets.money_icon} alt="" /></div>
-                <div className='absolute right-8 top-1 hidden group-hover:block bg-black text-white py-0.5 px-2 text-center rounded'>
-                    <p>مصارف</p>
-                </div>
-            </div>
-
-            <div className='group relative cursor-pointer' >
-                <div className='flex gap-4 items-center'><img onClick={()=>navigate('/loan-management')} className='w-7' src={assets.loan_icon} alt="" /></div>
-                <div className='absolute right-8 top-1 hidden group-hover:block bg-black text-white py-0.5 px-2 text-center rounded'>
-                    <p>بلانس مشتریان</p>
-                </div>
-            </div>
-{/* 
-            <div className='group relative cursor-pointer' >
-                <div className='flex gap-4 items-center'><img onClick={()=>navigate('/employee')} className='w-7' src={assets.employee_icon} alt="" /></div>
-                <div className='absolute right-8 top-1 hidden group-hover:block bg-black text-white py-0.5 px-2 text-center rounded'>
-                    <p>کارمندان</p>
-                </div>
-            </div> */}
-
-            <div className='group relative cursor-pointer' >
-                <div className='flex gap-4 items-center'><img onClick={()=>navigate('/register-product')} className='w-7' src={assets.fragment_icon} alt="" /></div>
-                <div className='absolute right-8 top-1 hidden group-hover:block bg-black text-white py-0.5 px-2 text-center rounded'>
-                    <p>ثبت اجناس شکسته</p>
-                </div>
-            </div>
-
-            <div className='group relative cursor-pointer' >
-                <div className='flex gap-4 items-center'><img onClick={()=>navigate('/register-supplier-product')} className='w-7' src={assets.new_product_icon} alt="" /></div>
-                <div className='absolute right-8 top-1 hidden group-hover:block bg-black text-white py-0.5 px-2 text-center rounded'>
-                    <p>ثبت اجناس</p>
-                </div>
-            </div>
-
-            <div className='group relative cursor-pointer' >
-                <div className='flex gap-4 items-center'><img onClick={()=>navigate('/customer-registration')} className='w-7' src={assets.client_icon} alt="" /></div>
-                <div className='absolute right-8 top-1 hidden group-hover:block bg-black text-white py-0.5 px-2 text-center rounded'>
-                    <p>ثبت مشتریان</p>
-                </div>
-            </div>
-
-            <div className='group relative cursor-pointer' >
-                <div className='flex gap-4 items-center'><img onClick={()=>navigate('/new-trade')} className='w-7' src={assets.trader_icon} alt="" /></div>
-                <div className='absolute right-8 top-1 hidden group-hover:block bg-black text-white py-0.5 px-2 text-center rounded'>
-                    <p>معامله داران</p>
-                </div>
-            </div>
-
-            <div className='group relative cursor-pointer' >
-                <div className='flex gap-4 items-center'><img onClick={()=>navigate('/daily-report')} className='w-7' src={assets.daily_report} alt="" /></div>
-                <div className='absolute right-8 top-1 hidden group-hover:block bg-black text-white py-0.5 px-2 text-center rounded'>
-                    <p>گزارش یومیه</p>
-                </div>
-            </div>
-
-            <div className='group relative cursor-pointer' >
-                <div className='flex gap-4 items-center'><img onClick={()=>navigate('/report')} className='w-7' src={assets.report_icon} alt="" /></div>
-                <div className='absolute right-8 top-1 hidden group-hover:block bg-black text-white py-0.5 px-2 text-center rounded'>
-                    <p>گزارشات</p>
-                </div>
-            </div>
-
-            <div className='group relative cursor-pointer' >
-                <div className='flex gap-4 items-center'><img onClick={()=>navigate('/company-information')} className='w-7' src={assets.info_icon} alt="" /></div>
-                <div className='absolute right-8 top-1 hidden group-hover:block bg-black text-white py-0.5 px-2 text-center rounded'>
-                    <p>درباره ما</p>
-                </div>
-            </div>
-
-        </div>
-    )
+  return (
+    <nav className="flex flex-col gap-1 p-4">
+      {items.map(({ href, icon, label }) => {
+        const isActive = pathname === href
+        return (
+          <Link
+            key={href}
+            href={href}
+            className={`flex items-center gap-3 rounded-[10px] px-4 py-3 text-sm font-medium transition-all duration-300 ease-in-out ${
+              isActive
+                ? 'bg-gold-100 text-charcoal border border-gold-300/60 shadow-[0_2px_8px_-2px_rgba(198,167,94,0.2)] nav-active-gold'
+                : 'text-charcoal-soft hover:bg-champagne/80 hover:border-gold-200 border border-transparent'
+            }`}
+          >
+            <img src={icon} alt="" className="h-5 w-5 shrink-0 object-contain opacity-90" />
+            <span className="truncate">{label}</span>
+          </Link>
+        )
+      })}
+    </nav>
+  )
 }
 
 export default SideBar

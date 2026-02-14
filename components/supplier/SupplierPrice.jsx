@@ -132,65 +132,53 @@ const SupplierPrice = ({ showProduct, setShowProduct }) => {
 
   /* ---------- UI ---------- */
   return (
-    <div className="bg-white px-8 pt-12 pb-4 rounded w-[90%] max-h-[80%] overflow-y-auto relative z-50">
-      <div className="grid grid-cols-4 gap-8">
-
+    <div className="card-luxury bg-white px-6 md:px-8 pt-8 pb-6 rounded-2xl w-[90%] max-w-4xl max-h-[85vh] overflow-y-auto relative z-50 border border-gold-200/50">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         <Field label="نام جنس">
-          <input name="name" className="border border-gray-500 py-0.5 px-2 rounded-xs"  value={form.name} onChange={handleChange} />
+          <input name="name" className="input-luxury w-full" value={form.name} onChange={handleChange} />
         </Field>
-
         <Field label="نوعیت جنس">
-          <input name="type" className="border border-gray-500 py-0.5 px-2 rounded-xs"  value={form.type} onChange={handleChange} />
+          <input name="type" className="input-luxury w-full" value={form.type} onChange={handleChange} />
         </Field>
-
         <Field label="عیار">
-          <select name="karat" value={form.karat} onChange={handleChange}>
+          <select name="karat" value={form.karat} onChange={handleChange} className="input-luxury w-full cursor-pointer">
             <option value="">انتخاب عیار</option>
             <option value="14">14</option>
             <option value="18">18</option>
             <option value="21">21</option>
           </select>
         </Field>
-
         <Field label="وزن">
-          <input name="weight" className="border border-gray-500 py-0.5 px-2 rounded-xs"  value={form.weight} onChange={handleChange} inputMode="numeric" />
+          <input name="weight" className="input-luxury w-full" value={form.weight} onChange={handleChange} inputMode="numeric" />
         </Field>
-
         <Field label="پاسه">
-          <input name="pasa" className="border border-gray-500 py-0.5 px-2 rounded-xs"  value={form.pasa} readOnly />
+          <input name="pasa" className="input-luxury w-full bg-gold-50 read-only:bg-gold-50/80" value={form.pasa} readOnly />
         </Field>
-
         <Field label="رسید پاسه">
-          <input name="pasaReceipt" className="border border-gray-500 py-0.5 px-2 rounded-xs"  value={form.pasaReceipt} onChange={handleChange} />
+          <input name="pasaReceipt" className="input-luxury w-full" value={form.pasaReceipt} onChange={handleChange} />
         </Field>
-
         <Field label="صرف باقی پاسه">
-          <input name="pasaRemaining" className="border border-gray-500 py-0.5 px-2 rounded-xs"  value={form.pasaRemaining} readOnly />
+          <input name="pasaRemaining" className="input-luxury w-full bg-gold-50 read-only:bg-gold-50/80" value={form.pasaRemaining} readOnly />
         </Field>
-
         <Field label="وجوره هر گرم">
-          <input name="wagePerGram" className="border border-gray-500 py-0.5 px-2 rounded-xs"  value={form.wagePerGram} onChange={handleChange} />
+          <input name="wagePerGram" className="input-luxury w-full" value={form.wagePerGram} onChange={handleChange} />
         </Field>
-
         <Field label="مجموع وجوره">
-          <input name="totalWage"  className="border border-gray-500 py-0.5 px-2 rounded-xs" value={form.totalWage} readOnly />
+          <input name="totalWage" className="input-luxury w-full bg-gold-50 read-only:bg-gold-50/80" value={form.totalWage} readOnly />
         </Field>
-
         <Field label="رسید وجوره">
-          <input name="wageReceipt" className="border border-gray-500 py-0.5 px-2 rounded-xs"  value={form.wageReceipt} onChange={handleChange} />
+          <input name="wageReceipt" className="input-luxury w-full" value={form.wageReceipt} onChange={handleChange} />
         </Field>
-
         <Field label="صرف باقی وجوره">
-          <input name="wageRemaining" className="border border-gray-500 py-0.5 px-2 rounded-xs"  value={form.wageRemaining} readOnly />
+          <input name="wageRemaining" className="input-luxury w-full bg-gold-50 read-only:bg-gold-50/80" value={form.wageRemaining} readOnly />
         </Field>
-
       </div>
 
-      <div className="flex gap-4 justify-center my-8">
-        <button onClick={() => setShowProduct(false)} className="bg-red-600 w-40 text-white">
+      <div className="flex gap-3 justify-center mt-8 pt-6 border-t border-gold-200">
+        <button type="button" onClick={() => setShowProduct(false)} className="btn-luxury btn-luxury-outline w-36 py-2">
           لغو
         </button>
-        <button onClick={saveToCart} className="bg-green-600 w-40 text-white">
+        <button type="button" onClick={saveToCart} className="btn-luxury btn-luxury-primary w-36 py-2">
           ذخیره
         </button>
       </div>
@@ -200,8 +188,8 @@ const SupplierPrice = ({ showProduct, setShowProduct }) => {
 
 /* ================== field ================== */
 const Field = ({ label, children }) => (
-  <div className="flex flex-col gap-1">
-    <p className="text-sm">{label}</p>
+  <div className="flex flex-col gap-1.5">
+    <p className="text-sm font-medium text-charcoal">{label}</p>
     {children}
   </div>
 );

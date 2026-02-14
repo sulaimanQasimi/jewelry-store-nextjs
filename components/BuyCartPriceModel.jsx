@@ -38,44 +38,36 @@ const BuyCartPriceModel = ({ product, setIsProductOn }) => {
 
   return (
     <div className="py-2">
-      <div className="flex justify-center gap-4 mt-4">
-        <div className="flex flex-col gap-1">
-          <label className="text-white">قیمت</label>
+      <div className="flex flex-wrap justify-center gap-4 mt-4">
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-medium text-charcoal">قیمت</label>
           <input
             type="text"
             inputMode="numeric"
             value={price}
             onChange={(e) => setPrice(convertToEnglish(e.target.value))}
             placeholder="قیمت فی عدد"
-            className="border bg-gray-100 rounded py-1 px-2 w-52"
+            className="input-luxury w-52 bg-white"
           />
         </div>
-
-        <div className="flex flex-col gap-1">
-          <label className="text-white">تعداد</label>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-medium text-charcoal">تعداد</label>
           <input
             type="text"
             inputMode="numeric"
             value={quantity}
             onChange={(e) => setQuantity(convertToEnglish(e.target.value))}
             placeholder="تعداد"
-            className="border bg-gray-100 rounded py-1 px-2 w-52"
+            className="input-luxury w-52 bg-white"
           />
         </div>
       </div>
 
-      <div className="flex justify-center gap-4 mt-4">
-        <button
-          onClick={() => setIsProductOn(false)}
-          className="bg-red-600 w-28 text-white rounded py-1"
-        >
+      <div className="flex justify-center gap-3 mt-5">
+        <button type="button" onClick={() => setIsProductOn(false)} className="btn-luxury btn-luxury-outline w-28 py-2">
           لغو
         </button>
-
-        <button
-          onClick={handleToAddCart}
-          className="bg-sky-600 w-28 text-white rounded py-1"
-        >
+        <button type="button" onClick={handleToAddCart} className="btn-luxury btn-luxury-primary w-28 py-2">
           ثبت
         </button>
       </div>

@@ -1,8 +1,7 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { assets } from "../assets/assets";
-import { AppContext } from "../context/AppContext";
+import { AppContext } from '@/lib/context/AppContext'
 import PriceModal from "./PriceModel";
 
 const SearchProduct = () => {
@@ -50,24 +49,25 @@ const SearchProduct = () => {
 
   return (
     <div className="max-w-sm">
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-2">
         <input
           autoFocus
           value={query}
           onChange={(e) => setQuery(convertToEnglish(e.target.value))}
           onKeyDown={handleKeyDown}
           type="text"
-          className="border border-gray-400 py-1 px-2 w-full"
+          className="input-luxury flex-1 py-2.5"
           placeholder="جستجوی جنس بر اساس بارکود"
           inputMode="numeric"
         />
-
-        <img
-          src={assets.search_icon}
-          className="w-7 cursor-pointer"
-          alt="search"
+        <button
+          type="button"
           onClick={() => query && fetchData(query)}
-        />
+          className="btn-luxury btn-luxury-primary p-2.5 rounded-[10px] flex items-center justify-center transition-all duration-300 hover:scale-105"
+          aria-label="جستجو"
+        >
+          <img src="/assets/search.png" className="w-5 h-5 invert" alt="" />
+        </button>
       </div>
 
       {showPriceModal && result && (

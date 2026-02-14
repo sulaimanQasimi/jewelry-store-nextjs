@@ -6,6 +6,10 @@ import { toast } from 'react-toastify'
 
 export const AppContext = createContext<any>(null)
 
+if (typeof window !== 'undefined') {
+  axios.defaults.withCredentials = true
+}
+
 interface AppContextProviderProps {
   children: ReactNode
 }
@@ -15,11 +19,6 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [existProduct, setExistProduct] = useState<any[]>([])
   const [customers, setCustomers] = useState<any[]>([])
   const [spents, setSpents] = useState<any[]>([])
-  const [token, setToken] = useState<string | false>(
-    typeof window !== 'undefined' && localStorage.getItem('token')
-      ? localStorage.getItem('token')!
-      : false
-  )
   const [loanData, setLoanData] = useState<any[]>([])
   const [rate, setRate] = useState('')
   const [saved, setSaved] = useState(false)
@@ -110,8 +109,10 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
     try {
       const { data } = await axios.get('/api/customer/registred-customers')
 
-      if (data) {
+      if (data && Array.isArray(data.customers)) {
         setCustomers(data.customers)
+      } else if (data && Array.isArray(data.data)) {
+        setCustomers(data.data)
       }
     } catch (error: any) {
       console.log(error)
@@ -165,10 +166,6 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
     }
   }
 
-  useEffect(() => {
-    getCompanyData()
-  }, [])
-
   const value = {
     companyInformation,
     setCompanyInformation,
@@ -183,8 +180,7 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
     spents,
     setSpents,
     getSpents,
-    token,
-    setToken,
+    backendUrl: '',
     getLoan,
     setLoanData,
     loanData,

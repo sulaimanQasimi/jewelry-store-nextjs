@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { query } from '@/lib/db'
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,15 +9,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, message: 'لطفا خانه های خالی را پر نمایید' })
     }
 
-    const expense = await prisma.expenses.create({
-      data: {
-        type,
-        detail,
-        price,
-        currency,
-        date: date ? new Date(date) : new Date()
-      }
-    })
+    await query(
+      'INSERT INTO expenses (type, detail, price, currency, date) VALUES (?, ?, ?, ?, ?)',
+      [type, detail, Number(price), currency, date ? new Date(date) : new Date()]
+    )
 
     return NextResponse.json({ success: true, message: 'دیتا موفقانه ثبت شد' })
   } catch (error: any) {

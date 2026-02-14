@@ -1,34 +1,154 @@
 @import "tailwindcss";
 
+/* ========== Luxury Jewelry Design System ========== */
+@theme {
+  /* Primary: Deep Gold / Metallic gold */
+  --color-gold-50: #FBF8F0;
+  --color-gold-100: #F5EBDD;
+  --color-gold-200: #E8D9BE;
+  --color-gold-300: #D4BC8F;
+  --color-gold-400: #C6A75E;
+  --color-gold-500: #B8943E;
+  --color-gold-600: #9A7B32;
+  --color-gold-700: #7A6128;
+  --color-gold-800: #5C4A1F;
+  --color-gold-900: #3D3215;
+  /* Champagne / Soft Beige */
+  --color-champagne: #F5EBDD;
+  --color-champagne-light: #FAF6F0;
+  /* Background */
+  --color-cream: #FAF9F6;
+  --color-cream-warm: #F8F6F2;
+  /* Accent */
+  --color-charcoal: #1C1C1C;
+  --color-charcoal-soft: #2D2D2D;
+  /* Rose gold accent */
+  --color-rosegold: #B76E79;
+  --color-rosegold-light: #D4A5A5;
+  /* Shadows */
+  --shadow-luxury: 0 4px 24px -4px rgb(28 28 28 / 0.08), 0 8px 16px -6px rgb(28 28 28 / 0.04);
+  --shadow-luxury-hover: 0 12px 32px -8px rgb(28 28 28 / 0.12), 0 16px 24px -8px rgb(28 28 28 / 0.06);
+  --shadow-card: 0 2px 12px -2px rgb(198 167 94 / 0.12), 0 4px 8px -4px rgb(28 28 28 / 0.04);
+  /* Radius */
+  --radius-button: 10px;
+  --radius-card: 14px;
+  --radius-input: 10px;
+}
+
 body {
   direction: rtl;
   text-align: right;
-  background-color: oklch(97% 0.001 106.424);
+  background-color: var(--color-cream);
+  color: var(--color-charcoal);
 }
 
-::-webkit-scrollbar{
-    display: none;
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-gold-100);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-gold-300);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold-500);
 }
 
 @font-face {
-    font-family: "vazirmatn";
-    src: url("/assets/fonts/Vazirmatn/Vazirmatn-VariableFont_wght.ttf") format("truetype");
+  font-family: "vazirmatn";
+  src: url("/assets/fonts/Vazirmatn/Vazirmatn-VariableFont_wght.ttf") format("truetype");
 }
 @font-face {
-    font-family: "naskh";
-    src: url("/assets/fonts/Naskh/NotoNaskhArabic-VariableFont_wght.ttf") format("truetype");
+  font-family: "naskh";
+  src: url("/assets/fonts/Naskh/NotoNaskhArabic-VariableFont_wght.ttf") format("truetype");
 }
 @font-face {
-    font-family: "iransans";
-    src: url("/assets/fonts/IRANSansWeb.ttf") format("truetype");
+  font-family: "iransans";
+  src: url("/assets/fonts/IRANSansWeb.ttf") format("truetype");
 }
 
-*{
+* {
   font-family: 'iransans';
 }
-.active div{
-    opacity: 1;
-    color: white;
+
+/* Luxury typography: use .font-heading for serif/premium headings */
+.font-heading {
+  font-family: 'naskh', 'vazirmatn', serif;
+  letter-spacing: 0.02em;
+}
+
+/* Luxury button base */
+.btn-luxury {
+  border-radius: var(--radius-button);
+  transition: all 300ms ease-in-out;
+  font-weight: 600;
+}
+.btn-luxury-primary {
+  background: linear-gradient(135deg, var(--color-gold-500) 0%, var(--color-gold-400) 50%, var(--color-gold-600) 100%);
+  color: white;
+  box-shadow: 0 2px 12px -2px rgb(198 167 94 / 0.4);
+}
+.btn-luxury-primary:hover:not(:disabled) {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px -4px rgb(198 167 94 / 0.5);
+}
+.btn-luxury-outline {
+  border: 2px solid var(--color-gold-400);
+  color: var(--color-charcoal);
+  background: transparent;
+}
+.btn-luxury-outline:hover:not(:disabled) {
+  background: var(--color-gold-100);
+  border-color: var(--color-gold-500);
+}
+
+/* Luxury card */
+.card-luxury {
+  background: white;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 300ms ease-in-out, transform 300ms ease-in-out;
+}
+.card-luxury:hover {
+  box-shadow: var(--shadow-luxury);
+}
+
+/* Luxury input */
+.input-luxury {
+  border: 1px solid var(--color-gold-200);
+  border-radius: var(--radius-input);
+  padding: 0.6rem 1rem;
+  transition: border-color 300ms ease-in-out, box-shadow 300ms ease-in-out;
+  background: white;
+}
+.input-luxury:focus {
+  outline: none;
+  border-color: var(--color-gold-400);
+  box-shadow: 0 0 0 3px rgb(198 167 94 / 0.15);
+}
+
+/* Gold underline for active nav */
+.nav-active-gold {
+  position: relative;
+}
+.nav-active-gold::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-gold-400), transparent);
+  border-radius: 1px;
+}
+
+.active div {
+  opacity: 1;
+  color: white;
 }
 
 @media print {

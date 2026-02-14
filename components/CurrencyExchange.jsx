@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { assets } from '../assets/assets'
-import { AppContext } from '../context/AppContext'
+import { AppContext } from '@/lib/context/AppContext'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 
@@ -55,24 +54,23 @@ const CurrencyExchange = ({ isCurrencyToggle }) => {
 
 
     return (
-        <div className='relative'>
-            <img className='w-10 hover:scale-120 transition-all duration-500' src={assets.exchange_currency_icon} alt="" onClick={(e) => currencyToggleChange(e)} />
-            <div className={`absolute transition-all duration-500 w-md shadow-2xl rounded-lg shadow-gray-900 ${isCurrencyToggleOn ? 'top-16 -right-48' : "-top-80 -right-48"}`}>
-                <div className='max-w-md bg-white p-6 rounded-xl shadow-sm'>
-                    <h2 className='text-lg font-semibold mb-4 text-gray-800'>تعیین نرخ دالر</h2>
-                    <div>
+        <div className="relative">
+            <button type="button" onClick={(e) => currencyToggleChange(e)} className="p-2 rounded-[10px] text-charcoal-soft hover:bg-gold-100 hover:text-charcoal transition-all duration-300" aria-label="نرخ دالر">
+                <img className="w-8 h-8" src="/assets/currency_exchange.svg" alt="" />
+            </button>
+            <div className={`absolute transition-all duration-300 ease-in-out z-50 min-w-[18rem] ${isCurrencyToggleOn ? 'top-14 -right-0 opacity-100 visible' : 'top-14 -right-0 opacity-0 invisible pointer-events-none'}`}>
+                <div className="card-luxury p-6 rounded-2xl shadow-[0_12px_40px_-8px_rgba(28,28,28,0.15)] border border-gold-200/50">
+                    <h2 className="font-heading text-lg font-semibold mb-4 text-charcoal">تعیین نرخ دالر</h2>
+                    <div className="space-y-4">
                         <div>
-                            <label htmlFor="">نرخ فعلی دالر</label>
-                            <input type="number" step='0.01' value={rate} onChange={(e) => setRate(parseFloat(e.target.value) || "")} className='w-full bg-blue-600 outline-none text-white px-2 py-1.5 rounded-lg transition-all' />
+                            <label className="block text-sm font-medium text-charcoal mb-1">نرخ فعلی دالر</label>
+                            <input type="number" step="0.01" value={rate} onChange={(e) => setRate(parseFloat(e.target.value) || "")} className="input-luxury w-full" />
                         </div>
-                        <div className='flex justify-center text-white mt-4 gap-4 text-sm'>
-                            <button onClick={() => setIsCurrencyToggleOn(false)} className='w-28 bg-red-500 rounded cursor-pointer py-1'>کنسل</button>
-                            <button onClick={handleSave} className='w-28 bg-blue-600 rounded cursor-pointer py-1'>ذخیره نرخ</button>
+                        <div className="flex justify-center gap-3 pt-2">
+                            <button type="button" onClick={() => setIsCurrencyToggleOn(false)} className="btn-luxury btn-luxury-outline w-28 py-2">کنسل</button>
+                            <button type="button" onClick={handleSave} className="btn-luxury btn-luxury-primary w-28 py-2">ذخیره نرخ</button>
                         </div>
-                         <div className='mt-6 text-green-500 text-center'>
-                           {loading ? <p>در حال ذخیره</p>:<p></p>} 
-                        </div>
-
+                        {loading && <p className="text-center text-gold-600 text-sm">در حال ذخیره...</p>}
                     </div>
                 </div>
             </div>

@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import BuyCartPriceModel from "./BuyCartPriceModel";
-import { AppContext } from "../context/AppContext";
-import { assets } from "../assets/assets";
+import { AppContext } from '@/lib/context/AppContext'
 
 const ProductInfo = ({ setIsProductOn, onSelect }) => {
   const { backendUrl } = useContext(AppContext);
@@ -46,53 +45,53 @@ const ProductInfo = ({ setIsProductOn, onSelect }) => {
   }, [search]);
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded flex flex-col items-center relative">
-        <img onClick={()=>setIsProductOn(false)} src={assets.cancel_icon} className="absolute w-6 right-2 top-2 cursor-pointer" alt="" />
-        <h2 className="mb-4 text-lg font-semibold">مشخصات محصول</h2>
+    <div className="fixed inset-0 bg-charcoal/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="card-luxury bg-white p-6 md:p-8 rounded-2xl flex flex-col items-center relative max-w-md w-full shadow-[0_24px_48px_-12px_rgba(28,28,28,0.18)]">
+        <button type="button" onClick={() => setIsProductOn(false)} className="absolute w-9 h-9 right-3 top-3 rounded-[10px] flex items-center justify-center text-charcoal-soft hover:bg-gold-100 hover:text-charcoal transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gold-300">
+          <img src="/assets/cancel.png" className="w-5 h-5" alt="" />
+        </button>
+        <h2 className="font-heading mb-5 text-xl font-semibold text-charcoal">مشخصات محصول</h2>
 
-        {/* search input */}
-        <div className="flex flex-col gap-1 relative w-72">
-          <label>اسم جنس</label>
+        <div className="flex flex-col gap-2 relative w-full max-w-[18rem]">
+          <label className="text-sm font-medium text-charcoal">اسم جنس</label>
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border px-2 py-1"
+            className="input-luxury w-full"
             placeholder="نام جنس را بنویسید"
           />
 
           {loading && (
-            <div className="absolute top-full bg-white p-2 text-sm border w-full">
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white p-3 text-sm rounded-[10px] border border-gold-200 shadow-[0_4px_20px_-4px_rgba(28,28,28,0.1)] z-20">
               در حال جستجو...
             </div>
           )}
 
           {products.length > 0 && (
-            <div className="absolute top-full bg-white border w-full z-10">
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-[10px] border border-gold-200 shadow-[0_4px_20px_-4px_rgba(28,28,28,0.1)] overflow-hidden z-20 max-h-60 overflow-y-auto">
               {products.map((p) => (
                 <div
                   key={p._id}
                   onClick={() => {
-                    setSelectedProduct(p); // ✅ پر کردن state محلی
+                    setSelectedProduct(p);
                     setSearch(p.name);
                     setProducts([]);
-                    onSelect?.(p); // اطلاع والد (اختیاری)
+                    onSelect?.(p);
                   }}
-                  className="p-2 cursor-pointer border-b hover:bg-gray-100"
+                  className="p-3 cursor-pointer border-b border-gold-100 last:border-0 hover:bg-champagne/80 transition-colors duration-200"
                 >
-                  <p className="flex gap-2"><span>{p.name}</span> - <span className="text-gray-500">{p.type}</span></p>
-                  <p className="flex gap-4"><span className="text-gray-500">{p.gram} - گرام</span>  <span className="text-gray-500">{p.karat} - عیار</span></p>
+                  <p className="flex gap-2 text-charcoal"><span className="font-medium">{p.name}</span> – <span className="text-charcoal-soft">{p.type}</span></p>
+                  <p className="flex gap-4 mt-0.5 text-sm text-charcoal-soft">{p.gram} گرام · {p.karat} عیار</p>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* price & quantity */}
         {selectedProduct && (
-          <div className="w-full mt-6 bg-indigo-500/80 p-3 rounded">
+          <div className="w-full mt-6 bg-gradient-to-br from-gold-100 to-champagne/80 p-4 rounded-xl border border-gold-200/60">
             <BuyCartPriceModel
-              product={selectedProduct} // ✅ درست
+              product={selectedProduct}
               setIsProductOn={setIsProductOn}
             />
           </div>
