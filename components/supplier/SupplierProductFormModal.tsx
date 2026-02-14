@@ -6,6 +6,9 @@ import { toast } from 'react-toastify'
 import Modal from '@/components/ui/Modal'
 import FormField from '@/components/ui/FormField'
 import SupplierSearch from '@/components/supplier/SupplierSearch'
+import type { SupplierProductFormData } from '@/types/supplierProduct'
+
+export type { SupplierProductFormData }
 
 const convertToEnglish = (str: string): string => {
   const map: Record<string, string> = {
@@ -18,25 +21,6 @@ const convertToEnglish = (str: string): string => {
 }
 
 const NUMERIC_FIELDS = ['weight', 'karat', 'pasaReceipt', 'wagePerGram', 'wageReceipt']
-
-export interface SupplierProductFormData {
-  id?: number
-  supplierId: number
-  supplierName: string
-  name: string
-  type?: string | null
-  karat?: number | null
-  weight: number
-  pasa?: number
-  pasaReceipt?: number
-  pasaRemaining?: number
-  wagePerGram?: number | null
-  totalWage?: number
-  wageReceipt?: number
-  wageRemaining?: number
-  detail?: string | null
-  bellNumber?: number | null
-}
 
 const initialForm = {
   name: '',

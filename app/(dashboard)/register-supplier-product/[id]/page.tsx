@@ -4,29 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import axios from 'axios'
-
-interface SupplierProduct {
-  id: number
-  supplierId: number
-  supplierName: string
-  name: string
-  type: string | null
-  karat: number | null
-  weight: number
-  registeredWeight: number | null
-  remainWeight: number | null
-  pasa: number
-  pasaReceipt: number
-  pasaRemaining: number
-  wagePerGram: number | null
-  totalWage: number
-  wageReceipt: number
-  wageRemaining: number
-  bellNumber: number | null
-  detail: string | null
-  createdAt: string
-  updatedAt: string
-}
+import type { SupplierProduct } from '@/types/supplierProduct'
 
 function formatDate(d: string | null) {
   if (!d) return '—'
