@@ -44,18 +44,18 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen w-full flex justify-center items-center relative overflow-hidden bg-cream">
+    <div className="min-h-screen w-full flex justify-center items-center relative overflow-hidden bg-cream dark:bg-slate-950">
       {/* Soft gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cream via-champagne-light to-gold-50"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-cream via-champagne-light to-gold-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900"></div>
       {/* Subtle gold shimmer */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-200/10 to-transparent animate-pulse"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-200/10 dark:via-gold-500/5 to-transparent animate-pulse"></div>
       {/* Decorative soft orbs */}
-      <div className="absolute top-0 right-0 w-[32rem] h-[32rem] bg-gradient-to-br from-gold-200/15 to-transparent rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 left-0 w-[28rem] h-[28rem] bg-gradient-to-tr from-gold-300/10 to-transparent rounded-full blur-3xl"></div>
+      <div className="absolute top-0 right-0 w-[32rem] h-[32rem] bg-gradient-to-br from-gold-200/15 dark:from-slate-800/20 to-transparent rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 left-0 w-[28rem] h-[28rem] bg-gradient-to-tr from-gold-300/10 dark:from-slate-800/20 to-transparent rounded-full blur-3xl"></div>
 
       {/* Main login card */}
       <div className="relative z-10 w-full max-w-md mx-4">
-        <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_4px_24px_-4px_rgba(28,28,28,0.08),0_12px_32px_-8px_rgba(198,167,94,0.12)] border border-gold-200/50 p-8 md:p-10 card-luxury">
+        <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-[0_4px_24px_-4px_rgba(28,28,28,0.08),0_12px_32px_-8px_rgba(198,167,94,0.12)] dark:shadow-none border border-gold-200/50 dark:border-slate-700/50 p-8 md:p-10 card-luxury">
           {/* Logo/Brand section */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-20 h-20 mb-4 rounded-2xl bg-gradient-to-br from-gold-400 to-gold-600 shadow-[0_8px_24px_-4px_rgba(198,167,94,0.4)]">
@@ -67,16 +67,16 @@ export default function LoginPage() {
                 className="object-contain"
               />
             </div>
-            <h1 className="font-heading text-3xl font-bold text-charcoal mb-2 tracking-wide">
+            <h1 className="font-heading text-3xl font-bold text-charcoal dark:text-white mb-2 tracking-wide">
               سیستم مدیریت زرگری
             </h1>
-            <p className="text-charcoal-soft/80 text-sm">ورود به پنل مدیریت</p>
+            <p className="text-charcoal-soft/80 dark:text-slate-400 text-sm">ورود به پنل مدیریت</p>
           </div>
 
           {/* Login form */}
           <form onSubmit={onSubmitHandler} className="space-y-6">
             <div className="space-y-2">
-              <label className="block text-right text-charcoal text-sm font-medium">
+              <label className="block text-right text-charcoal dark:text-slate-300 text-sm font-medium">
                 ایمیل یا نام کاربری
               </label>
               <div className="relative">
@@ -89,7 +89,7 @@ export default function LoginPage() {
                   type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="input-luxury w-full pr-10 pl-4 py-3 text-charcoal placeholder-gold-300/70"
+                  className="input-luxury w-full pr-10 pl-4 py-3 text-charcoal dark:text-white placeholder-gold-300/70 dark:placeholder-slate-500 bg-white dark:bg-slate-800"
                   placeholder="ایمیل یا نام کاربری خود را وارد کنید"
                   required
                 />
@@ -97,7 +97,7 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-right text-charcoal text-sm font-medium">
+              <label className="block text-right text-charcoal dark:text-slate-300 text-sm font-medium">
                 رمز عبور
               </label>
               <div className="relative">
@@ -110,7 +110,7 @@ export default function LoginPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="input-luxury w-full pr-10 pl-4 py-3 text-charcoal placeholder-gold-300/70"
+                  className="input-luxury w-full pr-10 pl-4 py-3 text-charcoal dark:text-white placeholder-gold-300/70 dark:placeholder-slate-500 bg-white dark:bg-slate-800"
                   placeholder="رمز عبور خود را وارد کنید"
                   required
                 />
@@ -141,8 +141,8 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-gold-200/50">
-            <p className="text-center text-charcoal-soft/70 text-xs">
+          <div className="mt-8 pt-6 border-t border-gold-200/50 dark:border-slate-700/50">
+            <p className="text-center text-charcoal-soft/70 dark:text-slate-500 text-xs">
               <span className="text-gold-500">©</span>{' '}
               تمام حقوق متعلق به شرکت گلگسی تکنالوچی می‌باشد
             </p>
@@ -156,12 +156,12 @@ export default function LoginPage() {
 
       <div className="absolute top-20 left-20 w-16 h-16 opacity-15">
         <svg viewBox="0 0 24 24" fill="currentColor" className="text-gold-500">
-          <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+          <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
         </svg>
       </div>
       <div className="absolute bottom-20 right-20 w-12 h-12 opacity-15">
         <svg viewBox="0 0 24 24" fill="currentColor" className="text-gold-500">
-          <circle cx="12" cy="12" r="10"/>
+          <circle cx="12" cy="12" r="10" />
         </svg>
       </div>
     </div>

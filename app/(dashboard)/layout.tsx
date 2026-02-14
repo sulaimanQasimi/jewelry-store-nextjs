@@ -26,7 +26,7 @@ export default function DashboardLayout({
           </div>
         </main>
         
-        <aside className="order-1 w-64 lg:w-72 shrink-0 m-4 ml-0 rounded-2xl glass-panel border-r-0 border border-white/40 dark:border-slate-600/50 hidden md:block">
+        <aside className="order-1 w-64 lg:w-72 shrink-0 m-4 ml-0 rounded-2xl glass-panel border-r-0 border border-white/40 dark:border-gray-700 hidden md:block">
           <SideBar />
         </aside>
       </div>

@@ -42,9 +42,9 @@ const SideBar = () => {
   const pathname = usePathname()
 
   return (
-    <nav className="flex flex-col gap-2 p-4 h-full overflow-y-auto custom-scrollbar bg-transparent dark:bg-slate-800/40 rounded-xl">
+    <nav className="flex flex-col gap-2 p-4 h-full overflow-y-auto custom-scrollbar bg-transparent dark:bg-gray-900 rounded-xl">
       <div className="mb-6 px-2">
-        <h2 className="text-xl font-bold bg-gradient-to-r from-gold-600 to-gold-400 dark:from-gold-400 dark:to-gold-300 bg-clip-text text-transparent pb-2 border-b border-gold-200/30 dark:border-slate-600/50">
+        <h2 className="text-xl font-bold bg-gradient-to-r from-gold-600 to-gold-400 dark:from-gold-400 dark:to-gold-300 bg-clip-text text-transparent pb-2 border-b border-gold-200/30 dark:border-gray-700">
           منوی اصلی
         </h2>
       </div>
@@ -59,8 +59,8 @@ const SideBar = () => {
             className={`
               relative group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold transition-all duration-500 ease-out overflow-hidden
               ${isActive
-                ? 'bg-gradient-to-r from-white/80 to-white/40 dark:from-slate-700/80 dark:to-slate-700/40 shadow-lg text-gold-800 dark:text-gold-300'
-                : 'hover:bg-white/30 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:shadow-md'
+                ? 'bg-gradient-to-r from-white/80 to-white/40 dark:from-gray-800 dark:to-gray-800 shadow-lg text-gold-800 dark:text-gold-300'
+                : 'hover:bg-white/30 dark:hover:bg-gray-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:shadow-md'
               }
             `}
           >
@@ -73,10 +73,10 @@ const SideBar = () => {
             {/* Icon Container with Glow */}
             <div className={`
               relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm transition-all duration-500
-              ${isActive ? 'scale-110 rotate-3' : 'group-hover:scale-110 group-hover:rotate-6 bg-white/60 dark:bg-slate-600/60'}
+              ${isActive ? 'scale-110 rotate-3' : 'group-hover:scale-110 group-hover:rotate-6 bg-white/60 dark:bg-gray-800'}
             `}>
               <div className={`absolute inset-0 rounded-lg bg-gradient-to-br ${color} opacity-20 blur-sm group-hover:opacity-40 transition-opacity`} />
-              <Icon className="h-5 w-5 z-10" />
+              <Icon className="h-5 w-5 z-10 text-inherit" />
             </div>
 
             <span className="truncate z-10">{label}</span>
