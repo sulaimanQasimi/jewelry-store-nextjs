@@ -42,14 +42,14 @@ export default function CustomerRegistrationPage() {
   const fetchCustomers = useCallback(async () => {
     setLoading(true)
     try {
-      const { data: res } = await axios.get<{ success: boolean; data?: Customer[]; customers?: Customer[]; total?: number }>(
-        '/api/customer/registred-customers',
+      const { data: res } = await axios.get<{ success?: boolean; data?: Customer[]; customers?: Customer[]; total?: number }>(
+        '/api/customer/registered-customers',
         { params: { page, limit, search: search || undefined } }
       )
       const list = Array.isArray(res?.data) ? res.data : Array.isArray(res?.customers) ? res.customers : []
       setData(list)
-      setTotal(res?.total ?? list.length)
-    } catch (err) {
+      setTotal(Number(res?.total) >= 0 ? Number(res.total) : list.length)
+    } catch (err: unknown) {
       console.error('Failed to load customers:', err)
       setData([])
       setTotal(0)

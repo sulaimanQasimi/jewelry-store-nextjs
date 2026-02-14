@@ -107,7 +107,7 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
 
   const getCustomers = async () => {
     try {
-      const { data } = await axios.get('/api/customer/registred-customers')
+      const { data } = await axios.get('/api/customer/registered-customers')
 
       if (data && Array.isArray(data.customers)) {
         setCustomers(data.customers)
