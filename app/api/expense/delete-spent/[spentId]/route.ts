@@ -1,20 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { query } from '@/lib/db'
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { spentId: string } }
+  { params }: { params: Promise<{ spentId: string }> }
 ) {
   try {
-    const { spentId } = params
+    const { spentId } = await params
+    const id = parseInt(spentId, 10)
+    if (isNaN(id)) {
+      return NextResponse.json({ success: false, message: 'شناسه نامعتبر' }, { status: 400 })
+    }
 
-    await prisma.expenses.delete({
-      where: { id: parseInt(spentId) }
-    })
+    await query('DELETE FROM expenses WHERE id = ?', [id])
 
-    return NextResponse.json({ success: true, message: 'دیتا حذف شد' })
-  } catch (error: any) {
-    console.log(error)
-    return NextResponse.json({ success: false, message: error.message })
+    return NextResponse.json({ success: true, message: 'مصرف حذف شد' })
+  } catch (error: unknown) {
+    console.error(error)
+    return NextResponse.json(
+      { success: false, message: error instanceof Error ? error.message : 'خطا' },
+      { status: 500 }
+    )
   }
 }

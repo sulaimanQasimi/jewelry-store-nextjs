@@ -214,20 +214,57 @@ body {
   transform: translateY(-2px);
 }
 
-/* Luxury input */
+/* Luxury input - Clean & Modern */
 .input-luxury {
+  width: 100%;
   border: 1px solid var(--color-gold-200);
-  border-radius: 0.75rem;
-  padding: 0.7rem 1.2rem;
-  transition: all 300ms ease-in-out;
-  background: rgba(255, 255, 255, 0.8);
+  border-radius: 0.875rem;
+  /* Rounded-xl for modern feel */
+  padding: 0.875rem 1.25rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02), 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-luxury:hover {
+  border-color: var(--color-gold-300);
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .input-luxury:focus {
   outline: none;
-  border-color: var(--color-gold-400);
-  box-shadow: 0 0 0 4px rgba(255, 175, 0, 0.1);
-  background: white;
+  border-color: var(--color-gold-500);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(255, 175, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.input-luxury::placeholder {
+  color: #94A3B8;
+  /* Slate-400 */
+}
+
+/* Input Group for potential icons */
+.input-with-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon-left {
+  position: absolute;
+  left: 1rem;
+  color: var(--color-text-muted);
+  pointer-events: none;
+  transition: color 0.2s;
+}
+
+.input-luxury:focus~.input-icon-left {
+  color: var(--color-gold-600);
 }
 
 /* Gold underline for active nav (Legacy support) */

@@ -3,22 +3,39 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import {
+  Gem,
+  ShoppingBag,
+  Puzzle,
+  Warehouse,
+  Receipt,
+  CreditCard,
+  Hammer,
+  PackagePlus,
+  Users,
+  UserPlus,
+  Handshake,
+  CalendarCheck,
+  BarChart3,
+  Info,
+  ChevronLeft
+} from 'lucide-react'
 
 const items = [
-  { href: '/sale-product', icon: '/assets/jewelery.png', label: 'فروش جنس', color: 'from-pink-500 to-rose-500' },
-  { href: '/product-from-supplier', icon: '/assets/buy.png', label: 'خرید جنس از تمویل کننده', color: 'from-sky-500 to-blue-600' },
-  { href: '/add-fragment', icon: '/assets/broken.png', label: 'خرید شکسته', color: 'from-amber-400 to-orange-500' },
-  { href: '/ware-house', icon: '/assets/warehouse.png', label: 'انبار', color: 'from-emerald-400 to-green-600' },
-  { href: '/expenses', icon: '/assets/money.png', label: 'مصارف', color: 'from-red-400 to-red-600' },
-  { href: '/loan-management', icon: '/assets/loan.png', label: 'بلانس مشتریان', color: 'from-violet-500 to-purple-600' },
-  { href: '/register-product', icon: '/assets/fragment.png', label: 'ثبت اجناس شکسته', color: 'from-indigo-400 to-indigo-600' },
-  { href: '/register-supplier-product', icon: '/assets/new-product.png', label: 'ثبت اجناس', color: 'from-teal-400 to-teal-600' },
-  { href: '/suppliers', icon: '/assets/buy.png', label: 'لیست تمویل کنندگان', color: 'from-cyan-400 to-cyan-600' },
-  { href: '/customer-registration', icon: '/assets/client1.png', label: 'ثبت مشتریان', color: 'from-fuchsia-400 to-pink-600' },
-  { href: '/new-trade', icon: '/assets/trader.png', label: 'معامله داران', color: 'from-lime-400 to-green-600' },
-  { href: '/daily-report', icon: '/assets/daily.png', label: 'گزارش یومیه', color: 'from-orange-400 to-amber-600' },
-  { href: '/report', icon: '/assets/report_card.svg', label: 'گزارشات', color: 'from-blue-400 to-indigo-600' },
-  { href: '/company-information', icon: '/assets/info.svg', label: 'درباره ما', color: 'from-gray-400 to-gray-600' },
+  { href: '/sale-product', icon: Gem, label: 'فروش جنس', color: 'from-pink-500 to-rose-500' },
+  { href: '/product-from-supplier', icon: ShoppingBag, label: 'خرید جنس از تمویل کننده', color: 'from-sky-500 to-blue-600' },
+  { href: '/add-fragment', icon: Puzzle, label: 'خرید شکسته', color: 'from-amber-400 to-orange-500' },
+  { href: '/ware-house', icon: Warehouse, label: 'انبار', color: 'from-emerald-400 to-green-600' },
+  { href: '/expenses', icon: Receipt, label: 'مصارف', color: 'from-red-400 to-red-600' },
+  { href: '/loan-management', icon: CreditCard, label: 'بلانس مشتریان', color: 'from-violet-500 to-purple-600' },
+  { href: '/register-product', icon: Hammer, label: 'ثبت اجناس شکسته', color: 'from-indigo-400 to-indigo-600' },
+  { href: '/register-supplier-product', icon: PackagePlus, label: 'ثبت اجناس', color: 'from-teal-400 to-teal-600' },
+  { href: '/suppliers', icon: Users, label: 'لیست تمویل کنندگان', color: 'from-cyan-400 to-cyan-600' },
+  { href: '/customer-registration', icon: UserPlus, label: 'ثبت مشتریان', color: 'from-fuchsia-400 to-pink-600' },
+  { href: '/new-trade', icon: Handshake, label: 'معامله داران', color: 'from-lime-400 to-green-600' },
+  { href: '/daily-report', icon: CalendarCheck, label: 'گزارش یومیه', color: 'from-orange-400 to-amber-600' },
+  { href: '/report', icon: BarChart3, label: 'گزارشات', color: 'from-blue-400 to-indigo-600' },
+  { href: '/company-information', icon: Info, label: 'درباره ما', color: 'from-gray-400 to-gray-600' },
 ]
 
 const SideBar = () => {
@@ -32,7 +49,7 @@ const SideBar = () => {
         </h2>
       </div>
 
-      {items.map(({ href, icon, label, color }) => {
+      {items.map(({ href, icon: Icon, label, color }) => {
         const isActive = pathname === href
 
         return (
@@ -59,16 +76,14 @@ const SideBar = () => {
               ${isActive ? 'scale-110 rotate-3' : 'group-hover:scale-110 group-hover:rotate-6 bg-white/60'}
             `}>
               <div className={`absolute inset-0 rounded-lg bg-gradient-to-br ${color} opacity-20 blur-sm group-hover:opacity-40 transition-opacity`} />
-              <img src={icon} alt="" className="h-5 w-5 object-contain z-10" />
+              <Icon className="h-5 w-5 z-10" />
             </div>
 
             <span className="truncate z-10">{label}</span>
 
             {/* Arrow on active/hover */}
             <div className={`mr-auto transition-transform duration-300 ${isActive ? 'translate-x-0 text-gold-600' : 'translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m15 18-6-6 6-6" />
-              </svg>
+              <ChevronLeft className="h-4 w-4" />
             </div>
           </Link>
         )

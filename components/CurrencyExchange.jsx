@@ -2,11 +2,12 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '@/lib/context/AppContext'
 import { toast } from 'react-toastify'
 import axios from 'axios'
+import { Banknote } from 'lucide-react'
 
 const CurrencyExchange = ({ isCurrencyToggle }) => {
 
     const [isCurrencyToggleOn, setIsCurrencyToggleOn] = useState(false)
-    const [loading , setLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
     const { rate, setRate, saved, setSaved, saveRate, backendUrl } = useContext(AppContext)
 
     const fetchTodayRate = async () => {
@@ -23,29 +24,29 @@ const CurrencyExchange = ({ isCurrencyToggle }) => {
         }
     }
 
-    const handleSave = async()=>{
-        
-        if(!rate) return toast.error("نرخ را وارد کنید")
+    const handleSave = async () => {
+
+        if (!rate) return toast.error("نرخ را وارد کنید")
 
         try {
             setLoading(true)
-            const {data} = await axios.post(backendUrl+'/api/currency/today' , {usdToAfn: Number(rate)})
+            const { data } = await axios.post(backendUrl + '/api/currency/today', { usdToAfn: Number(rate) })
 
-            if(data.success){
+            if (data.success) {
                 toast.success("نرخ امروز ثبت شد")
             }
-            
+
         } catch (error) {
             console.log(error)
             toast.error(error.message)
-        }finally{
+        } finally {
             setLoading(false)
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchTodayRate()
-    },[])
+    }, [])
 
     const currencyToggleChange = (e) => {
         e.preventDefault()
@@ -55,8 +56,8 @@ const CurrencyExchange = ({ isCurrencyToggle }) => {
 
     return (
         <div className="relative">
-            <button type="button" onClick={(e) => currencyToggleChange(e)} className="p-2 rounded-[10px] text-charcoal-soft hover:bg-gold-100 hover:text-charcoal transition-all duration-300" aria-label="نرخ دالر">
-                <img className="w-8 h-8" src="/assets/currency_exchange.svg" alt="" />
+            <button type="button" onClick={(e) => currencyToggleChange(e)} className="p-2.5 rounded-xl text-slate-500 hover:bg-gold-50 hover:text-gold-600 transition-all duration-300 border border-transparent hover:border-gold-100" aria-label="نرخ دالر">
+                <Banknote className="w-5 h-5" />
             </button>
             <div className={`absolute transition-all duration-300 ease-in-out z-50 min-w-[18rem] ${isCurrencyToggleOn ? 'top-14 -right-0 opacity-100 visible' : 'top-14 -right-0 opacity-0 invisible pointer-events-none'}`}>
                 <div className="card-luxury p-6 rounded-2xl shadow-[0_12px_40px_-8px_rgba(28,28,28,0.15)] border border-gold-200/50">

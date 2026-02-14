@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 import CurrencyExchange from './CurrencyExchange'
 import { AppContext } from '@/lib/context/AppContext'
 import StorageRate from './StorageRate'
+import { DatabaseBackup, LogOut } from 'lucide-react'
 
 const Navbar = () => {
   const { companyData } = useContext(AppContext)
@@ -61,10 +62,10 @@ const Navbar = () => {
         <button
           type="button"
           onClick={handleBackup}
-          className="group relative flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-500 transition-all hover:bg-blue-50 hover:text-blue-600"
+          className="group relative flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-500 transition-all hover:bg-blue-50 hover:text-blue-600 border border-slate-100/50 hover:border-blue-200"
           title="پشتیبان‌گیری"
         >
-          <img src="/assets/backup.svg" alt="" className="h-5 w-5 transition-transform group-hover:rotate-12" />
+          <DatabaseBackup className="h-5 w-5 transition-transform group-hover:rotate-12" />
         </button>
 
         <div className="hidden md:block">
@@ -74,10 +75,10 @@ const Navbar = () => {
         <button
           type="button"
           onClick={() => signOut({ callbackUrl: '/login' })}
-          className="group flex items-center gap-2 rounded-xl bg-red-50 px-3 py-2 text-sm font-medium text-red-500 transition-all hover:bg-red-500 hover:text-white hover:shadow-lg hover:shadow-red-200"
+          className="group flex items-center gap-2 rounded-xl bg-red-50 px-3 py-2 text-sm font-medium text-red-500 transition-all hover:bg-red-500 hover:text-white hover:shadow-lg hover:shadow-red-200 border border-red-50 hover:border-red-400"
           title="خروج"
         >
-          <img src="/assets/logout.svg" alt="" className="h-5 w-5 transition-transform group-hover:-translate-x-1 grayscale group-hover:grayscale-0 group-hover:invert" />
+          <LogOut className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
           <span className="hidden md:inline">خروج</span>
         </button>
       </div>

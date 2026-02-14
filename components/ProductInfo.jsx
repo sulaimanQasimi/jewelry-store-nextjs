@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import BuyCartPriceModel from "./BuyCartPriceModel";
 import { AppContext } from '@/lib/context/AppContext'
+import { X } from 'lucide-react'
 
 const ProductInfo = ({ setIsProductOn, onSelect }) => {
   const { backendUrl } = useContext(AppContext);
@@ -11,7 +12,7 @@ const ProductInfo = ({ setIsProductOn, onSelect }) => {
   const [loading, setLoading] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  console.log('product is ',products)
+  console.log('product is ', products)
 
   const fetchProductMaster = async () => {
     const { data } = await axios.get(
@@ -47,8 +48,8 @@ const ProductInfo = ({ setIsProductOn, onSelect }) => {
   return (
     <div className="fixed inset-0 bg-charcoal/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="card-luxury bg-white p-6 md:p-8 rounded-2xl flex flex-col items-center relative max-w-md w-full shadow-[0_24px_48px_-12px_rgba(28,28,28,0.18)]">
-        <button type="button" onClick={() => setIsProductOn(false)} className="absolute w-9 h-9 right-3 top-3 rounded-[10px] flex items-center justify-center text-charcoal-soft hover:bg-gold-100 hover:text-charcoal transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gold-300">
-          <img src="/assets/cancel.png" className="w-5 h-5" alt="" />
+        <button type="button" onClick={() => setIsProductOn(false)} className="absolute w-9 h-9 right-3 top-3 rounded-[10px] flex items-center justify-center text-slate-500 hover:bg-red-50 hover:text-red-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-200">
+          <X className="w-5 h-5" />
         </button>
         <h2 className="font-heading mb-5 text-xl font-semibold text-charcoal">مشخصات محصول</h2>
 

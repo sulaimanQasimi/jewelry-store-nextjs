@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { AppContext } from '@/lib/context/AppContext'
 import PriceModal from "./PriceModel";
+import { Search } from 'lucide-react';
 
 const SearchProduct = () => {
   const [query, setQuery] = useState("");
@@ -16,6 +17,8 @@ const SearchProduct = () => {
       fetchData(query);
     }
   };
+
+
 
   const fetchData = async (code) => {
     try {
@@ -49,24 +52,24 @@ const SearchProduct = () => {
 
   return (
     <div className="max-w-sm">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 relative">
         <input
           autoFocus
           value={query}
           onChange={(e) => setQuery(convertToEnglish(e.target.value))}
           onKeyDown={handleKeyDown}
           type="text"
-          className="input-luxury flex-1 py-2.5"
+          className="input-luxury flex-1 pl-12"
           placeholder="جستجوی جنس بر اساس بارکود"
           inputMode="numeric"
         />
         <button
           type="button"
           onClick={() => query && fetchData(query)}
-          className="btn-luxury btn-luxury-primary p-2.5 rounded-[10px] flex items-center justify-center transition-all duration-300 hover:scale-105"
+          className="absolute left-1 top-1 bottom-1 p-2 rounded-lg bg-gold-500 text-white hover:bg-gold-600 transition-all duration-300 flex items-center justify-center"
           aria-label="جستجو"
         >
-          <img src="/assets/search.png" className="w-5 h-5 invert" alt="" />
+          <Search className="w-5 h-5" />
         </button>
       </div>
 

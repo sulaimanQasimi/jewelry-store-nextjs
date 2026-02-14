@@ -2,12 +2,13 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '@/lib/context/AppContext'
 import { toast } from 'react-toastify'
 import axios from 'axios'
+import { Wallet } from 'lucide-react'
 
 const StorageRate = () => {
 
     const [isCurrencyToggleOn, setIsCurrencyToggleOn] = useState(false)
     const [loading, setLoading] = useState(false)
-    const { usdRate , setUsdRate , afnRate , setAfnRate, saved, setSaved, saveStorageRate, backendUrl } = useContext(AppContext)
+    const { usdRate, setUsdRate, afnRate, setAfnRate, saved, setSaved, saveStorageRate, backendUrl } = useContext(AppContext)
 
     const fetchTodayRate = async () => {
         try {
@@ -31,7 +32,7 @@ const StorageRate = () => {
 
         try {
             setLoading(true)
-            const { data } = await axios.post(backendUrl + '/api/storage/set', { usd: Number(usdRate) , afn:Number(afnRate) })
+            const { data } = await axios.post(backendUrl + '/api/storage/set', { usd: Number(usdRate), afn: Number(afnRate) })
 
             if (data.success) {
                 toast.success("دخل امروز ثبت شد")
@@ -57,8 +58,8 @@ const StorageRate = () => {
 
     return (
         <div className="relative">
-            <button type="button" onClick={(e) => currencyToggleChange(e)} className="p-2 rounded-[10px] text-charcoal-soft hover:bg-gold-100 hover:text-charcoal transition-all duration-300" aria-label="موجودی دخل">
-                <img className="w-8 h-8" src="/assets/currency_exchange.svg" alt="" />
+            <button type="button" onClick={(e) => currencyToggleChange(e)} className="p-2.5 rounded-xl text-slate-500 hover:bg-gold-50 hover:text-gold-600 transition-all duration-300 border border-transparent hover:border-gold-100" aria-label="موجودی دخل">
+                <Wallet className="w-5 h-5" />
             </button>
             <div className={`absolute transition-all duration-300 ease-in-out z-50 min-w-[18rem] ${isCurrencyToggleOn ? 'top-14 -right-0 opacity-100 visible' : 'top-14 -right-0 opacity-0 invisible pointer-events-none'}`}>
                 <div className="card-luxury p-6 rounded-2xl shadow-[0_12px_40px_-8px_rgba(28,28,28,0.15)] border border-gold-200/50">

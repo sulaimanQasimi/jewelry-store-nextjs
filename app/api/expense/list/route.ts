@@ -38,9 +38,8 @@ export async function GET(request: NextRequest) {
     )) as any[]
     const total = Number(countResult?.[0]?.total ?? 0)
 
-    listParams.push(limit, offset)
     const data = (await query(
-      `SELECT * FROM expenses ${whereSql} ORDER BY date DESC, id DESC LIMIT ? OFFSET ?`,
+      `SELECT * FROM expenses ${whereSql} ORDER BY date DESC, id DESC LIMIT ${limit} OFFSET ${offset}`,
       listParams
     )) as any[]
 
