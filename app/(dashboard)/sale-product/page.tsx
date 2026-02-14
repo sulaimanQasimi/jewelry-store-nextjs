@@ -12,6 +12,7 @@ import SearchProduct from '@/components/SearchProduct'
 import Cart from '@/components/Cart'
 import Barcode from 'react-barcode'
 import SaleBillPrint from '@/components/sale/SaleBillPrint'
+import { UserPlus, Save, Printer, RefreshCw, ShoppingCart, User, Calculator } from 'lucide-react'
 import type { TransactionForPrint } from '@/components/sale/SaleBillPrint'
 import type { CartItem } from '@/context/CartContext'
 
@@ -21,7 +22,7 @@ export default function SaleProductPage() {
   const { backendUrl } = useContext(AppContext)
   const cartState = useCart()
   const cart = cartState?.cart ?? []
-  const clearCart = cartState?.clearCart ?? (() => {})
+  const clearCart = cartState?.clearCart ?? (() => { })
   const getTotalPrice = cartState?.getTotalPrice ?? (() => 0)
   const getTotalItems = cartState?.getTotalItems ?? (() => 0)
 
@@ -60,7 +61,7 @@ export default function SaleProductPage() {
     if (selectedCustomer) {
       try {
         localStorage.setItem('selectedCustomer', JSON.stringify(selectedCustomer))
-      } catch (_) {}
+      } catch (_) { }
     }
   }, [selectedCustomer])
 
@@ -190,7 +191,7 @@ export default function SaleProductPage() {
         setCustomerQuery('')
         try {
           localStorage.removeItem('selectedCustomer')
-        } catch (_) {}
+        } catch (_) { }
         const tx = data.data as TransactionForPrint
         if (tx && tx.customerName && tx.receipt) {
           setTransactionToPrint(tx)
@@ -208,84 +209,140 @@ export default function SaleProductPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <header>
-        <h1 className="font-heading text-2xl font-semibold text-charcoal dark:text-white">فروش جنس</h1>
-        <p className="mt-1 text-sm text-charcoal-soft dark:text-slate-400">
-          جستجوی بارکود، انتخاب مشتری و ثبت فروش
-        </p>
-      </header>
+    <div className="flex flex-col gap-6 h-full">
+      {/* Header & Product Search - Top Bar */}
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div>
+          <h1 className="font-heading text-2xl font-bold text-charcoal dark:text-white flex items-center gap-2">
+            <ShoppingCart className="w-6 h-6 text-gold-500" />
+            فروش جنس
+          </h1>
+          <p className="text-sm text-charcoal-soft dark:text-slate-400 mt-1">
+            مدیریت فروشات و ثبت بل
+          </p>
+        </div>
+        <div className="w-full md:w-1/2 lg:w-1/3">
+          <SearchProduct />
+        </div>
+      </div>
 
-      <div className="w-full grid grid-cols-1 lg:grid-cols-[1fr_3fr] gap-6">
-        {/* Left: customer + actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_20rem] xl:grid-cols-[1fr_24rem] gap-6 items-start">
+        {/* Left: Cart List (Main Workspace) */}
         <div className="space-y-4">
-          <div className="card-luxury p-4 rounded-2xl border border-gold-200/50 dark:border-slate-600/50">
-            <h2 className="font-heading text-lg font-semibold text-charcoal dark:text-white mb-3">مشتری</h2>
-            <SearchCustomer
-              fetchData={fetchCustomers}
-              query={customerQuery}
-              setQuery={setCustomerQuery}
-              handleKeyDown={handleCustomerKeyDown}
-            />
-            {customerLoading && <p className="text-sm mt-2 text-charcoal-soft">در حال جستجو...</p>}
-            {customerResults.length > 0 && (
-              <ul className="mt-2 space-y-1 bg-champagne/30 dark:bg-slate-800/50 rounded-lg p-2 max-h-48 overflow-y-auto">
-                {customerResults.map((c) => (
-                  <li
-                    key={c.id}
-                    onClick={() => selectCustomer(c)}
-                    className="py-2 px-3 cursor-pointer rounded-md hover:bg-gold-100 dark:hover:bg-slate-700 transition-colors text-sm"
-                  >
-                    <p className="font-medium text-charcoal dark:text-white">{c.customerName}</p>
-                    <p className="text-charcoal-soft dark:text-slate-400 text-xs mt-0.5" dir="ltr">{c.phone}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
-            {selectedCustomer && (
-              <p className="mt-2 text-sm text-gold-700 dark:text-gold-400">
-                انتخاب شده: {selectedCustomer.customerName}
-              </p>
-            )}
-          </div>
-
-          <Link
-            href="/customer-registration"
-            className="btn-luxury btn-luxury-outline w-full flex items-center justify-center gap-2 py-2.5"
-          >
-            افزودن مشتری
-          </Link>
-          <button
-            type="button"
-            onClick={openCheckout}
-            className="btn-luxury btn-luxury-primary w-full py-2.5"
-          >
-            ثبت فروش / ذخیره
-          </button>
-          {lastSoldForBarcode && lastSoldForBarcode.product?.length > 0 && (
-            <button
-              type="button"
-              onClick={() => handleBarcodePrint()}
-              className="btn-luxury btn-luxury-outline w-full py-2.5"
-            >
-              چاپ بارکود
-            </button>
-          )}
+          <Cart paidAmount={paidAmount} setPaidAmount={setPaidAmount} />
         </div>
 
-        {/* Right: barcode search + cart */}
-        <div className="space-y-4">
-          <div className="flex justify-center">
-            <SearchProduct />
+        {/* Right: Control Panel (Customer, Summary, Actions) */}
+        <div className="space-y-6 flex flex-col">
+
+          {/* Customer Card */}
+          <div className="card-luxury p-5 rounded-2xl border border-gold-200/50 dark:border-slate-600/50 flex flex-col gap-4 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gold-200/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110 pointer-events-none" />
+
+            <div className="flex items-center gap-2 mb-1">
+              <User className="w-5 h-5 text-gold-600 dark:text-gold-400" />
+              <h2 className="font-heading font-semibold text-charcoal dark:text-white">مشخصات مشتری</h2>
+            </div>
+
+            {/* Display Selected or Search */}
+            {selectedCustomer ? (
+              <div className="bg-gold-50 dark:bg-slate-700/50 rounded-xl p-4 border border-gold-100 dark:border-slate-600 relative group">
+                <button
+                  onClick={() => setSelectedCustomer(null)}
+                  className="absolute top-2 left-2 p-1 text-slate-400 hover:text-red-500 transition-colors"
+                  title="تغییر مشتری"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                </button>
+                <p className="font-bold text-lg text-charcoal dark:text-white">{selectedCustomer.customerName}</p>
+                <p className="text-charcoal-soft dark:text-slate-300 text-sm mt-1" dir="ltr">{selectedCustomer.phone}</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <SearchCustomer
+                  fetchData={fetchCustomers}
+                  query={customerQuery}
+                  setQuery={setCustomerQuery}
+                  handleKeyDown={handleCustomerKeyDown}
+                />
+                {customerLoading && <p className="text-xs text-charcoal-soft text-center animate-pulse">در حال جستجو...</p>}
+
+                {/* Search Results Dropdown */}
+                {customerResults.length > 0 && (
+                  <div className="absolute z-10 left-4 right-4 mt-1 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gold-100 dark:border-slate-600 max-h-48 overflow-y-auto custom-scrollbar">
+                    {customerResults.map((c) => (
+                      <div
+                        key={c.id}
+                        onClick={() => selectCustomer(c)}
+                        className="py-2.5 px-4 cursor-pointer hover:bg-gold-50 dark:hover:bg-slate-700 transition-colors border-b border-gray-100 dark:border-slate-700 last:border-0"
+                      >
+                        <p className="font-medium text-sm text-charcoal dark:text-white">{c.customerName}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400" dir="ltr">{c.phone}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <Link
+                  href="/customer-registration"
+                  className="flex items-center justify-center gap-2 text-sm text-gold-600 hover:text-gold-700 dark:text-gold-400 dark:hover:text-gold-300 font-medium py-2 rounded-lg hover:bg-gold-50 dark:hover:bg-slate-800 transition-colors"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span>ثبت مشتری جدید</span>
+                </Link>
+              </div>
+            )}
           </div>
-          <Cart paidAmount={paidAmount} setPaidAmount={setPaidAmount} />
+
+          {/* Summary Card */}
+          <div className="card-luxury p-5 rounded-2xl border border-gold-200/50 dark:border-slate-600/50 bg-gradient-to-br from-white to-gold-50/30 dark:from-slate-800 dark:to-slate-900">
+            <div className="flex items-center gap-2 mb-4">
+              <Calculator className="w-5 h-5 text-gold-600 dark:text-gold-400" />
+              <h2 className="font-heading font-semibold text-charcoal dark:text-white">خلاصه حساب</h2>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex justify-between items-center p-3 bg-white dark:bg-slate-900/50 rounded-xl border border-gray-100 dark:border-slate-700">
+                <span className="text-sm text-charcoal-soft dark:text-slate-400">تعداد اقلام</span>
+                <span className="font-bold text-lg">{getTotalItems()}</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-gold-500 text-white rounded-xl shadow-lg shadow-gold-500/20">
+                <span className="text-sm font-medium opacity-90">مجموع کل</span>
+                <span className="font-bold text-xl">{totalAmount.toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="grid grid-cols-1 gap-3">
+            <button
+              type="button"
+              onClick={openCheckout}
+              disabled={cart.length === 0}
+              className="btn-luxury btn-luxury-primary w-full py-3.5 text-lg shadow-lg hover:shadow-xl disabled:opacity-50 disabled:shadow-none transition-all flex items-center justify-center gap-2"
+            >
+              <Save className="w-5 h-5" />
+              <span>ثبت بل و نهایی سازی</span>
+            </button>
+
+            {lastSoldForBarcode && lastSoldForBarcode.product?.length > 0 && (
+              <button
+                type="button"
+                onClick={() => handleBarcodePrint()}
+                className="btn-luxury btn-luxury-outline w-full py-2.5 flex items-center justify-center gap-2"
+              >
+                <Printer className="w-4 h-4" />
+                <span>چاپ بارکود</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Checkout modal */}
       {showCheckoutModal && (
-        <div className="fixed inset-0 bg-charcoal/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="card-luxury p-6 rounded-2xl w-full max-w-md shadow-xl">
+        <div className="fixed inset-0 bg-charcoal/50 backdrop-blur-sm flex items-start justify-center z-50 p-4 pt-10">
+          <div className="card-luxury p-6 rounded-2xl w-full max-w-md shadow-xl bg-white dark:bg-slate-800 border border-gold-200 dark:border-slate-700">
             <h3 className="font-heading text-lg font-semibold text-charcoal dark:text-white mb-4">ثبت رسید</h3>
             <div className="space-y-3">
               <div>

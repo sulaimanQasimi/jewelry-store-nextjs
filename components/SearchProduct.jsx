@@ -52,7 +52,7 @@ const SearchProduct = () => {
   };
 
   return (
-    <div className="max-w-sm">
+    <div className="w-full">
       <div className="flex items-center gap-2 relative">
         <input
           autoFocus

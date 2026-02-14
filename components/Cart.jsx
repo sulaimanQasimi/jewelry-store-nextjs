@@ -3,7 +3,7 @@ import { useCart } from '../context/CartContext'
 import { toast } from 'react-toastify'
 import Barcode from "react-barcode";
 
-const Cart = ({paidAmount , setPaidAmount}) => {
+const Cart = ({ paidAmount, setPaidAmount }) => {
 
   const { cart, removeFromCart, clearCart, getTotalPrice, getTotalItems } = useCart()
 
@@ -12,7 +12,7 @@ const Cart = ({paidAmount , setPaidAmount}) => {
   }
 
   return (
-    <div className="mt-6">
+    <div className="w-full">
       <div className="card-luxury overflow-hidden rounded-2xl">
         <ul className="grid grid-cols-[5fr_5fr_2fr_2fr_3fr_4fr_8fr_8fr_2fr] text-charcoal text-sm font-medium">
           <li className="py-3 px-2 bg-charcoal text-white border-l border-white/10">نام جنس</li>

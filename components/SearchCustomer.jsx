@@ -9,7 +9,7 @@ const SearchCustomer = ({ fetchData, query, setQuery, handleKeyDown }) => {
     const { backendUrl } = useContext(AppContext)
 
     return (
-        <div className="w-full flex flex-col max-w-md mx-auto relative z-0">
+        <div className="w-full flex flex-col relative z-0">
             <div className="flex gap-2 relative">
                 <input
                     type="text"
