@@ -21,7 +21,7 @@ export default function FilterBar(props: FilterBarProps) {
   } = props
 
   return (
-    <div className="flex flex-wrap items-end gap-4 rounded-xl border border-gold-200/60 bg-white p-4 shadow-sm">
+    <div className="flex flex-wrap items-end gap-4 rounded-xl border border-gold-200/60 dark:border-slate-600/50 bg-white dark:bg-slate-800/80 p-4 shadow-sm">
       {onSearchChange != null && (
         <FormField label="جستجو">
           <input

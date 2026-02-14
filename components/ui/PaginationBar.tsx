@@ -24,9 +24,9 @@ export default function PaginationBar({
   const end = Math.min(page * limit, total)
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gold-200 bg-gold-50/50 px-4 py-3 text-sm">
+    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gold-200 dark:border-slate-600 bg-gold-50/50 dark:bg-slate-800/80 px-4 py-3 text-sm">
       <div className="flex items-center gap-4">
-        <span className="text-charcoal-soft">
+        <span className="text-charcoal-soft dark:text-slate-400">
           نمایش {start}–{end} از {total}
         </span>
         {onLimitChange && (
@@ -60,7 +60,7 @@ export default function PaginationBar({
         >
           قبلی
         </button>
-        <span className="px-2 text-charcoal">
+        <span className="px-2 text-charcoal dark:text-slate-200">
           صفحه {page} از {totalPages}
         </span>
         <button

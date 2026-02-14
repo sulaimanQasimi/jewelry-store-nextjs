@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 import CurrencyExchange from './CurrencyExchange'
 import { AppContext } from '@/lib/context/AppContext'
 import StorageRate from './StorageRate'
+import ThemeToggle from './ThemeToggle'
 import { DatabaseBackup, LogOut } from 'lucide-react'
 
 const Navbar = () => {
@@ -27,7 +28,7 @@ const Navbar = () => {
   const logo = Array.isArray(companyData) && companyData[0]?.image ? `/${companyData[0].image}` : '/assets/logo.svg'
 
   return (
-    <div className="mx-4 mt-2 mb-2 flex h-16 items-center justify-between rounded-xl px-6 backdrop-blur-md bg-white/70 shadow-sm border border-white/50 transition-all hover:shadow-md hover:bg-white/80">
+    <div className="mx-4 mt-2 mb-2 flex h-16 items-center justify-between rounded-xl px-6 backdrop-blur-md bg-white/70 dark:bg-slate-800/80 shadow-sm border border-white/50 dark:border-slate-600/50 transition-all hover:shadow-md hover:bg-white/80 dark:hover:bg-slate-800">
       <div className="flex items-center gap-4">
         <button
           type="button"
@@ -45,7 +46,7 @@ const Navbar = () => {
         {session?.user?.name && (
           <div className="hidden sm:flex flex-col">
             <span className="text-xs text-gold-600 font-semibold mb-[-2px]">خوش آمدید،</span>
-            <span className="text-sm font-bold text-slate-800 bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+            <span className="text-sm font-bold text-slate-800 dark:text-slate-200 bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
               {session.user.name}
             </span>
           </div>
@@ -57,7 +58,9 @@ const Navbar = () => {
           <StorageRate />
         </div>
 
-        <div className="h-8 w-[1px] bg-slate-200 mx-1 hidden md:block"></div>
+        <div className="h-8 w-[1px] bg-slate-200 dark:bg-slate-600 mx-1 hidden md:block"></div>
+
+        <ThemeToggle />
 
         <button
           type="button"

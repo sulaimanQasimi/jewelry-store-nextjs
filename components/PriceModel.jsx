@@ -38,21 +38,21 @@ const PriceModal = ({ product, onClose }) => {
 
     return (
         <div className="fixed inset-0 bg-charcoal/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="card-luxury bg-white p-6 rounded-2xl w-full max-w-sm shadow-[0_24px_48px_-12px_rgba(28,28,28,0.18)]">
+            <div className="card-luxury p-6 rounded-2xl w-full max-w-sm shadow-[0_24px_48px_-12px_rgba(28,28,28,0.18)]">
                 <div className="mb-5">
-                    <h2 className="font-heading font-semibold text-charcoal mb-1">
+                    <h2 className="font-heading font-semibold text-charcoal dark:text-white mb-1">
                         {product.productName} – {product.type}
                     </h2>
-                    <p className="text-sm text-charcoal-soft mb-3">
+                    <p className="text-sm text-charcoal-soft dark:text-slate-400 mb-3">
                         {parseFloat(product.purchasePriceToAfn).toFixed(0)} افغانی
                     </p>
                     {product.image && (
-                        <img src={`http://localhost:3000/${product.image}`} alt="" className="rounded-xl border border-gold-200 object-cover max-h-32 w-full" />
+                        <img src={`http://localhost:3000/${product.image}`} alt="" className="rounded-xl border border-gold-200 dark:border-slate-600 object-cover max-h-32 w-full" />
                     )}
                 </div>
 
                 <div className="space-y-3 mb-5">
-                    <label className="block text-sm font-medium text-charcoal">قیمت فروش</label>
+                    <label className="block text-sm font-medium text-charcoal dark:text-slate-200">قیمت فروش</label>
                     <input
                         type="text"
                         placeholder="قیمت فروش"
@@ -62,10 +62,10 @@ const PriceModal = ({ product, onClose }) => {
                         className="input-luxury w-full"
                     />
                     <div>
-                        <label htmlFor="currency" className="block text-sm font-medium text-charcoal mb-1">واحد پول</label>
-                        <select id="currency" onChange={(e) => setCurrency(e.target.value)} value={currency} className="input-luxury w-full cursor-pointer">
-                            <option value="">واحد پول</option>
-                            <option value="افغانی">افغانی</option>
+                        <label htmlFor="currency" className="block text-sm font-medium text-charcoal dark:text-slate-200 mb-1">واحد پول</label>
+                        <select id="currency" onChange={(e) => setCurrency(e.target.value)} value={currency} className="input-luxury w-full cursor-pointer dark:bg-slate-800 dark:text-white">
+                            <option value="" className="dark:bg-slate-800">واحد پول</option>
+                            <option value="افغانی" className="dark:bg-slate-800">افغانی</option>
                         </select>
                     </div>
                 </div>

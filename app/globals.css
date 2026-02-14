@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Class-based dark mode (toggle via .dark on root) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ========== Royal & Radiant Jewelry Design System ========== */
 @theme {
   /* Vibrant Gold Palette */
@@ -55,6 +58,73 @@ body {
   background-attachment: fixed;
   color: var(--color-text-primary);
   font-family: 'iransans', sans-serif;
+  transition: background 0.3s ease, color 0.2s ease;
+}
+
+/* ========== Dark mode ========== */
+.dark body {
+  background: linear-gradient(120deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  color: #e2e8f0;
+}
+
+.dark .card-luxury {
+  background: rgba(30, 41, 59, 0.95);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(71, 85, 105, 0.4) inset;
+}
+
+.dark .card-luxury:hover {
+  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 175, 0, 0.15) inset;
+}
+
+.dark .input-luxury {
+  border-color: #475569;
+  color: #e2e8f0;
+  background: rgba(30, 41, 59, 0.8);
+}
+
+.dark .input-luxury:hover {
+  border-color: #64748b;
+  background: rgba(51, 65, 85, 0.9);
+}
+
+.dark .input-luxury:focus {
+  border-color: var(--color-gold-500);
+  background: rgba(51, 65, 85, 0.95);
+  box-shadow: 0 0 0 4px rgba(255, 175, 0, 0.2);
+}
+
+.dark .input-luxury::placeholder {
+  color: #94a3b8;
+}
+
+.dark .btn-luxury-outline {
+  border-color: var(--color-gold-500);
+  color: var(--color-gold-300);
+}
+
+.dark .btn-luxury-outline:hover:not(:disabled) {
+  background: rgba(255, 175, 0, 0.15);
+  border-color: var(--color-gold-400);
+}
+
+.dark .sidebar-item-active {
+  background: linear-gradient(90deg, rgba(255, 175, 0, 0.15) 0%, transparent 100%);
+  border-right-color: var(--color-gold-500);
+  color: var(--color-gold-300);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+.dark .glass-panel {
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(71, 85, 105, 0.5);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
 ::-webkit-scrollbar {

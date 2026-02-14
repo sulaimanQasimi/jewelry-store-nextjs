@@ -36,7 +36,7 @@ export default function DataTable<T extends Record<string, any>>({
   }
 
   return (
-    <div className="card-luxury overflow-hidden rounded-2xl border border-gold-200/50">
+    <div className="card-luxury overflow-hidden rounded-2xl border border-gold-200/50 dark:border-slate-600/50">
       <div className="overflow-x-auto">
         <table className="w-full text-sm" style={{ minWidth: typeof minWidth === 'number' ? `${minWidth}px` : minWidth }}>
           <thead>
@@ -54,13 +54,13 @@ export default function DataTable<T extends Record<string, any>>({
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={columns.length} className="py-8 text-center text-charcoal-soft">
+                <td colSpan={columns.length} className="py-8 text-center text-charcoal-soft dark:text-slate-400">
                   در حال بارگذاری...
                 </td>
               </tr>
             ) : data.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="py-8 text-center text-charcoal-soft">
+                <td colSpan={columns.length} className="py-8 text-center text-charcoal-soft dark:text-slate-400">
                   {emptyMessage}
                 </td>
               </tr>
@@ -68,12 +68,12 @@ export default function DataTable<T extends Record<string, any>>({
               data.map((row) => (
                 <tr
                   key={getKey(row)}
-                  className="border-b border-gold-100 last:border-0 hover:bg-champagne/40 transition-colors text-charcoal"
+                  className="border-b border-gold-100 dark:border-slate-600/50 last:border-0 hover:bg-champagne/40 dark:hover:bg-slate-700/50 transition-colors text-charcoal dark:text-slate-200"
                 >
                   {columns.map((col) => (
                     <td
                       key={col.key}
-                      className={`py-3 px-3 border-l border-gold-100 last:border-l-0 ${col.className ?? ''}`}
+                      className={`py-3 px-3 border-l border-gold-100 dark:border-slate-600/50 last:border-l-0 ${col.className ?? ''}`}
                     >
                       {col.render ? col.render(row) : (row[col.key] ?? '—')}
                     </td>

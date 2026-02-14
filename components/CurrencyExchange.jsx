@@ -56,15 +56,15 @@ const CurrencyExchange = ({ isCurrencyToggle }) => {
 
     return (
         <div className="relative">
-            <button type="button" onClick={(e) => currencyToggleChange(e)} className="p-2.5 rounded-xl text-slate-500 hover:bg-gold-50 hover:text-gold-600 transition-all duration-300 border border-transparent hover:border-gold-100" aria-label="نرخ دالر">
+            <button type="button" onClick={(e) => currencyToggleChange(e)} className="p-2.5 rounded-xl text-slate-500 hover:bg-gold-50 dark:hover:bg-slate-700/50 hover:text-gold-600 dark:hover:text-gold-400 transition-all duration-300 border border-transparent hover:border-gold-100 dark:hover:border-slate-600" aria-label="نرخ دالر">
                 <Banknote className="w-5 h-5" />
             </button>
             <div className={`absolute transition-all duration-300 ease-in-out z-50 min-w-[18rem] ${isCurrencyToggleOn ? 'top-14 -right-0 opacity-100 visible' : 'top-14 -right-0 opacity-0 invisible pointer-events-none'}`}>
-                <div className="card-luxury p-6 rounded-2xl shadow-[0_12px_40px_-8px_rgba(28,28,28,0.15)] border border-gold-200/50">
-                    <h2 className="font-heading text-lg font-semibold mb-4 text-charcoal">تعیین نرخ دالر</h2>
+                <div className="card-luxury p-6 rounded-2xl shadow-[0_12px_40px_-8px_rgba(28,28,28,0.15)] border border-gold-200/50 dark:border-slate-600/50">
+                    <h2 className="font-heading text-lg font-semibold mb-4 text-charcoal dark:text-white">تعیین نرخ دالر</h2>
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-charcoal mb-1">نرخ فعلی دالر</label>
+                            <label className="block text-sm font-medium text-charcoal dark:text-slate-200 mb-1">نرخ فعلی دالر</label>
                             <input type="number" step="0.01" value={rate} onChange={(e) => setRate(parseFloat(e.target.value) || "")} className="input-luxury w-full" />
                         </div>
                         <div className="flex justify-center gap-3 pt-2">
