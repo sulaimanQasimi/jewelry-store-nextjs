@@ -3,6 +3,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '@/lib/context/AppContext'
 
+import Loading from '@/components/Loading'
+
 export default function CompanyInformationPage() {
   const { companyData, getCompanyData } = useContext(AppContext)
   const [mounted, setMounted] = useState(false)
@@ -14,9 +16,7 @@ export default function CompanyInformationPage() {
 
   if (!mounted) {
     return (
-      <div className="w-full py-8 px-16 flex items-center justify-center min-h-[50vh]">
-        <p className="text-slate-500">در حال بارگذاری...</p>
-      </div>
+      <Loading />
     )
   }
 
