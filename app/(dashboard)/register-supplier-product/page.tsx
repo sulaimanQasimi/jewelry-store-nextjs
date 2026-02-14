@@ -1,14 +1,13 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import FilterBar from '@/components/ui/FilterBar'
 import DataTable from '@/components/ui/DataTable'
 import type { ColumnDef } from '@/components/ui/DataTable'
-import SupplierProductFormModal from '@/components/supplier/SupplierProductFormModal'
 import type { SupplierProduct } from '@/types/supplierProduct'
-import type { SupplierProductFormData } from '@/types/supplierProduct'
 
 function formatDate(dateStr: string) {
   try {
@@ -32,8 +31,6 @@ export default function RegisterSupplierProductPage() {
   const [limit, setLimit] = useState(10)
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(false)
-  const [modalOpen, setModalOpen] = useState(false)
-  const [editingProduct, setEditingProduct] = useState<SupplierProduct | null>(null)
 
   const fetchProducts = useCallback(async () => {
     setLoading(true)
@@ -58,16 +55,6 @@ export default function RegisterSupplierProductPage() {
     fetchProducts()
   }, [fetchProducts])
 
-  const openCreate = () => {
-    setEditingProduct(null)
-    setModalOpen(true)
-  }
-
-  const openEdit = (row: SupplierProduct) => {
-    setEditingProduct(row)
-    setModalOpen(true)
-  }
-
   const columns: ColumnDef<SupplierProduct>[] = [
     { key: 'id', label: '#' },
     { key: 'supplierName', label: 'تمویل‌کننده' },
@@ -87,7 +74,7 @@ export default function RegisterSupplierProductPage() {
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={() => openEdit(r)}
+            onClick={() => router.push(`/register-supplier-product/${r.id}/edit`)}
             className="btn-luxury btn-luxury-outline py-1.5 px-3 text-sm"
           >
             ویرایش
@@ -111,13 +98,12 @@ export default function RegisterSupplierProductPage() {
           <h1 className="font-heading text-2xl font-semibold text-charcoal">ثبت اجناس تمویل‌کننده</h1>
           <p className="mt-1 text-sm text-charcoal-soft">لیست اجناس تمویل را با فیلتر و صفحه‌بندی مشاهده کنید.</p>
         </div>
-        <button
-          type="button"
-          onClick={openCreate}
-          className="btn-luxury btn-luxury-primary px-6 py-2 shrink-0"
+        <Link
+          href="/register-supplier-product/new"
+          className="btn-luxury btn-luxury-primary px-6 py-2 shrink-0 inline-block text-center"
         >
           افزودن جنس تمویل
-        </button>
+        </Link>
       </header>
 
       <section>
@@ -146,17 +132,6 @@ export default function RegisterSupplierProductPage() {
           />
         </div>
       </section>
-
-      <SupplierProductFormModal
-        open={modalOpen}
-        onClose={() => {
-          setModalOpen(false)
-          setEditingProduct(null)
-        }}
-        mode={editingProduct ? 'edit' : 'create'}
-        initialData={editingProduct ? (editingProduct as SupplierProductFormData) : null}
-        onSuccess={fetchProducts}
-      />
     </div>
   )
 }
