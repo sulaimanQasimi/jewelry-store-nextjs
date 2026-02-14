@@ -46,7 +46,7 @@ const ProductInfo = ({ setIsProductOn, onSelect }) => {
   }, [search]);
 
   return (
-    <div className="fixed inset-0 bg-charcoal/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-charcoal/50 backdrop-blur-sm flex items-start justify-center z-50 p-4 pt-10">
       <div className="card-luxury p-6 md:p-8 rounded-2xl flex flex-col items-center relative max-w-md w-full shadow-[0_24px_48px_-12px_rgba(28,28,28,0.18)]">
         <button type="button" onClick={() => setIsProductOn(false)} className="absolute w-9 h-9 right-3 top-3 rounded-[10px] flex items-center justify-center text-slate-500 hover:bg-red-50 hover:text-red-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-200">
           <X className="w-5 h-5" />

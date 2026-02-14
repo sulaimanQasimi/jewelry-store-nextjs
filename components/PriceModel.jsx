@@ -37,7 +37,7 @@ const PriceModal = ({ product, onClose }) => {
     console.log(product)
 
     return (
-        <div className="fixed inset-0 bg-charcoal/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-charcoal/50 backdrop-blur-sm flex items-start justify-center z-50 p-4 pt-10">
             <div className="card-luxury p-6 rounded-2xl w-full max-w-sm shadow-[0_24px_48px_-12px_rgba(28,28,28,0.18)]">
                 <div className="mb-5">
                     <h2 className="font-heading font-semibold text-charcoal dark:text-white mb-1">

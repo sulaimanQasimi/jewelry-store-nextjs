@@ -87,6 +87,7 @@ export default function LoginPage() {
                 </div>
                 <input
                   type="text"
+                  dir="ltr"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="input-luxury w-full pr-10 pl-4 py-3 text-charcoal dark:text-white placeholder-gold-300/70 dark:placeholder-slate-500 bg-white dark:bg-slate-800"
@@ -108,6 +109,7 @@ export default function LoginPage() {
                 </div>
                 <input
                   type="password"
+                  dir="ltr"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="input-luxury w-full pr-10 pl-4 py-3 text-charcoal dark:text-white placeholder-gold-300/70 dark:placeholder-slate-500 bg-white dark:bg-slate-800"

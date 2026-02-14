@@ -1,0 +1,105 @@
+'use client'
+
+import React, { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { useParams, useRouter } from 'next/navigation'
+import axios from 'axios'
+import type { SupplierProduct, SupplierProductFormData } from '@/types/supplierProduct'
+import SupplierProductFormContent from '@/components/supplier/SupplierProductFormContent'
+
+export default function EditProductFromSupplierPage() {
+  const params = useParams()
+  const router = useRouter()
+  const id = params?.id as string | undefined
+  const [product, setProduct] = useState<SupplierProduct | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [notFound, setNotFound] = useState(false)
+
+  useEffect(() => {
+    if (!id) {
+      setNotFound(true)
+      setLoading(false)
+      return
+    }
+    let cancelled = false
+    axios
+      .get<{ success: boolean; data: SupplierProduct }>(`/api/supplier-product/${id}`)
+      .then(({ data: res }) => {
+        if (!cancelled && res.success && res.data) setProduct(res.data)
+        else if (!cancelled) setNotFound(true)
+      })
+      .catch(() => {
+        if (!cancelled) setNotFound(true)
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [id])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[40vh]">
+        <p className="text-charcoal-soft dark:text-slate-400">در حال بارگذاری...</p>
+      </div>
+    )
+  }
+
+  if (notFound || !product) {
+    return (
+      <div className="space-y-6">
+        <Link href="/product-from-supplier" className="text-gold-600 hover:underline text-sm">
+          بازگشت به لیست خرید جنس از تمویل‌کننده
+        </Link>
+        <p className="text-charcoal-soft dark:text-slate-400">خرید جنس یافت نشد.</p>
+      </div>
+    )
+  }
+
+  const initialData: SupplierProductFormData = {
+    id: product.id,
+    supplierId: product.supplierId,
+    supplierName: product.supplierName,
+    name: product.name,
+    type: product.type,
+    karat: product.karat,
+    weight: product.weight,
+    pasa: product.pasa,
+    pasaReceipt: product.pasaReceipt,
+    pasaRemaining: product.pasaRemaining,
+    wagePerGram: product.wagePerGram,
+    totalWage: product.totalWage,
+    wageReceipt: product.wageReceipt,
+    wageRemaining: product.wageRemaining,
+    detail: product.detail,
+    bellNumber: product.bellNumber
+  }
+
+  return (
+    <div className="space-y-6">
+      <Link
+        href={`/product-from-supplier/${id}`}
+        className="inline-flex items-center gap-1 text-gold-600 hover:underline text-sm"
+      >
+        بازگشت به مشاهده جنس
+      </Link>
+
+      <div className="card-luxury rounded-2xl border border-gold-200/50 dark:border-slate-600/50 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gold-200 dark:border-slate-600 bg-gold-50/50 dark:bg-slate-800/50">
+          <h1 className="font-heading text-2xl font-semibold text-charcoal dark:text-slate-200">ویرایش خرید جنس از تمویل‌کننده</h1>
+          <p className="mt-1 text-sm text-charcoal-soft dark:text-slate-400">{product.name}</p>
+        </div>
+        <div className="p-6">
+          <SupplierProductFormContent
+            mode="edit"
+            initialData={initialData}
+            onSuccess={() => router.push('/product-from-supplier')}
+            onCancel={() => router.push(`/product-from-supplier/${id}`)}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
