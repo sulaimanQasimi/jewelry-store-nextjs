@@ -17,7 +17,8 @@ export async function POST(request: NextRequest) {
       totalWage,
       wageReceipt,
       wageRemaining,
-      detail
+      detail,
+      bellNumber
     } = body
 
     if (!supplierId || !name || !karat || !weight || pasa == null || !wagePerGram || !totalWage) {
@@ -45,8 +46,8 @@ export async function POST(request: NextRequest) {
       `INSERT INTO supplier_products (
         supplierId, supplierName, name, type, karat, weight,
         pasa, pasaReceipt, pasaRemaining, wagePerGram, totalWage,
-        wageReceipt, wageRemaining, detail
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        wageReceipt, wageRemaining, detail, bellNumber
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         Number(supplierId),
         supplierName,
@@ -61,9 +62,10 @@ export async function POST(request: NextRequest) {
         Number(totalWage),
         Number(wageReceipt) || 0,
         Number(wageRemaining),
-        detail || null
+        detail || null,
+        bellNumber != null ? Number(bellNumber) : null
       ]
-    ) as any
+    ) as { insertId: number }
 
     const newProduct = {
       id: result.insertId,

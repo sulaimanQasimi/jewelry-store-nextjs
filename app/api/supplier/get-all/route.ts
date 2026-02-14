@@ -18,9 +18,9 @@ export async function GET(request: NextRequest) {
     const total = Number(countResult?.[0]?.total ?? 0)
 
     const whereClause = search ? 'AND name LIKE ?' : ''
-    const params = search ? [`%${search}%`, limit, offset] : [limit, offset]
-    const sql = `SELECT id, name, phone, address, isActive FROM suppliers WHERE isActive = 1 ${whereClause} ORDER BY name ASC LIMIT ? OFFSET ?`
-    const data = (await query(sql, params)) as any[]
+    const whereParams = search ? [`%${search}%`] : []
+    const sql = `SELECT id, name, phone, address, isActive FROM suppliers WHERE isActive = 1 ${whereClause} ORDER BY name ASC LIMIT ${limit} OFFSET ${offset}`
+    const data = (await query(sql, whereParams)) as any[]
 
     return NextResponse.json({ success: true, data, total, page, limit })
   } catch (error: any) {

@@ -12,11 +12,11 @@ export async function DELETE(
       return NextResponse.json({ success: false, message: 'شناسه نامعتبر' }, { status: 400 })
     }
 
-    await query('DELETE FROM suppliers WHERE id = ?', [id])
+    await query('DELETE FROM supplier_products WHERE id = ?', [id])
 
     return NextResponse.json({
       success: true,
-      message: 'تمویل‌کننده با موفقیت حذف شد'
+      message: 'جنس تمویل حذف شد'
     })
   } catch (error: unknown) {
     console.error(error)
