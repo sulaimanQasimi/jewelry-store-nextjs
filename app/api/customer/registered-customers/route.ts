@@ -24,10 +24,10 @@ function toPlainCustomer(r: Record<string, unknown>): Record<string, unknown> {
 
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams
-    const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10))
-    const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') || '10', 10)))
-    const search = searchParams.get('search')?.trim() || ''
+    const urlQuery = request.nextUrl.searchParams
+    const page = Math.max(1, parseInt(urlQuery.get('page') || '1', 10))
+    const limit = Math.min(50, Math.max(1, parseInt(urlQuery.get('limit') || '10', 10)))
+    const search = urlQuery.get('search')?.trim() || ''
     const offset = (page - 1) * limit
 
     const countResult = await query(
@@ -39,9 +39,10 @@ export async function GET(request: NextRequest) {
     const total = Number(countResult?.[0]?.total ?? 0)
 
     const whereClause = search ? 'WHERE customerName LIKE ? OR phone LIKE ?' : ''
-    const params = search ? [`%${search}%`, `%${search}%`, limit, offset] : [limit, offset]
-    const sql = `SELECT * FROM customers ${whereClause} ORDER BY id DESC LIMIT ? OFFSET ?`
-    const rows = (await query(sql, params)) as Record<string, unknown>[]
+    const whereParams = search ? [`%${search}%`, `%${search}%`] : []
+    // LIMIT/OFFSET as literals to avoid "Incorrect arguments to mysqld_stmt_execute" (limit/offset are already sanitized integers)
+    const sql = `SELECT * FROM customers ${whereClause} ORDER BY id DESC LIMIT ${limit} OFFSET ${offset}`
+    const rows = (await query(sql, whereParams)) as Record<string, unknown>[]
     const list = Array.isArray(rows) ? rows.map((r) => toPlainCustomer(r)) : []
 
     return NextResponse.json({
