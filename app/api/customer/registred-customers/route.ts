@@ -20,12 +20,13 @@ export async function GET(request: NextRequest) {
     const whereClause = search ? 'WHERE customerName LIKE ? OR phone LIKE ?' : ''
     const params = search ? [`%${search}%`, `%${search}%`, limit, offset] : [limit, offset]
     const sql = `SELECT * FROM customers ${whereClause} ORDER BY id DESC LIMIT ? OFFSET ?`
-    const customers = (await query(sql, params)) as any[]
+    const rows = (await query(sql, params)) as any[]
+    const list = Array.isArray(rows) ? rows.map((r) => ({ ...r })) : []
 
     return NextResponse.json({
       success: true,
-      data: customers ?? [],
-      customers: customers ?? [],
+      data: list,
+      customers: list,
       total,
       page,
       limit
