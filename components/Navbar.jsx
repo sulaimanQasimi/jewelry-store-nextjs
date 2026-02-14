@@ -26,40 +26,59 @@ const Navbar = () => {
   const logo = Array.isArray(companyData) && companyData[0]?.image ? `/${companyData[0].image}` : '/assets/logo.svg'
 
   return (
-    <div className="flex h-full items-center justify-between px-6 md:px-8">
+    <div className="mx-4 mt-2 mb-2 flex h-16 items-center justify-between rounded-xl px-6 backdrop-blur-md bg-white/70 shadow-sm border border-white/50 transition-all hover:shadow-md hover:bg-white/80">
       <div className="flex items-center gap-4">
         <button
           type="button"
           onClick={() => router.push('/company-information')}
-          className="rounded-full ring-2 ring-gold-200 transition-all duration-300 hover:ring-gold-400 hover:shadow-[0_0_0_4px_rgba(198,167,94,0.15)] focus:outline-none focus:ring-2 focus:ring-gold-400"
+          className="group relative rounded-full p-1 transition-all duration-300 hover:scale-105"
         >
-          <img src={logo} alt="" className="h-10 w-10 rounded-full object-cover" />
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-gold-300 to-gold-500 blur opacity-40 group-hover:opacity-70 transition-opacity" />
+          <img
+            src={logo}
+            alt="Logo"
+            className="relative h-10 w-10 rounded-full object-cover ring-2 ring-white shadow-sm"
+          />
         </button>
+
         {session?.user?.name && (
-          <span className="text-sm font-medium text-charcoal hidden sm:block">
-            {session.user.name}
-          </span>
+          <div className="hidden sm:flex flex-col">
+            <span className="text-xs text-gold-600 font-semibold mb-[-2px]">خوش آمدید،</span>
+            <span className="text-sm font-bold text-slate-800 bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+              {session.user.name}
+            </span>
+          </div>
         )}
       </div>
 
-      <div className="flex items-center gap-1 md:gap-2">
-        <StorageRate />
+      <div className="flex items-center gap-2 md:gap-3">
+        <div className="hidden md:block">
+          <StorageRate />
+        </div>
+
+        <div className="h-8 w-[1px] bg-slate-200 mx-1 hidden md:block"></div>
+
         <button
           type="button"
           onClick={handleBackup}
-          className="rounded-[10px] p-2.5 text-charcoal-soft transition-all duration-300 hover:bg-gold-100 hover:text-charcoal"
+          className="group relative flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-500 transition-all hover:bg-blue-50 hover:text-blue-600"
           title="پشتیبان‌گیری"
         >
-          <img src="/assets/backup.svg" alt="" className="h-5 w-5" />
+          <img src="/assets/backup.svg" alt="" className="h-5 w-5 transition-transform group-hover:rotate-12" />
         </button>
-        <CurrencyExchange />
+
+        <div className="hidden md:block">
+          <CurrencyExchange />
+        </div>
+
         <button
           type="button"
           onClick={() => signOut({ callbackUrl: '/login' })}
-          className="rounded-[10px] p-2.5 text-charcoal-soft transition-all duration-300 hover:bg-gold-100 hover:text-rosegold"
+          className="group flex items-center gap-2 rounded-xl bg-red-50 px-3 py-2 text-sm font-medium text-red-500 transition-all hover:bg-red-500 hover:text-white hover:shadow-lg hover:shadow-red-200"
           title="خروج"
         >
-          <img src="/assets/logout.svg" alt="" className="h-5 w-5" />
+          <img src="/assets/logout.svg" alt="" className="h-5 w-5 transition-transform group-hover:-translate-x-1 grayscale group-hover:grayscale-0 group-hover:invert" />
+          <span className="hidden md:inline">خروج</span>
         </button>
       </div>
     </div>

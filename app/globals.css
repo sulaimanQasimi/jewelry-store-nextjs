@@ -8,7 +8,8 @@
   --color-gold-200: #FFE08F;
   --color-gold-300: #FFCF5C;
   --color-gold-400: #FFBF29;
-  --color-gold-500: #FFAF00; /* Vibrant Gold */
+  --color-gold-500: #FFAF00;
+  /* Vibrant Gold */
   --color-gold-600: #DB9000;
   --color-gold-700: #B87000;
   --color-gold-800: #945500;
@@ -31,7 +32,7 @@
   /* Backgrounds */
   --color-bg-base: #F8FAFC;
   --color-bg-surface: #FFFFFF;
-  
+
   /* Text */
   --color-text-primary: #0F172A;
   --color-text-secondary: #475569;
@@ -41,7 +42,7 @@
   --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
   --shadow-neon: 0 0 10px rgba(255, 175, 0, 0.5), 0 0 20px rgba(255, 175, 0, 0.3);
   --shadow-card-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  
+
   /* Radius */
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
@@ -60,15 +61,18 @@ body {
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--color-gold-300);
   border-radius: 999px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-gold-500);
 }
@@ -77,10 +81,12 @@ body {
   font-family: "vazirmatn";
   src: url("/assets/fonts/Vazirmatn/Vazirmatn-VariableFont_wght.ttf") format("truetype");
 }
+
 @font-face {
   font-family: "naskh";
   src: url("/assets/fonts/Naskh/NotoNaskhArabic-VariableFont_wght.ttf") format("truetype");
 }
+
 @font-face {
   font-family: "iransans";
   src: url("/assets/fonts/IRANSansWeb.ttf") format("truetype");
@@ -96,7 +102,8 @@ body {
 }
 
 .glass-panel-dark {
-  background: rgba(15, 23, 42, 0.85); /* Slate 900 with opacity */
+  background: rgba(15, 23, 42, 0.85);
+  /* Slate 900 with opacity */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -126,9 +133,17 @@ body {
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-5px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 .animate-float {
@@ -136,18 +151,132 @@ body {
 }
 
 /* Sidebar Item Active Effect */
+/* Sidebar Item Active Effect */
 .sidebar-item-active {
   background: linear-gradient(90deg, var(--color-gold-100) 0%, rgba(255, 255, 255, 0) 100%);
   border-right: 4px solid var(--color-gold-500);
   color: var(--color-gold-700);
 }
 
+/* =========================================
+   Restored & Upgraded Legacy Utilities
+   ========================================= */
+
+/* Luxury typography */
+.font-heading {
+  font-family: 'naskh', 'vazirmatn', serif;
+  letter-spacing: 0.02em;
+}
+
+/* Luxury button base - Upgraded with gradients */
+.btn-luxury {
+  border-radius: 0.75rem;
+  /* Rounded xl */
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+}
+
+.btn-luxury-primary {
+  background: linear-gradient(135deg, var(--color-gold-500) 0%, var(--color-gold-600) 100%);
+  color: white;
+  box-shadow: 0 4px 14px -4px rgb(184 148 62 / 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-luxury-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -4px rgb(184 148 62 / 0.6);
+  filter: brightness(1.1);
+}
+
+.btn-luxury-outline {
+  border: 2px solid var(--color-gold-400);
+  color: var(--color-gold-700);
+  background: transparent;
+}
+
+.btn-luxury-outline:hover:not(:disabled) {
+  background: var(--color-gold-50);
+  border-color: var(--color-gold-600);
+}
+
+/* Luxury card - Upgraded to Glassmorphism Lite */
+.card-luxury {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  transition: box-shadow 300ms ease-in-out, transform 300ms ease-in-out;
+}
+
+.card-luxury:hover {
+  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(184, 148, 62, 0.2) inset;
+  transform: translateY(-2px);
+}
+
+/* Luxury input */
+.input-luxury {
+  border: 1px solid var(--color-gold-200);
+  border-radius: 0.75rem;
+  padding: 0.7rem 1.2rem;
+  transition: all 300ms ease-in-out;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.input-luxury:focus {
+  outline: none;
+  border-color: var(--color-gold-400);
+  box-shadow: 0 0 0 4px rgba(255, 175, 0, 0.1);
+  background: white;
+}
+
+/* Gold underline for active nav (Legacy support) */
+.nav-active-gold {
+  position: relative;
+}
+
+.nav-active-gold::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-gold-400), transparent);
+  border-radius: 1px;
+}
+
 /* Printing */
 @media print {
-  body { margin: 0; padding: 0; background: white; }
-  body * { visibility: hidden; }
-  .print-root, .print-root * { visibility: visible; }
-  .print-root { position: absolute; top: 0; left: 0; }
-  .print-label { width: 5cm; height: 2.5cm; page-break-inside: avoid; }
-  @page { size: 5cm 2.5cm; margin: 0; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .print-root,
+  .print-root * {
+    visibility: visible;
+  }
+
+  .print-root {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .print-label {
+    width: 5cm;
+    height: 2.5cm;
+    page-break-inside: avoid;
+  }
+
+  @page {
+    size: 5cm 2.5cm;
+    margin: 0;
+  }
 }
