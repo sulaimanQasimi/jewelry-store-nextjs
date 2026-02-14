@@ -2,6 +2,7 @@
 
 import { SessionProvider } from 'next-auth/react'
 import AppContextProvider from '@/lib/context/AppContext'
+import { CartProvider } from '@/context/CartContext'
 import { SupplierProductProvider } from '@/context/SupplierProduct'
 import { ThemeProvider } from '@/lib/context/ThemeContext'
 import { ToastContainer } from 'react-toastify'
@@ -12,10 +13,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <SessionProvider>
       <ThemeProvider>
         <AppContextProvider>
-          <SupplierProductProvider>
-            {children}
-            <ToastContainer />
-          </SupplierProductProvider>
+          <CartProvider>
+            <SupplierProductProvider>
+              {children}
+              <ToastContainer />
+            </SupplierProductProvider>
+          </CartProvider>
         </AppContextProvider>
       </ThemeProvider>
     </SessionProvider>

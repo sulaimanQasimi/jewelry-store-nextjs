@@ -22,9 +22,10 @@ const SearchProduct = () => {
 
   const fetchData = async (code) => {
     try {
+      const base = backendUrl || ''
       const { data } = await axios.get(
-        `${backendUrl}/api/product/search-barcode/${code}`
-      );
+        `${base}/api/product/search-barcode/${code}`
+      )
 
       if (!data.success) {
         toast.error("جنس پیدا نشد");

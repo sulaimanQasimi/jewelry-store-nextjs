@@ -34,7 +34,6 @@ const PriceModal = ({ product, onClose }) => {
         toast.success("محصول به سبد خرید اضافه شد");
         onClose();
     };
-    console.log(product)
 
     return (
         <div className="fixed inset-0 bg-charcoal/50 backdrop-blur-sm flex items-start justify-center z-50 p-4 pt-10">
@@ -47,7 +46,7 @@ const PriceModal = ({ product, onClose }) => {
                         {parseFloat(product.purchasePriceToAfn).toFixed(0)} افغانی
                     </p>
                     {product.image && (
-                        <img src={`http://localhost:3000/${product.image}`} alt="" className="rounded-xl border border-gold-200 dark:border-slate-600 object-cover max-h-32 w-full" />
+                        <img src={product.image.startsWith('http') ? product.image : `/${product.image}`} alt="" className="rounded-xl border border-gold-200 dark:border-slate-600 object-cover max-h-32 w-full" />
                     )}
                 </div>
 
@@ -66,6 +65,7 @@ const PriceModal = ({ product, onClose }) => {
                         <select id="currency" onChange={(e) => setCurrency(e.target.value)} value={currency} className="input-luxury w-full cursor-pointer dark:bg-slate-800 dark:text-white">
                             <option value="" className="dark:bg-slate-800">واحد پول</option>
                             <option value="افغانی" className="dark:bg-slate-800">افغانی</option>
+                            <option value="دالر" className="dark:bg-slate-800">دالر</option>
                         </select>
                     </div>
                 </div>
