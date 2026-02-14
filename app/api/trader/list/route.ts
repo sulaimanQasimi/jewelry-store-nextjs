@@ -18,10 +18,10 @@ export async function GET(request: NextRequest) {
     const total = Number(countResult?.[0]?.total ?? 0)
 
     const whereClause = search ? 'WHERE name LIKE ? OR phone LIKE ?' : ''
-    const params = search ? [`%${search}%`, `%${search}%`, limit, offset] : [limit, offset]
+    const whereParams = search ? [`%${search}%`, `%${search}%`] : []
     const data = (await query(
-      `SELECT * FROM traders ${whereClause} ORDER BY id DESC LIMIT ? OFFSET ?`,
-      params
+      `SELECT * FROM traders ${whereClause} ORDER BY id DESC LIMIT ${limit} OFFSET ${offset}`,
+      whereParams
     )) as any[]
 
     return NextResponse.json({ success: true, data, total, page, limit })

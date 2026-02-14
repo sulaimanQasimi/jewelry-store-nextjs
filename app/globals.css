@@ -1,45 +1,59 @@
 @import "tailwindcss";
 
-/* ========== Luxury Jewelry Design System ========== */
+/* ========== Royal & Radiant Jewelry Design System ========== */
 @theme {
-  /* Primary: Deep Gold / Metallic gold */
-  --color-gold-50: #FBF8F0;
-  --color-gold-100: #F5EBDD;
-  --color-gold-200: #E8D9BE;
-  --color-gold-300: #D4BC8F;
-  --color-gold-400: #C6A75E;
-  --color-gold-500: #B8943E;
-  --color-gold-600: #9A7B32;
-  --color-gold-700: #7A6128;
-  --color-gold-800: #5C4A1F;
-  --color-gold-900: #3D3215;
-  /* Champagne / Soft Beige */
-  --color-champagne: #F5EBDD;
-  --color-champagne-light: #FAF6F0;
-  /* Background */
-  --color-cream: #FAF9F6;
-  --color-cream-warm: #F8F6F2;
-  /* Accent */
-  --color-charcoal: #1C1C1C;
-  --color-charcoal-soft: #2D2D2D;
-  /* Rose gold accent */
-  --color-rosegold: #B76E79;
-  --color-rosegold-light: #D4A5A5;
+  /* Vibrant Gold Palette */
+  --color-gold-50: #FFF9E5;
+  --color-gold-100: #FFF0C2;
+  --color-gold-200: #FFE08F;
+  --color-gold-300: #FFCF5C;
+  --color-gold-400: #FFBF29;
+  --color-gold-500: #FFAF00; /* Vibrant Gold */
+  --color-gold-600: #DB9000;
+  --color-gold-700: #B87000;
+  --color-gold-800: #945500;
+  --color-gold-900: #7A4200;
+
+  /* Royal Jewel Tones for "Very Colorful" look */
+  --color-royal-blue: #1E3A8A;
+  --color-royal-purple: #581C87;
+  --color-emerald-green: #047857;
+  --color-ruby-red: #BE123C;
+  --color-sapphire: #2563EB;
+  --color-amethyst: #7C3AED;
+
+  /* Gradients */
+  --image-gradient-royal: linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%);
+  --image-gradient-gold: linear-gradient(135deg, #FFF0C2 0%, #FFCF5C 50%, #FFAF00 100%);
+  --image-gradient-colorful: linear-gradient(135deg, #4F46E5 0%, #9333EA 50%, #EC4899 100%);
+  --image-gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+
+  /* Backgrounds */
+  --color-bg-base: #F8FAFC;
+  --color-bg-surface: #FFFFFF;
+  
+  /* Text */
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+  --color-text-muted: #94A3B8;
+
   /* Shadows */
-  --shadow-luxury: 0 4px 24px -4px rgb(28 28 28 / 0.08), 0 8px 16px -6px rgb(28 28 28 / 0.04);
-  --shadow-luxury-hover: 0 12px 32px -8px rgb(28 28 28 / 0.12), 0 16px 24px -8px rgb(28 28 28 / 0.06);
-  --shadow-card: 0 2px 12px -2px rgb(198 167 94 / 0.12), 0 4px 8px -4px rgb(28 28 28 / 0.04);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  --shadow-neon: 0 0 10px rgba(255, 175, 0, 0.5), 0 0 20px rgba(255, 175, 0, 0.3);
+  --shadow-card-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
   /* Radius */
-  --radius-button: 10px;
-  --radius-card: 14px;
-  --radius-input: 10px;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
 }
 
 body {
   direction: rtl;
   text-align: right;
-  background-color: var(--color-cream);
-  color: var(--color-charcoal);
+  background: linear-gradient(120deg, #FDFBF7 0%, #F5F3FF 50%, #F0FDFA 100%);
+  background-attachment: fixed;
+  color: var(--color-text-primary);
+  font-family: 'iransans', sans-serif;
 }
 
 ::-webkit-scrollbar {
@@ -47,15 +61,16 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-gold-100);
-  border-radius: 4px;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--color-gold-300);
-  border-radius: 4px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-gold-500);
+  background-color: var(--color-gold-500);
 }
 
 @font-face {
@@ -71,116 +86,68 @@ body {
   src: url("/assets/fonts/IRANSansWeb.ttf") format("truetype");
 }
 
-* {
-  font-family: 'iransans';
+/* Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: var(--shadow-glass);
 }
 
-/* Luxury typography: use .font-heading for serif/premium headings */
-.font-heading {
-  font-family: 'naskh', 'vazirmatn', serif;
-  letter-spacing: 0.02em;
+.glass-panel-dark {
+  background: rgba(15, 23, 42, 0.85); /* Slate 900 with opacity */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
-/* Luxury button base */
-.btn-luxury {
-  border-radius: var(--radius-button);
-  transition: all 300ms ease-in-out;
-  font-weight: 600;
-}
-.btn-luxury-primary {
-  background: linear-gradient(135deg, var(--color-gold-500) 0%, var(--color-gold-400) 50%, var(--color-gold-600) 100%);
-  color: white;
-  box-shadow: 0 2px 12px -2px rgb(198 167 94 / 0.4);
-}
-.btn-luxury-primary:hover:not(:disabled) {
-  transform: scale(1.02);
-  box-shadow: 0 6px 20px -4px rgb(198 167 94 / 0.5);
-}
-.btn-luxury-outline {
-  border: 2px solid var(--color-gold-400);
-  color: var(--color-charcoal);
-  background: transparent;
-}
-.btn-luxury-outline:hover:not(:disabled) {
-  background: var(--color-gold-100);
-  border-color: var(--color-gold-500);
+.text-gradient-gold {
+  background: linear-gradient(to right, #B87000, #FFAF00, #B87000);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% auto;
+  animation: shine 4s linear infinite;
 }
 
-/* Luxury card */
-.card-luxury {
-  background: white;
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
-  transition: box-shadow 300ms ease-in-out, transform 300ms ease-in-out;
-}
-.card-luxury:hover {
-  box-shadow: var(--shadow-luxury);
+.text-gradient-colorful {
+  background: linear-gradient(to right, #4F46E5, #9333EA, #EC4899);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-/* Luxury input */
-.input-luxury {
-  border: 1px solid var(--color-gold-200);
-  border-radius: var(--radius-input);
-  padding: 0.6rem 1rem;
-  transition: border-color 300ms ease-in-out, box-shadow 300ms ease-in-out;
-  background: white;
-}
-.input-luxury:focus {
-  outline: none;
-  border-color: var(--color-gold-400);
-  box-shadow: 0 0 0 3px rgb(198 167 94 / 0.15);
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
 }
 
-/* Gold underline for active nav */
-.nav-active-gold {
-  position: relative;
-}
-.nav-active-gold::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--color-gold-400), transparent);
-  border-radius: 1px;
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
 }
 
-.active div {
-  opacity: 1;
-  color: white;
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
 
+/* Sidebar Item Active Effect */
+.sidebar-item-active {
+  background: linear-gradient(90deg, var(--color-gold-100) 0%, rgba(255, 255, 255, 0) 100%);
+  border-right: 4px solid var(--color-gold-500);
+  color: var(--color-gold-700);
+}
+
+/* Printing */
 @media print {
-  body {
-    margin: 0;
-    padding: 0;
-  }
-
-  body * {
-    visibility: hidden;
-  }
-
-  .print-root,
-  .print-root * {
-    visibility: visible;
-  }
-
-  .print-root {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  .print-label {
-    width: 5cm;
-    height: 2.5cm;
-    page-break-inside: avoid;
-    break-inside: avoid;
-  }
-
-  @page {
-    size: 5cm 2.5cm;
-    margin: 0;
-  }
+  body { margin: 0; padding: 0; background: white; }
+  body * { visibility: hidden; }
+  .print-root, .print-root * { visibility: visible; }
+  .print-root { position: absolute; top: 0; left: 0; }
+  .print-label { width: 5cm; height: 2.5cm; page-break-inside: avoid; }
+  @page { size: 5cm 2.5cm; margin: 0; }
 }

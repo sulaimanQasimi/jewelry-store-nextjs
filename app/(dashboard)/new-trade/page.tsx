@@ -1,12 +1,13 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import axios from 'axios'
-import { toast } from 'react-toastify'
-import FormField from '@/components/ui/FormField'
 import FilterBar from '@/components/ui/FilterBar'
 import DataTable from '@/components/ui/DataTable'
 import type { ColumnDef } from '@/components/ui/DataTable'
+import TraderFormModal from '@/components/trader/TraderFormModal'
+import type { TraderFormData } from '@/components/trader/TraderFormModal'
 
 interface Trader {
   id: number
@@ -18,30 +19,30 @@ interface Trader {
 }
 
 export default function NewTradePage() {
-  const [traders, setTraders] = useState<Trader[]>([])
-  const [totalTraders, setTotalTraders] = useState(0)
+  const router = useRouter()
+  const [data, setData] = useState<Trader[]>([])
+  const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(10)
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(false)
-
-  const [form, setForm] = useState({ name: '', phone: '', address: '' })
-  const [submitting, setSubmitting] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [editingTrader, setEditingTrader] = useState<Trader | null>(null)
 
   const fetchTraders = useCallback(async () => {
     setLoading(true)
     try {
-      const { data: res } = await axios.get<{ success: boolean; data: Trader[]; total: number }>(
+      const { data: res } = await axios.get<{ success?: boolean; data?: Trader[]; total?: number }>(
         '/api/trader/list',
         { params: { page, limit, search: search || undefined } }
       )
-      if (res.success) {
-        setTraders(res.data ?? [])
-        setTotalTraders(res.total ?? 0)
-      }
-    } catch {
-      setTraders([])
-      setTotalTraders(0)
+      const list = Array.isArray(res?.data) ? res.data : []
+      setData(list)
+      setTotal(Number(res?.total) >= 0 ? Number(res.total) : list.length)
+    } catch (err: unknown) {
+      console.error('Failed to load traders:', err)
+      setData([])
+      setTotal(0)
     } finally {
       setLoading(false)
     }
@@ -51,72 +52,64 @@ export default function NewTradePage() {
     fetchTraders()
   }, [fetchTraders])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!form.name.trim() || !form.phone.trim()) {
-      toast.error('نام و شماره تماس الزامی است')
-      return
-    }
-    setSubmitting(true)
-    try {
-      const { data: res } = await axios.post('/api/trader/create', form)
-      if (res.success) {
-        toast.success(res.message ?? 'ثبت شد')
-        setForm({ name: '', phone: '', address: '' })
-        fetchTraders()
-      } else toast.error(res.message)
-    } catch (err: any) {
-      toast.error(err.response?.data?.message ?? err.message)
-    } finally {
-      setSubmitting(false)
-    }
+  const openCreate = () => {
+    setEditingTrader(null)
+    setModalOpen(true)
   }
 
-  const traderColumns: ColumnDef<Trader>[] = [
+  const openEdit = (row: Trader) => {
+    setEditingTrader(row)
+    setModalOpen(true)
+  }
+
+  const columns: ColumnDef<Trader>[] = [
     { key: 'id', label: '#' },
     { key: 'name', label: 'نام' },
     { key: 'phone', label: 'شماره تماس' },
-    { key: 'address', label: 'آدرس', render: (r) => r.address ?? '-' }
+    {
+      key: 'address',
+      label: 'آدرس',
+      render: (r) => (r.address ? String(r.address).slice(0, 40) + (String(r.address).length > 40 ? '…' : '') : '—')
+    },
+    {
+      key: 'actions',
+      label: 'عملیات',
+      render: (r) => (
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => openEdit(r)}
+            className="btn-luxury btn-luxury-outline py-1.5 px-3 text-sm"
+          >
+            ویرایش
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push(`/new-trade/${r.id}`)}
+            className="btn-luxury btn-luxury-primary py-1.5 px-3 text-sm"
+          >
+            مشاهده
+          </button>
+        </div>
+      )
+    }
   ]
 
   return (
     <div className="space-y-8">
-      <header>
-        <h1 className="font-heading text-2xl font-semibold text-charcoal">معامله داران</h1>
-        <p className="mt-1 text-sm text-charcoal-soft">ثبت معامله‌دار و مشاهده لیست با فیلتر و صفحه‌بندی.</p>
+      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="font-heading text-2xl font-semibold text-charcoal">معامله‌داران</h1>
+          <p className="mt-1 text-sm text-charcoal-soft">لیست معامله‌داران را با فیلتر و صفحه‌بندی مشاهده کنید.</p>
+        </div>
+        <button
+          type="button"
+          onClick={openCreate}
+          className="btn-luxury btn-luxury-primary px-6 py-2 shrink-0"
+        >
+          افزودن معامله‌دار
+        </button>
       </header>
-
-      <section className="card-luxury rounded-2xl border border-gold-200/50 p-6">
-        <h2 className="font-heading text-lg font-semibold text-charcoal mb-4">افزودن معامله‌دار</h2>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <FormField label="نام">
-            <input
-              className="input-luxury w-full"
-              value={form.name}
-              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-            />
-          </FormField>
-          <FormField label="شماره تماس">
-            <input
-              className="input-luxury w-full"
-              value={form.phone}
-              onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-            />
-          </FormField>
-          <FormField label="آدرس">
-            <input
-              className="input-luxury w-full"
-              value={form.address}
-              onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
-            />
-          </FormField>
-          <div className="flex items-end">
-            <button type="submit" disabled={submitting} className="btn-luxury btn-luxury-primary px-6 py-2">
-              {submitting ? 'در حال ثبت...' : 'ثبت معامله‌دار'}
-            </button>
-          </div>
-        </form>
-      </section>
 
       <section>
         <h2 className="font-heading text-lg font-semibold text-charcoal mb-4">لیست معامله‌داران</h2>
@@ -128,21 +121,33 @@ export default function NewTradePage() {
         />
         <div className="mt-4">
           <DataTable<Trader>
-            columns={traderColumns}
-            data={traders}
+            columns={columns}
+            data={data}
             keyField="id"
             loading={loading}
             emptyMessage="معامله‌دار یافت نشد"
             pagination={{
               page,
               limit,
-              total: totalTraders,
+              total,
               onPageChange: setPage,
               onLimitChange: setLimit
             }}
+            minWidth="800px"
           />
         </div>
       </section>
+
+      <TraderFormModal
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false)
+          setEditingTrader(null)
+        }}
+        mode={editingTrader ? 'edit' : 'create'}
+        initialData={editingTrader ? (editingTrader as TraderFormData) : null}
+        onSuccess={fetchTraders}
+      />
     </div>
   )
 }
