@@ -575,7 +575,7 @@ sp_return: BEGIN
         LEAVE sp_return;
     END IF;
 
-    SET v_removed_product = JSON_EXTRACT(v_product_json, CONCAT('$[', v_found_idx]));
+    SET v_removed_product = JSON_EXTRACT(v_product_json, CONCAT('$[', v_found_idx, ']'));
     SET v_product_amount = CAST(JSON_UNQUOTE(JSON_EXTRACT(v_removed_product, '$.salePrice.price')) AS DECIMAL(15,2));
 
     UPDATE products SET isSold = 0 WHERE id = p_product_id;
