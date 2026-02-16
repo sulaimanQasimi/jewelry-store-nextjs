@@ -85,10 +85,7 @@ export default function ProductsPage() {
     fetchProducts()
   }, [fetchProducts])
 
-  const openCreate = () => {
-    setEditingProduct(null)
-    setModalOpen(true)
-  }
+  const openCreate = () => router.push('/products/new')
 
   const openEdit = (row: Product) => {
     setEditingProduct(row)
