@@ -30,8 +30,13 @@ export async function GET(request: NextRequest) {
 
     if (transactions.length === 0) {
       return NextResponse.json({
-        success: false,
-        message: 'هیچ فروشی صورت نگرفته'
+        success: true,
+        totalProducts: 0,
+        totalGram: 0,
+        totalAmount: 0,
+        remainAmount: 0,
+        totalDiscount: 0,
+        products: []
       })
     }
 
