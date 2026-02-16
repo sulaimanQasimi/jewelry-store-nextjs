@@ -3,10 +3,10 @@ import { query } from '@/lib/db'
 
 export async function GET(request: NextRequest) {
   try {
-    const expenses = await prisma.expenses.findMany()
+    const expenses = (await query('SELECT * FROM expenses')) as any[]
 
     // Group by type and currency
-    const grouped = expenses.reduce((acc: any, expense) => {
+    const grouped = expenses.reduce((acc: any, expense: any) => {
       const key = `${expense.type}-${expense.currency}`
       if (!acc[key]) {
         acc[key] = {

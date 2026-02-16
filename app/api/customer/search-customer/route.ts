@@ -10,14 +10,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ success: false, message: 'لطفا چیزی بنویسید' })
     }
 
-    const result = await prisma.customer.findMany({
-      where: {
-        customerName: {
-          contains: q,
-          mode: 'insensitive'
-        }
-      }
-    })
+    const result = (await query(
+      'SELECT * FROM customers WHERE customerName LIKE ?',
+      [`%${q}%`]
+    )) as any[]
 
     return NextResponse.json({ success: true, result })
   } catch (error: any) {

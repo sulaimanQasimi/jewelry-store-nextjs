@@ -5,7 +5,8 @@
 1. **Created `db.sql`**: Complete MySQL database schema file with all tables
 2. **Updated `lib/db.ts`**: Changed from Prisma client to mysql2 connection pool
 3. **Removed Prisma dependencies**: Updated `package.json` to remove `@prisma/client` and `prisma`
-4. **Updated API routes**: Converted example routes to use raw SQL queries
+4. **Updated all API routes**: Converted all routes from Prisma to raw SQL queries
+5. **Removed `prisma/` directory**: No longer needed (replaced by db.sql)
 
 ## Database Setup
 
@@ -16,46 +17,51 @@
 
 2. Or import `db.sql` using your MySQL client
 
-## API Route Updates Needed
+## API Routes - All Migrated
 
-All API routes need to be updated from Prisma to raw SQL. Here's the pattern:
+All API routes now use raw SQL via `query()` from `lib/db.ts`:
 
-### Before (Prisma):
-```typescript
-import { query } from '@/lib/db'
-
-const products = await prisma.product.findMany({
-  where: { isSold: false },
-  orderBy: { createdAt: 'desc' }
-})
-```
-
-### After (Raw SQL):
-```typescript
-import { query } from '@/lib/db'
-
-const products = await query(
-  'SELECT * FROM products WHERE isSold = ? ORDER BY createdAt DESC',
-  [false]
-) as any[]
-```
-
-## Files to Update
-
-All files in `app/api/` that import from `@/lib/db` need to be updated:
-
-- ✅ `app/api/customer/registred-customers/route.ts` - Updated
-- ✅ `app/api/customer/new-customer/route.ts` - Updated
-- ✅ `app/api/company/company-data/route.ts` - Updated
-- ✅ `app/api/product/exist-product/route.ts` - Updated
-- ✅ `app/api/currency/today/route.ts` - Updated
-- ⚠️ All other API routes still need updating
-
-## Prisma Files to Remove
-
-- `prisma/schema.prisma` - Can be deleted (replaced by db.sql)
-- `prisma/` directory - Can be deleted if empty
-- `prisma.config.ts` - Already deleted
+- ✅ `app/api/customer/registred-customers/route.ts`
+- ✅ `app/api/customer/registered-customers/route.ts`
+- ✅ `app/api/customer/new-customer/route.ts`
+- ✅ `app/api/customer/search-customer/route.ts`
+- ✅ `app/api/customer/update-customer/[customerId]/route.ts`
+- ✅ `app/api/customer/delete-customer/[customerId]/route.ts`
+- ✅ `app/api/customer/[customerId]/route.ts`
+- ✅ `app/api/company/company-data/route.ts`
+- ✅ `app/api/company/edit-company/route.ts`
+- ✅ `app/api/product/exist-product/route.ts`
+- ✅ `app/api/product/list/route.ts`
+- ✅ `app/api/product/new-product/route.ts`
+- ✅ `app/api/product/today/route.ts`
+- ✅ `app/api/product/total/route.ts`
+- ✅ `app/api/product/add-fragment/route.ts`
+- ✅ `app/api/product/[id]/route.ts`
+- ✅ `app/api/product/[id]/sold/route.ts`
+- ✅ `app/api/product/delete-product/[productId]/route.ts`
+- ✅ `app/api/product/search-barcode/[code]/route.ts`
+- ✅ `app/api/currency/today/route.ts`
+- ✅ `app/api/transaction/create-transaction/route.ts`
+- ✅ `app/api/transaction/return/route.ts`
+- ✅ `app/api/transaction/daily-report/route.ts`
+- ✅ `app/api/transaction/loan-transaction/route.ts`
+- ✅ `app/api/transaction/to-pay/route.ts`
+- ✅ `app/api/transaction/sold/route.ts`
+- ✅ `app/api/transaction/sale-report/route.ts`
+- ✅ `app/api/transaction/pay-loan/route.ts`
+- ✅ `app/api/transaction/daily-sum/route.ts`
+- ✅ `app/api/transaction/loan-list/route.ts`
+- ✅ `app/api/expense/add-expense/route.ts`
+- ✅ `app/api/expense/daily/route.ts`
+- ✅ `app/api/expense/search/route.ts`
+- ✅ `app/api/expense/all/route.ts`
+- ✅ `app/api/expense/total/route.ts`
+- ✅ `app/api/expense/list/route.ts`
+- ✅ `app/api/expense/[id]/route.ts`
+- ✅ `app/api/expense/delete-spent/[spentId]/route.ts`
+- ✅ `app/api/expense/update-spent/[id]/route.ts`
+- ✅ `app/api/expense/get-spent/route.ts`
+- ✅ All supplier, trader, supplier-product, storage routes
 
 ## Environment Variables
 
@@ -89,9 +95,14 @@ await query('DELETE FROM table_name WHERE id = ?', [id])
 
 ## JSON Fields
 
-For JSON fields (like `product` and `receipt` in transactions table), use `JSON.stringify()` when inserting and `JSON.parse()` when reading:
+For JSON fields (like `product` and `receipt` in transactions table), use `JSON.stringify()` when inserting. When reading, mysql2 typically returns parsed objects; use a fallback for robustness:
 
 ```typescript
+function parseJson(val: unknown): any {
+  if (typeof val === 'string') return JSON.parse(val)
+  return val
+}
+
 // Insert
 await query(
   'INSERT INTO transactions (customerId, product, receipt) VALUES (?, ?, ?)',
@@ -101,7 +112,7 @@ await query(
 // Read
 const transactions = await query('SELECT * FROM transactions') as any[]
 transactions.forEach(t => {
-  t.product = JSON.parse(t.product)
-  t.receipt = JSON.parse(t.receipt)
+  t.product = parseJson(t.product)
+  t.receipt = parseJson(t.receipt)
 })
 ```

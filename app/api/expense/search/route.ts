@@ -4,20 +4,18 @@ import { query } from '@/lib/db'
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
-    const search = searchParams.get('search')
+    const search = searchParams.get('search')?.trim()
 
-    let where: any = {}
+    let expense: any[]
 
     if (search) {
-      where.type = {
-        contains: search,
-        mode: 'insensitive'
-      }
+      expense = (await query(
+        'SELECT * FROM expenses WHERE type LIKE ?',
+        [`%${search}%`]
+      )) as any[]
+    } else {
+      expense = (await query('SELECT * FROM expenses')) as any[]
     }
-
-    const expense = await prisma.expenses.findMany({
-      where
-    })
 
     return NextResponse.json({
       success: true,

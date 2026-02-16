@@ -1,5 +1,11 @@
 -- Jewelry Store Management System Database Schema
 -- MySQL Database Schema
+--
+-- This schema is used by the Next.js API with raw SQL (mysql2).
+-- No Prisma ORM is required. Use lib/db.ts query() for all database access.
+--
+-- Setup: mysql -u root -p < db.sql
+-- Or import via your MySQL client.
 
 CREATE DATABASE IF NOT EXISTS jewelry_store;
 USE jewelry_store;
@@ -371,3 +377,5 @@ ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash);
 -- ALTER TABLE users ADD COLUMN password_hash VARCHAR(255) NULL, ADD COLUMN role ENUM('admin','user') DEFAULT 'admin', ADD COLUMN is_active BOOLEAN DEFAULT TRUE;
 -- UPDATE users SET password_hash = password WHERE password_hash IS NULL;
 -- Then insert/update test user: run the INSERT above (after ensuring password_hash column exists).
+
+-- Optional: Migration for existing customers table missing newer columns (see commented ALTERs above in customers section).
