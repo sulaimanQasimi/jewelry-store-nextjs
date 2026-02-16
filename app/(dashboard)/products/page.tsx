@@ -9,6 +9,7 @@ import DataTable from '@/components/ui/DataTable'
 import type { ColumnDef } from '@/components/ui/DataTable'
 import ProductFormModal from '@/components/product/ProductFormModal'
 import type { ProductFormData } from '@/components/product/ProductFormModal'
+import { ChevronDown, ChevronUp, Filter } from 'lucide-react'
 
 interface Product {
   id: number
@@ -46,14 +47,66 @@ function normalizeProduct(row: Record<string, unknown>): Product {
   }
 }
 
+interface FilterState {
+  search: string
+  isSold: string
+  type: string
+  gramMin: string
+  gramMax: string
+  karatMin: string
+  karatMax: string
+  priceMin: string
+  priceMax: string
+  dateFrom: string
+  dateTo: string
+  isFragment: string
+  sortBy: string
+  sortOrder: string
+}
+
+const emptyFilters: FilterState = {
+  search: '',
+  isSold: '',
+  type: '',
+  gramMin: '',
+  gramMax: '',
+  karatMin: '',
+  karatMax: '',
+  priceMin: '',
+  priceMax: '',
+  dateFrom: '',
+  dateTo: '',
+  isFragment: '',
+  sortBy: 'createdAt',
+  sortOrder: 'desc'
+}
+
+function countActiveFilters(f: FilterState): number {
+  let c = 0
+  if (f.search) c++
+  if (f.isSold !== '') c++
+  if (f.type) c++
+  if (f.gramMin) c++
+  if (f.gramMax) c++
+  if (f.karatMin) c++
+  if (f.karatMax) c++
+  if (f.priceMin) c++
+  if (f.priceMax) c++
+  if (f.dateFrom) c++
+  if (f.dateTo) c++
+  if (f.isFragment !== '') c++
+  return c
+}
+
 export default function ProductsPage() {
   const router = useRouter()
   const [data, setData] = useState<Product[]>([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(10)
-  const [search, setSearch] = useState('')
-  const [isSoldFilter, setIsSoldFilter] = useState<string>('')
+  const [filters, setFilters] = useState<FilterState>(emptyFilters)
+  const [appliedFilters, setAppliedFilters] = useState<FilterState>(emptyFilters)
+  const [advancedOpen, setAdvancedOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
@@ -62,9 +115,23 @@ export default function ProductsPage() {
   const fetchProducts = useCallback(async () => {
     setLoading(true)
     try {
+      const f = appliedFilters
       const params: Record<string, string | number> = { page, limit }
-      if (search) params.search = search
-      if (isSoldFilter !== '') params.isSold = isSoldFilter
+      if (f.search) params.search = f.search
+      if (f.isSold !== '') params.isSold = f.isSold
+      if (f.type) params.type = f.type
+      if (f.gramMin) params.gramMin = f.gramMin
+      if (f.gramMax) params.gramMax = f.gramMax
+      if (f.karatMin) params.karatMin = f.karatMin
+      if (f.karatMax) params.karatMax = f.karatMax
+      if (f.priceMin) params.priceMin = f.priceMin
+      if (f.priceMax) params.priceMax = f.priceMax
+      if (f.dateFrom) params.dateFrom = f.dateFrom
+      if (f.dateTo) params.dateTo = f.dateTo
+      if (f.isFragment !== '') params.isFragment = f.isFragment
+      if (f.sortBy) params.sortBy = f.sortBy
+      if (f.sortOrder) params.sortOrder = f.sortOrder
+
       const { data: res } = await axios.get<{ success?: boolean; data?: Record<string, unknown>[]; total?: number }>(
         '/api/product/list',
         { params }
@@ -79,7 +146,7 @@ export default function ProductsPage() {
     } finally {
       setLoading(false)
     }
-  }, [page, limit, search, isSoldFilter])
+  }, [page, limit, appliedFilters])
 
   useEffect(() => {
     fetchProducts()
@@ -108,6 +175,23 @@ export default function ProductsPage() {
       setDeletingId(null)
     }
   }
+
+  const updateFilter = (key: keyof FilterState, value: string) => {
+    setFilters((prev) => ({ ...prev, [key]: value }))
+  }
+
+  const resetFilters = () => {
+    setFilters(emptyFilters)
+    setAppliedFilters(emptyFilters)
+    setPage(1)
+  }
+
+  const applyFilters = () => {
+    setAppliedFilters(filters)
+    setPage(1)
+  }
+
+  const activeCount = countActiveFilters(appliedFilters)
 
   const columns: ColumnDef<Product>[] = [
     {
@@ -189,24 +273,205 @@ export default function ProductsPage() {
 
       <section>
         <h2 className="font-heading text-lg font-semibold text-charcoal mb-4">لیست اجناس</h2>
+
         <FilterBar
-          search={search}
-          onSearchChange={setSearch}
+          search={filters.search}
+          onSearchChange={(v) => updateFilter('search', v)}
           searchPlaceholder="نام، نوع یا بارکود..."
-          onReset={() => { setSearch(''); setIsSoldFilter('') }}
+          onReset={resetFilters}
+          extraFilters={
+            <button
+              type="button"
+              onClick={applyFilters}
+              className="btn-luxury btn-luxury-primary py-2 px-4"
+            >
+              اعمال
+            </button>
+          }
         />
-        <div className="mt-2 flex gap-2 items-center">
-          <label className="text-sm text-charcoal-soft">وضعیت:</label>
-          <select
-            value={isSoldFilter}
-            onChange={(e) => setIsSoldFilter(e.target.value)}
-            className="input-luxury w-40"
+
+        <div className="mt-4 space-y-4">
+          <button
+            type="button"
+            onClick={() => setAdvancedOpen((o) => !o)}
+            className="flex items-center gap-2 text-charcoal font-medium hover:text-gold-600 transition-colors"
           >
-            <option value="">همه</option>
-            <option value="false">موجود</option>
-            <option value="true">فروخته شده</option>
-          </select>
+            <Filter className="h-4 w-4" />
+            فیلتر پیشرفته
+            {activeCount > 0 && (
+              <span className="bg-gold-500 text-white text-xs px-2 py-0.5 rounded-full">
+                {activeCount}
+              </span>
+            )}
+            {advancedOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </button>
+
+          {advancedOpen && (
+            <div className="card-luxury p-6 border border-gold-200/60">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-1">وضعیت فروش</label>
+                  <select
+                    value={filters.isSold}
+                    onChange={(e) => updateFilter('isSold', e.target.value)}
+                    className="input-luxury w-full"
+                  >
+                    <option value="">همه</option>
+                    <option value="false">موجود</option>
+                    <option value="true">فروخته شده</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-1">نوع</label>
+                  <input
+                    type="text"
+                    value={filters.type}
+                    onChange={(e) => updateFilter('type', e.target.value)}
+                    placeholder="مثال: انگشتر"
+                    className="input-luxury w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-1">شکسته</label>
+                  <select
+                    value={filters.isFragment}
+                    onChange={(e) => updateFilter('isFragment', e.target.value)}
+                    className="input-luxury w-full"
+                  >
+                    <option value="">همه</option>
+                    <option value="false">عادی</option>
+                    <option value="true">شکسته</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-1">مرتب‌سازی</label>
+                  <select
+                    value={filters.sortBy}
+                    onChange={(e) => updateFilter('sortBy', e.target.value)}
+                    className="input-luxury w-full"
+                  >
+                    <option value="createdAt">تاریخ ثبت</option>
+                    <option value="productName">نام</option>
+                    <option value="gram">وزن</option>
+                    <option value="karat">عیار</option>
+                    <option value="purchasePriceToAfn">قیمت خرید</option>
+                    <option value="bellNumber">شماره بل</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-1">ترتیب</label>
+                  <select
+                    value={filters.sortOrder}
+                    onChange={(e) => updateFilter('sortOrder', e.target.value)}
+                    className="input-luxury w-full"
+                  >
+                    <option value="desc">نزولی</option>
+                    <option value="asc">صعودی</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-1">وزن از (گرم)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={filters.gramMin}
+                    onChange={(e) => updateFilter('gramMin', e.target.value)}
+                    placeholder="حداقل"
+                    className="input-luxury w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-1">وزن تا (گرم)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={filters.gramMax}
+                    onChange={(e) => updateFilter('gramMax', e.target.value)}
+                    placeholder="حداکثر"
+                    className="input-luxury w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-1">عیار از</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={filters.karatMin}
+                    onChange={(e) => updateFilter('karatMin', e.target.value)}
+                    placeholder="حداقل"
+                    className="input-luxury w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-1">عیار تا</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={filters.karatMax}
+                    onChange={(e) => updateFilter('karatMax', e.target.value)}
+                    placeholder="حداکثر"
+                    className="input-luxury w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-1">قیمت از (افغانی)</label>
+                  <input
+                    type="number"
+                    step="1"
+                    min="0"
+                    value={filters.priceMin}
+                    onChange={(e) => updateFilter('priceMin', e.target.value)}
+                    placeholder="حداقل"
+                    className="input-luxury w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-1">قیمت تا (افغانی)</label>
+                  <input
+                    type="number"
+                    step="1"
+                    min="0"
+                    value={filters.priceMax}
+                    onChange={(e) => updateFilter('priceMax', e.target.value)}
+                    placeholder="حداکثر"
+                    className="input-luxury w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-1">از تاریخ</label>
+                  <input
+                    type="date"
+                    value={filters.dateFrom}
+                    onChange={(e) => updateFilter('dateFrom', e.target.value)}
+                    className="input-luxury w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-1">تا تاریخ</label>
+                  <input
+                    type="date"
+                    value={filters.dateTo}
+                    onChange={(e) => updateFilter('dateTo', e.target.value)}
+                    className="input-luxury w-full"
+                  />
+                </div>
+              </div>
+              <div className="flex gap-3 mt-4 pt-4 border-t border-gold-200">
+                <button type="button" onClick={applyFilters} className="btn-luxury btn-luxury-primary px-6 py-2">
+                  اعمال فیلتر
+                </button>
+                <button type="button" onClick={resetFilters} className="btn-luxury btn-luxury-outline px-6 py-2">
+                  پاک کردن همه
+                </button>
+              </div>
+            </div>
+          )}
         </div>
+
         <div className="mt-4">
           <DataTable<Product>
             columns={columns}
