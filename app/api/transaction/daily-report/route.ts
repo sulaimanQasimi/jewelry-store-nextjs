@@ -3,9 +3,12 @@ import { spGetDailyTransactions, parseJson } from '@/lib/db-sp'
 
 export async function GET(request: NextRequest) {
   try {
-    const startOfDay = new Date()
+    const searchParams = request.nextUrl.searchParams
+    const dateStr = searchParams.get('date')?.trim() || new Date().toISOString().slice(0, 10)
+
+    const startOfDay = new Date(dateStr)
     startOfDay.setHours(0, 0, 0, 0)
-    const endOfDay = new Date()
+    const endOfDay = new Date(dateStr)
     endOfDay.setHours(23, 59, 59, 999)
 
     const transactions = await spGetDailyTransactions(startOfDay, endOfDay)
@@ -18,13 +21,13 @@ export async function GET(request: NextRequest) {
         _id: trx.id,
         customerName: trx.customerName,
         customerPhone: trx.customerPhone,
-        discount: receipt.discount,
-        totalAmount: receipt.totalAmount,
-        paidAmount: receipt.paidAmount,
-        remainingAmount: receipt.remainingAmount,
+        discount: receipt?.discount ?? 0,
+        totalAmount: receipt?.totalAmount ?? 0,
+        paidAmount: receipt?.paidAmount ?? 0,
+        remainingAmount: receipt?.remainingAmount ?? 0,
         bellNumber: trx.bellNumber,
         date: trx.createdAt,
-        product: products.map((p: any) => ({
+        product: (products || []).map((p: any) => ({
           productId: p.productId,
           name: p.productName,
           purchase: p.purchasePriceToAfn,
@@ -35,10 +38,6 @@ export async function GET(request: NextRequest) {
         }))
       }
     })
-
-    if (daily.length === 0) {
-      return NextResponse.json({ success: false, message: 'دیتا وجود ندارد' })
-    }
 
     return NextResponse.json({ success: true, daily })
   } catch (error: any) {
