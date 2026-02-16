@@ -1,24 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { query } from '@/lib/db'
-
-function parseJson(val: unknown): any {
-  if (typeof val === 'string') return JSON.parse(val)
-  return val
-}
+import { spGetCustomerLoans, parseJson } from '@/lib/db-sp'
 
 export async function GET(request: NextRequest) {
   try {
-    const transactions = (await query(
-      'SELECT * FROM transactions ORDER BY createdAt DESC'
-    )) as any[]
+    const transactions = await spGetCustomerLoans()
 
-    // Filter transactions with remaining amount > 0
     const loans = transactions
-      .filter((trx) => {
+      .filter((trx: any) => {
         const receipt = parseJson(trx.receipt) as any
         return receipt?.remainingAmount > 0
       })
-      .reduce((acc: any, trx) => {
+      .reduce((acc: any, trx: any) => {
         const receipt = parseJson(trx.receipt) as any
         if (!acc[trx.customerId]) {
           acc[trx.customerId] = {
@@ -41,7 +33,9 @@ export async function GET(request: NextRequest) {
         return acc
       }, {})
 
-    const loansArray = Object.values(loans).sort((a: any, b: any) => b.totalLoan - a.totalLoan)
+    const loansArray = Object.values(loans).sort(
+      (a: any, b: any) => b.totalLoan - a.totalLoan
+    )
 
     if (loansArray.length === 0) {
       return NextResponse.json({

@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { query } from '@/lib/db'
-
-function parseJson(val: unknown): any {
-  if (typeof val === 'string') return JSON.parse(val)
-  return val
-}
+import { spGetDailyTransactions, parseJson } from '@/lib/db-sp'
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,14 +8,9 @@ export async function GET(request: NextRequest) {
     const endOfDay = new Date()
     endOfDay.setHours(23, 59, 59, 999)
 
-    const transactions = (await query(
-      `SELECT * FROM transactions 
-       WHERE createdAt >= ? AND createdAt <= ? 
-       ORDER BY createdAt DESC`,
-      [startOfDay, endOfDay]
-    )) as any[]
+    const transactions = await spGetDailyTransactions(startOfDay, endOfDay)
 
-    const daily = transactions.map((trx) => {
+    const daily = transactions.map((trx: any) => {
       const products = parseJson(trx.product) as any[]
       const receipt = parseJson(trx.receipt) as any
 

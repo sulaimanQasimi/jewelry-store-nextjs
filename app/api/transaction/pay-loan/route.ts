@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/lib/db'
-
-function parseJson(val: unknown): any {
-  if (typeof val === 'string') return JSON.parse(val)
-  return val
-}
+import { spPayLoan, fnGetCurrencyRate, parseJson } from '@/lib/db-sp'
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,47 +18,22 @@ export async function POST(request: NextRequest) {
     }
 
     const today = new Date().toISOString().split('T')[0]
-    const rates = (await query(
-      'SELECT * FROM currency_rates WHERE date = ? LIMIT 1',
-      [today]
-    )) as any[]
-    const rate = rates?.[0]
+    const rate = await fnGetCurrencyRate(today)
 
     if (!rate) {
       return NextResponse.json({ success: false, message: 'نرخ ارز امروز موجود نیست' })
     }
 
-    const paidAmount = currency === 'دالر' ? paid * rate.usdToAfn : paid
-
-    const transactions = (await query(
-      'SELECT * FROM transactions WHERE id = ? LIMIT 1',
-      [parseInt(transactionId)]
-    )) as any[]
-    const transaction = transactions?.[0]
-
-    if (!transaction) {
-      return NextResponse.json({ success: false, message: 'ترانسکشن یافت نشد' })
-    }
-
-    const receipt = parseJson(transaction.receipt) as any
-    const remaining = receipt.remainingAmount
-
-    if (remaining <= 0) {
-      return NextResponse.json({ success: false, message: 'قبلاً تسویه شده است' })
-    }
-
-    const paidToApply = Math.min(paidAmount, remaining)
-
-    const updatedReceipt = {
-      ...receipt,
-      paidAmount: receipt.paidAmount + paidToApply,
-      remainingAmount: receipt.remainingAmount - paidToApply
-    }
-
-    await query(
-      'UPDATE transactions SET receipt = ? WHERE id = ?',
-      [JSON.stringify(updatedReceipt), parseInt(transactionId)]
+    const { success, errorMsg } = await spPayLoan(
+      parseInt(transactionId),
+      paid,
+      currency || 'افغانی',
+      rate
     )
+
+    if (!success) {
+      return NextResponse.json({ success: false, message: errorMsg || 'خطا در پرداخت' })
+    }
 
     const updated = (await query(
       'SELECT * FROM transactions WHERE id = ? LIMIT 1',
