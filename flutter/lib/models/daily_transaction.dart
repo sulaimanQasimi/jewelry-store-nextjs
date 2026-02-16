@@ -26,7 +26,7 @@ class DailyTransaction {
   factory DailyTransaction.fromJson(Map<String, dynamic> json) {
     final productList = json['product'] as List<dynamic>? ?? [];
     return DailyTransaction(
-      id: json['_id']?.toString() ?? '',
+      id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
       customerName: json['customerName'] as String?,
       customerPhone: json['customerPhone'] as String?,
       discount: (json['discount'] as num?)?.toDouble() ?? 0,

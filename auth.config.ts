@@ -32,6 +32,8 @@ export default {
   callbacks: {
     async authorized({ auth: session, request }) {
       const { pathname } = request.nextUrl
+      // Allow CORS preflight (OPTIONS) without auth - required for cross-origin Flutter web
+      if (request.method === 'OPTIONS') return true
       if (pathname === '/' || pathname === '/login') return true
       if (pathname.startsWith('/api/auth')) return true
       if (pathname.startsWith('/_next')) return true
