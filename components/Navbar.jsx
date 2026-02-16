@@ -32,7 +32,7 @@ const Navbar = () => {
       <div className="flex items-center gap-4">
         <button
           type="button"
-          onClick={() => router.push('/company-information')}
+          onClick={() => router.push('/dashboard')}
           className="group relative rounded-full p-1 transition-all duration-300 hover:scale-105"
         >
           <div className="absolute inset-0 rounded-full bg-gradient-to-r from-gold-300 to-gold-500 blur opacity-40 group-hover:opacity-70 transition-opacity" />

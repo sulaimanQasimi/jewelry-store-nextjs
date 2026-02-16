@@ -14,7 +14,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    if (status === 'authenticated') router.push('/company-information')
+    if (status === 'authenticated') router.push('/dashboard')
   }, [status, router])
 
   const onSubmitHandler = async (event: React.FormEvent) => {
@@ -28,7 +28,7 @@ export default function LoginPage() {
       })
       if (result?.ok) {
         toast.success('ورود موفقیت‌آمیز بود')
-        router.push('/company-information')
+        router.push('/dashboard')
         return
       }
       if (result?.error) {

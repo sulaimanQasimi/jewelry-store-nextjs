@@ -20,17 +20,26 @@ import {
   BarChart3,
   Info,
   ChevronLeft,
+  ChevronDown,
+  ChevronUp,
+  LayoutDashboard,
   Layers,
   UserCircle,
   Wallet,
   DollarSign,
   FileText,
-  ShoppingCart,
-  ChevronDown,
-  ChevronUp
+  ShoppingCart
 } from 'lucide-react'
 
 const groups = [
+  {
+    id: 'dashboard',
+    label: 'داشبورد',
+    icon: LayoutDashboard,
+    items: [
+      { href: '/dashboard', icon: LayoutDashboard, label: 'خلاصه', color: 'from-gold-500 to-amber-600' }
+    ]
+  },
   {
     id: 'sales',
     label: 'فروش و خرید',
