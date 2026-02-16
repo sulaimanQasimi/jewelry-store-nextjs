@@ -6,7 +6,7 @@
 --
 -- Setup: mysql -u root -p < db.sql
 -- Or import via your MySQL client.
-
+Drop Database If Exists jewelry_store;
 CREATE DATABASE IF NOT EXISTS jewelry_store;
 USE jewelry_store;
 

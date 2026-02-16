@@ -6,13 +6,12 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const usd = Number(body?.usd ?? 0)
     const afn = Number(body?.afn ?? 0)
-
-    const today = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
+    const dateStr = body?.date?.trim() || new Date().toISOString().slice(0, 10) // YYYY-MM-DD
 
     await query(
       `INSERT INTO storages (date, usd, afn) VALUES (?, ?, ?)
        ON DUPLICATE KEY UPDATE usd = VALUES(usd), afn = VALUES(afn)`,
-      [today, usd, afn]
+      [dateStr, usd, afn]
     )
 
     return NextResponse.json({

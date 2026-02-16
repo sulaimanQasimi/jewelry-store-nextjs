@@ -170,7 +170,7 @@ export default function LoanReportFormModal({
               <option value="">انتخاب مشتری...</option>
               {customers.map((c) => (
                 <option key={c.id} value={c.id}>
-                  {(c as { customerName?: string }).customerName ?? (c as { name?: string }).name ?? ''} - {c.phone}
+                  {c.customerName ?? c.name ?? ''} - {c.phone}
                 </option>
               ))}
             </select>

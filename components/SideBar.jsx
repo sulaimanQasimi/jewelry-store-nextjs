@@ -19,20 +19,32 @@ import {
   CalendarCheck,
   BarChart3,
   Info,
-  ChevronLeft
+  ChevronLeft,
+  Layers,
+  UserCircle,
+  Wallet,
+  DollarSign,
+  FileText,
+  ShoppingCart
 } from 'lucide-react'
 
 const items = [
   { href: '/sale-product', icon: Gem, label: 'فروش جنس', color: 'from-pink-500 to-rose-500' },
   { href: '/products', icon: Package, label: 'اجناس', color: 'from-amber-500 to-yellow-600' },
+  { href: '/product-masters', icon: Layers, label: 'محصولات اصلی', color: 'from-amber-600 to-orange-600' },
   { href: '/product-from-supplier', icon: ShoppingBag, label: 'خرید جنس از تمویل کننده', color: 'from-sky-500 to-blue-600' },
+  { href: '/purchases', icon: ShoppingCart, label: 'خریدها', color: 'from-sky-600 to-blue-700' },
   { href: '/add-fragment', icon: Puzzle, label: 'خرید شکسته', color: 'from-amber-400 to-orange-500' },
   { href: '/ware-house', icon: Warehouse, label: 'انبار', color: 'from-emerald-400 to-green-600' },
   { href: '/expenses', icon: Receipt, label: 'مصارف', color: 'from-red-400 to-red-600' },
+  { href: '/personal-expenses', icon: Wallet, label: 'مصارف شخصی', color: 'from-red-500 to-rose-600' },
   { href: '/loan-management', icon: CreditCard, label: 'بلانس مشتریان', color: 'from-violet-500 to-purple-600' },
+  { href: '/loan-reports', icon: FileText, label: 'گزارش قرض', color: 'from-violet-600 to-purple-700' },
   { href: '/register-product', icon: Hammer, label: 'ثبت اجناس شکسته', color: 'from-indigo-400 to-indigo-600' },
   { href: '/register-supplier-product', icon: PackagePlus, label: 'ثبت اجناس', color: 'from-teal-400 to-teal-600' },
   { href: '/suppliers', icon: Users, label: 'لیست تمویل کنندگان', color: 'from-cyan-400 to-cyan-600' },
+  { href: '/persons', icon: UserCircle, label: 'اشخاص', color: 'from-cyan-500 to-teal-600' },
+  { href: '/currency-rates', icon: DollarSign, label: 'نرخ ارز', color: 'from-green-500 to-emerald-600' },
   { href: '/customer-registration', icon: UserPlus, label: 'ثبت مشتریان', color: 'from-fuchsia-400 to-pink-600' },
   { href: '/new-trade', icon: Handshake, label: 'معامله داران', color: 'from-lime-400 to-green-600' },
   { href: '/daily-report', icon: CalendarCheck, label: 'گزارش یومیه', color: 'from-orange-400 to-amber-600' },
