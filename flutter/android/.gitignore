@@ -7,8 +7,5 @@ gradle-wrapper.jar
 GeneratedPluginRegistrant.java
 .cxx/
 
-# Remember to never publicly share your keystore.
-# See https://flutter.dev/to/reference-keystore
-key.properties
-**/*.keystore
-**/*.jks
+# CI/CD uses committed keystore (key.properties, app-release.keystore)
+# For production, use secrets and remove these from git

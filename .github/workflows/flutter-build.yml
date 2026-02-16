@@ -1,0 +1,163 @@
+name: Flutter Build
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+  workflow_dispatch:
+
+env:
+  FLUTTER_VERSION: "3.24.0"
+  # Hardcoded signing (Android)
+  ANDROID_KEYSTORE_PASSWORD: "jewelrystore123"
+  ANDROID_KEY_PASSWORD: "jewelrystore123"
+  ANDROID_KEY_ALIAS: "jewelry-store"
+  # API base URL for build
+  BASE_URL: "http://localhost:3000"
+
+jobs:
+  build-android:
+    name: Android
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+        working-directory: flutter
+
+      - name: Accept Android licenses
+        run: yes | flutter doctor --android-licenses || true
+        working-directory: flutter
+
+      - name: Build APK
+        run: |
+          flutter build apk --release \
+            --dart-define=BASE_URL=${{ env.BASE_URL }} \
+            --target-platform android-arm64
+        working-directory: flutter
+
+      - name: Build App Bundle
+        run: |
+          flutter build appbundle --release \
+            --dart-define=BASE_URL=${{ env.BASE_URL }}
+        working-directory: flutter
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: flutter/build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload App Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-appbundle
+          path: flutter/build/app/outputs/bundle/release/app-release.aab
+
+  build-ios:
+    name: iOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+        working-directory: flutter
+
+      - name: Install CocoaPods
+        run: |
+          cd flutter/ios
+          pod install
+
+      - name: Build iOS (no codesign - requires Apple Developer for signed IPA)
+        run: |
+          flutter build ios --release --no-codesign \
+            --dart-define=BASE_URL=${{ env.BASE_URL }}
+        working-directory: flutter
+
+      - name: Upload iOS build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build
+          path: flutter/build/ios/
+
+  build-windows:
+    name: Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Enable Windows desktop
+        run: flutter config --enable-windows-desktop
+        working-directory: flutter
+
+      - name: Get dependencies
+        run: flutter pub get
+        working-directory: flutter
+
+      - name: Build Windows
+        run: |
+          flutter build windows --release `
+            --dart-define=BASE_URL=${{ env.BASE_URL }}
+        working-directory: flutter
+        shell: pwsh
+
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: flutter/build/windows/x64/runner/Release/
+
+  build-web:
+    name: Web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+        working-directory: flutter
+
+      - name: Build Web
+        run: |
+          flutter build web --release \
+            --dart-define=BASE_URL=${{ env.BASE_URL }} \
+            --web-renderer html
+        working-directory: flutter
+
+      - name: Upload Web build
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: flutter/build/web/
