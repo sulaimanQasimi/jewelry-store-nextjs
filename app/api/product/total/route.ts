@@ -3,12 +3,12 @@ import { query } from '@/lib/db'
 
 export async function GET(request: NextRequest) {
   try {
-    const products = await prisma.product.findMany({
-      where: { isSold: false }
-    })
+    const products = (await query(
+      'SELECT * FROM products WHERE isSold = 0'
+    )) as any[]
 
     // Group by productName and karat
-    const grouped = products.reduce((acc: any, product) => {
+    const grouped = products.reduce((acc: any, product: any) => {
       const key = `${product.productName}-${product.karat}`
       if (!acc[key]) {
         acc[key] = {

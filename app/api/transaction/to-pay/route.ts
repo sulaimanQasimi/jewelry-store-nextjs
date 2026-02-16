@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 
+function parseJson(val: unknown): any {
+  if (typeof val === 'string') return JSON.parse(val)
+  return val
+}
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
@@ -13,14 +18,14 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    const transactions = await prisma.transaction.findMany({
-      where: { customerId: parseInt(customerId) },
-      orderBy: { createdAt: 'desc' }
-    })
+    const transactions = (await query(
+      'SELECT * FROM transactions WHERE customerId = ? ORDER BY createdAt DESC',
+      [parseInt(customerId)]
+    )) as any[]
 
     const loan = transactions.map((trx) => {
-      const products = trx.product as any[]
-      const receipt = trx.receipt as any
+      const products = parseJson(trx.product) as any[]
+      const receipt = parseJson(trx.receipt) as any
 
       return {
         _id: trx.id,

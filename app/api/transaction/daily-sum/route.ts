@@ -1,22 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 
+function parseJson(val: unknown): any {
+  if (typeof val === 'string') return JSON.parse(val)
+  return val
+}
+
 export async function GET(request: NextRequest) {
   try {
     const startOfDay = new Date()
     startOfDay.setHours(0, 0, 0, 0)
-
     const endOfDay = new Date()
     endOfDay.setHours(23, 59, 59, 999)
 
-    const transactions = await prisma.transaction.findMany({
-      where: {
-        createdAt: {
-          gte: startOfDay,
-          lte: endOfDay
-        }
-      }
-    })
+    const transactions = (await query(
+      'SELECT * FROM transactions WHERE createdAt >= ? AND createdAt <= ?',
+      [startOfDay, endOfDay]
+    )) as any[]
 
     if (transactions.length === 0) {
       return NextResponse.json({
@@ -26,9 +26,11 @@ export async function GET(request: NextRequest) {
     }
 
     const today = new Date().toISOString().split('T')[0]
-    const rate = await prisma.currencyRate.findUnique({
-      where: { date: today }
-    })
+    const rates = (await query(
+      'SELECT * FROM currency_rates WHERE date = ? LIMIT 1',
+      [today]
+    )) as any[]
+    const rate = rates?.[0]
 
     let allProducts: any[] = []
     let totalPurchase = 0
@@ -38,8 +40,8 @@ export async function GET(request: NextRequest) {
     let totalDiscount = 0
 
     for (const trx of transactions) {
-      const products = trx.product as any[]
-      const receipt = trx.receipt as any
+      const products = parseJson(trx.product) as any[]
+      const receipt = parseJson(trx.receipt) as any
 
       const isDollarSale = products.some((p: any) => p.salePrice?.currency === 'دالر')
 

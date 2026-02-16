@@ -3,15 +3,17 @@ import { query } from '@/lib/db'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
     const { isSold } = await request.json()
 
-    const productIsSold = await prisma.product.findUnique({
-      where: { id: parseInt(id) }
-    })
+    const products = (await query(
+      'SELECT * FROM products WHERE id = ? LIMIT 1',
+      [parseInt(id)]
+    )) as any[]
+    const productIsSold = products?.[0]
 
     if (!productIsSold) {
       return NextResponse.json({ success: false, message: 'جنس پیدا نشد' })
@@ -23,10 +25,16 @@ export async function POST(
       })
     }
 
-    const updatedProduct = await prisma.product.update({
-      where: { id: parseInt(id) },
-      data: { isSold }
-    })
+    await query(
+      'UPDATE products SET isSold = ? WHERE id = ?',
+      [isSold ? 1 : 0, parseInt(id)]
+    )
+
+    const updated = (await query(
+      'SELECT * FROM products WHERE id = ? LIMIT 1',
+      [parseInt(id)]
+    )) as any[]
+    const updatedProduct = updated?.[0]
 
     return NextResponse.json({
       success: true,

@@ -1,27 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 
+function parseJson(val: unknown): any {
+  if (typeof val === 'string') return JSON.parse(val)
+  return val
+}
+
 export async function GET(request: NextRequest) {
   try {
     const startOfDay = new Date()
     startOfDay.setHours(0, 0, 0, 0)
-
     const endOfDay = new Date()
     endOfDay.setHours(23, 59, 59, 999)
 
-    const transactions = await prisma.transaction.findMany({
-      where: {
-        createdAt: {
-          gte: startOfDay,
-          lte: endOfDay
-        }
-      },
-      orderBy: { createdAt: 'desc' }
-    })
+    const transactions = (await query(
+      `SELECT * FROM transactions 
+       WHERE createdAt >= ? AND createdAt <= ? 
+       ORDER BY createdAt DESC`,
+      [startOfDay, endOfDay]
+    )) as any[]
 
     const daily = transactions.map((trx) => {
-      const products = trx.product as any[]
-      const receipt = trx.receipt as any
+      const products = parseJson(trx.product) as any[]
+      const receipt = parseJson(trx.receipt) as any
 
       return {
         _id: trx.id,

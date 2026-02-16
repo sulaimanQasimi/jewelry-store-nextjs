@@ -1,18 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 
+function parseJson(val: unknown): any {
+  if (typeof val === 'string') return JSON.parse(val)
+  return val
+}
+
 export async function GET(request: NextRequest) {
   try {
-    const transactions = await prisma.transaction.findMany()
+    const transactions = (await query(
+      'SELECT * FROM transactions ORDER BY createdAt DESC'
+    )) as any[]
 
     // Filter transactions with remaining amount > 0
     const loans = transactions
       .filter((trx) => {
-        const receipt = trx.receipt as any
+        const receipt = parseJson(trx.receipt) as any
         return receipt?.remainingAmount > 0
       })
       .reduce((acc: any, trx) => {
-        const receipt = trx.receipt as any
+        const receipt = parseJson(trx.receipt) as any
         if (!acc[trx.customerId]) {
           acc[trx.customerId] = {
             customerId: trx.customerId,

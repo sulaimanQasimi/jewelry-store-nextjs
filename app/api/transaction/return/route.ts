@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 
+function parseJson(val: unknown): any {
+  if (typeof val === 'string') return JSON.parse(val)
+  return val
+}
+
 export async function POST(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
@@ -14,9 +19,11 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    const transaction = await prisma.transaction.findUnique({
-      where: { id: parseInt(transactionId) }
-    })
+    const transactions = (await query(
+      'SELECT * FROM transactions WHERE id = ? LIMIT 1',
+      [parseInt(transactionId)]
+    )) as any[]
+    const transaction = transactions?.[0]
 
     if (!transaction) {
       return NextResponse.json({
@@ -25,8 +32,8 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    const products = transaction.product as any[]
-    const receipt = transaction.receipt as any
+    const products = parseJson(transaction.product) as any[]
+    const receipt = parseJson(transaction.receipt) as any
 
     const productIndex = products.findIndex(
       (p: any) => p.productId.toString() === productId
@@ -42,10 +49,10 @@ export async function POST(request: NextRequest) {
     const removedProduct = products[productIndex]
 
     // Mark product as not sold
-    await prisma.product.update({
-      where: { id: parseInt(removedProduct.productId) },
-      data: { isSold: false }
-    })
+    await query(
+      'UPDATE products SET isSold = 0 WHERE id = ?',
+      [parseInt(removedProduct.productId)]
+    )
 
     const productAmount = removedProduct.salePrice.price
     const updatedProducts = products.filter((_, index) => index !== productIndex)
@@ -60,9 +67,7 @@ export async function POST(request: NextRequest) {
 
     // If no products left, delete transaction
     if (updatedProducts.length === 0) {
-      await prisma.transaction.delete({
-        where: { id: parseInt(transactionId) }
-      })
+      await query('DELETE FROM transactions WHERE id = ?', [parseInt(transactionId)])
       return NextResponse.json({
         success: true,
         message: 'تمام محصولات حذف شد، ترانسکشن پاک گردید'
@@ -70,13 +75,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Update transaction
-    const updatedTransaction = await prisma.transaction.update({
-      where: { id: parseInt(transactionId) },
-      data: {
-        product: updatedProducts as any,
-        receipt: updatedReceipt as any
-      }
-    })
+    await query(
+      'UPDATE transactions SET product = ?, receipt = ? WHERE id = ?',
+      [JSON.stringify(updatedProducts), JSON.stringify(updatedReceipt), parseInt(transactionId)]
+    )
+
+    const updated = (await query(
+      'SELECT * FROM transactions WHERE id = ? LIMIT 1',
+      [parseInt(transactionId)]
+    )) as any[]
+    const updatedTransaction = updated?.[0] ?? null
+    if (updatedTransaction) {
+      updatedTransaction.product = parseJson(updatedTransaction.product)
+      updatedTransaction.receipt = parseJson(updatedTransaction.receipt)
+    }
 
     return NextResponse.json({
       success: true,

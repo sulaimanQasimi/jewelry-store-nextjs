@@ -3,10 +3,9 @@ import { query } from '@/lib/db'
 
 export async function GET(request: NextRequest) {
   try {
-    const dailyProduct = await prisma.product.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: 20
-    })
+    const dailyProduct = (await query(
+      'SELECT * FROM products ORDER BY createdAt DESC LIMIT 20'
+    )) as any[]
 
     if (dailyProduct.length === 0) {
       return NextResponse.json({

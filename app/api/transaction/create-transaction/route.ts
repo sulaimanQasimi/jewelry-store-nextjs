@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 
+function parseJson(val: unknown): any {
+  if (typeof val === 'string') return JSON.parse(val)
+  return val
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { customerId, product, receipt, bellNumber, note } = await request.json()
@@ -9,10 +14,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, message: 'مشتری وجود ندارد' })
     }
 
-    const customerData = await prisma.customer.findUnique({
-      where: { id: parseInt(customerId) }
-    })
+    const customers = (await query(
+      'SELECT id, customerName, phone FROM customers WHERE id = ? LIMIT 1',
+      [parseInt(customerId)]
+    )) as any[]
 
+    const customerData = customers?.[0]
     if (!customerData) {
       return NextResponse.json({ success: false, message: 'مشتری یافت نشد' })
     }
@@ -28,9 +35,11 @@ export async function POST(request: NextRequest) {
     }
 
     const today = new Date().toISOString().split('T')[0]
-    const rate = await prisma.currencyRate.findUnique({
-      where: { date: today }
-    })
+    const rates = (await query(
+      'SELECT * FROM currency_rates WHERE date = ? LIMIT 1',
+      [today]
+    )) as any[]
+    const rate = rates?.[0]
 
     if (!rate) {
       return NextResponse.json({
@@ -41,9 +50,11 @@ export async function POST(request: NextRequest) {
 
     // Mark products as sold
     for (const item of product) {
-      const prod = await prisma.product.findUnique({
-        where: { id: parseInt(item.productId) }
-      })
+      const prods = (await query(
+        'SELECT id, productName, isSold FROM products WHERE id = ? LIMIT 1',
+        [parseInt(item.productId)]
+      )) as any[]
+      const prod = prods?.[0]
 
       if (!prod) {
         throw new Error(`محصول با آی‌دی ${item.productId} پیدا نشد`)
@@ -53,10 +64,10 @@ export async function POST(request: NextRequest) {
         throw new Error(`محصول ${prod.productName} قبلاً فروخته شده`)
       }
 
-      await prisma.product.update({
-        where: { id: parseInt(item.productId) },
-        data: { isSold: true }
-      })
+      await query(
+        'UPDATE products SET isSold = 1 WHERE id = ?',
+        [parseInt(item.productId)]
+      )
     }
 
     // Convert dollar sales to AFN
@@ -83,17 +94,29 @@ export async function POST(request: NextRequest) {
       processedReceipt.remainingAmount *= rate.usdToAfn
     }
 
-    const newTransaction = await prisma.transaction.create({
-      data: {
-        customerId: parseInt(customerId),
+    await query(
+      `INSERT INTO transactions (customerId, customerName, customerPhone, product, receipt, bellNumber, note)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [
+        parseInt(customerId),
         customerName,
-        customerPhone: phone,
-        product: processedProduct as any,
-        receipt: processedReceipt as any,
+        phone,
+        JSON.stringify(processedProduct),
+        JSON.stringify(processedReceipt),
         bellNumber,
-        note: note || null
-      }
-    })
+        note || null
+      ]
+    )
+
+    const inserted = (await query(
+      'SELECT * FROM transactions WHERE bellNumber = ? ORDER BY id DESC LIMIT 1',
+      [bellNumber]
+    )) as any[]
+    const newTransaction = inserted?.[0] ?? null
+    if (newTransaction) {
+      newTransaction.product = parseJson(newTransaction.product)
+      newTransaction.receipt = parseJson(newTransaction.receipt)
+    }
 
     return NextResponse.json({
       success: true,

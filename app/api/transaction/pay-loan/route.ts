@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 
+function parseJson(val: unknown): any {
+  if (typeof val === 'string') return JSON.parse(val)
+  return val
+}
+
 export async function POST(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
@@ -17,9 +22,11 @@ export async function POST(request: NextRequest) {
     }
 
     const today = new Date().toISOString().split('T')[0]
-    const rate = await prisma.currencyRate.findUnique({
-      where: { date: today }
-    })
+    const rates = (await query(
+      'SELECT * FROM currency_rates WHERE date = ? LIMIT 1',
+      [today]
+    )) as any[]
+    const rate = rates?.[0]
 
     if (!rate) {
       return NextResponse.json({ success: false, message: 'نرخ ارز امروز موجود نیست' })
@@ -27,15 +34,17 @@ export async function POST(request: NextRequest) {
 
     const paidAmount = currency === 'دالر' ? paid * rate.usdToAfn : paid
 
-    const transaction = await prisma.transaction.findUnique({
-      where: { id: parseInt(transactionId) }
-    })
+    const transactions = (await query(
+      'SELECT * FROM transactions WHERE id = ? LIMIT 1',
+      [parseInt(transactionId)]
+    )) as any[]
+    const transaction = transactions?.[0]
 
     if (!transaction) {
       return NextResponse.json({ success: false, message: 'ترانسکشن یافت نشد' })
     }
 
-    const receipt = transaction.receipt as any
+    const receipt = parseJson(transaction.receipt) as any
     const remaining = receipt.remainingAmount
 
     if (remaining <= 0) {
@@ -50,12 +59,20 @@ export async function POST(request: NextRequest) {
       remainingAmount: receipt.remainingAmount - paidToApply
     }
 
-    const updatedTransaction = await prisma.transaction.update({
-      where: { id: parseInt(transactionId) },
-      data: {
-        receipt: updatedReceipt as any
-      }
-    })
+    await query(
+      'UPDATE transactions SET receipt = ? WHERE id = ?',
+      [JSON.stringify(updatedReceipt), parseInt(transactionId)]
+    )
+
+    const updated = (await query(
+      'SELECT * FROM transactions WHERE id = ? LIMIT 1',
+      [parseInt(transactionId)]
+    )) as any[]
+    const updatedTransaction = updated?.[0] ?? null
+    if (updatedTransaction) {
+      updatedTransaction.product = parseJson(updatedTransaction.product)
+      updatedTransaction.receipt = parseJson(updatedTransaction.receipt)
+    }
 
     return NextResponse.json({
       success: true,

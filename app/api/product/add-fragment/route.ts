@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 import { generateBarcode } from '@/lib/utils'
-import { writeFile } from 'fs/promises'
+import { writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
 
 export async function POST(request: NextRequest) {
@@ -21,28 +21,21 @@ export async function POST(request: NextRequest) {
     const barcode = generateBarcode()
     let imagePath: string | null = null
 
-    if (imageFile) {
+    if (imageFile && imageFile.size > 0) {
       const bytes = await imageFile.arrayBuffer()
       const buffer = Buffer.from(bytes)
       const uploadDir = join(process.cwd(), 'public', 'uploads')
-      const filename = `${Date.now()}-${imageFile.name}`
+      await mkdir(uploadDir, { recursive: true })
+      const filename = `${Date.now()}-${(imageFile.name || 'image').replace(/[^a-zA-Z0-9.-]/g, '_')}`
       imagePath = `/uploads/${filename}`
       await writeFile(join(uploadDir, filename), buffer)
     }
 
-    const newProduct = await prisma.product.create({
-      data: {
-        productName,
-        type,
-        gram,
-        karat,
-        purchasePriceToAfn: purchase,
-        isSold: false,
-        image: imagePath,
-        barcode,
-        isFragment: true
-      }
-    })
+    await query(
+      `INSERT INTO products (productName, type, gram, karat, purchasePriceToAfn, isSold, image, barcode, isFragment)
+       VALUES (?, ?, ?, ?, ?, 0, ?, ?, 1)`,
+      [productName, type, gram, karat, purchase, imagePath ?? null, barcode]
+    )
 
     return NextResponse.json({ success: true, message: 'جنس ثبت شد' })
   } catch (error: any) {
