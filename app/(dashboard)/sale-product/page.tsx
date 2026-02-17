@@ -5,21 +5,44 @@ import Link from 'next/link'
 import axios from 'axios'
 import { useReactToPrint } from 'react-to-print'
 import { toast } from 'react-toastify'
+
+const SALE_INVOICE_PRINT_KEY = 'saleInvoicePrint'
 import { AppContext } from '@/lib/context/AppContext'
 import { useCart } from '@/context/CartContext'
 import SearchCustomer from '@/components/SearchCustomer'
 import SearchProduct from '@/components/SearchProduct'
 import Cart from '@/components/Cart'
 import Barcode from 'react-barcode'
-import SaleBillPrint from '@/components/sale/SaleBillPrint'
-import { UserPlus, Save, Printer, RefreshCw, ShoppingCart, User, Calculator } from 'lucide-react'
+import SaleInvoice from '@/components/sale/SaleInvoice'
+import { UserPlus, Save, Printer, RefreshCw, ShoppingCart, User, Calculator, X } from 'lucide-react'
 import type { TransactionForPrint } from '@/components/sale/SaleBillPrint'
+import type { CompanyInfo } from '@/components/sale/SaleInvoice'
 import type { CartItem } from '@/context/CartContext'
 
 type Customer = { id: number; customerName: string; phone: string }
 
 export default function SaleProductPage() {
-  const { backendUrl } = useContext(AppContext)
+  const { backendUrl, companyData: contextCompany, getCompanyData } = useContext(AppContext)
+  const companyForInvoice: CompanyInfo | null =
+    Array.isArray(contextCompany) && contextCompany[0]
+      ? {
+          companyName: contextCompany[0].companyName ?? contextCompany[0].CompanyName,
+          slogan: contextCompany[0].slogan,
+          phone: contextCompany[0].phone,
+          address: contextCompany[0].address,
+          email: contextCompany[0].email,
+          image: contextCompany[0].image
+        }
+      : typeof contextCompany === 'object' && contextCompany?.companyName
+        ? {
+            companyName: contextCompany.companyName,
+            slogan: contextCompany.slogan,
+            phone: contextCompany.phone,
+            address: contextCompany.address,
+            email: contextCompany.email,
+            image: contextCompany.image
+          }
+        : null
   const cartState = useCart()
   const cart = cartState?.cart ?? []
   const clearCart = cartState?.clearCart ?? (() => { })
@@ -37,14 +60,27 @@ export default function SaleProductPage() {
   const [receiptDate, setReceiptDate] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [transactionToPrint, setTransactionToPrint] = useState<TransactionForPrint | null>(null)
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false)
   const [lastSoldForBarcode, setLastSoldForBarcode] = useState<TransactionForPrint | null>(null)
-  const printRef = useRef<HTMLDivElement>(null)
   const barcodePrintRef = useRef<HTMLDivElement>(null)
 
-  const handlePrint = useReactToPrint({
-    contentRef: printRef,
-    onAfterPrint: () => setTransactionToPrint(null)
-  })
+  const openPrintPage = () => {
+    if (!transactionToPrint) return
+    try {
+      sessionStorage.setItem(
+        SALE_INVOICE_PRINT_KEY,
+        JSON.stringify({ transaction: transactionToPrint, company: companyForInvoice })
+      )
+      window.open('/sale-product/print', '_blank', 'noopener,noreferrer')
+    } catch (e) {
+      toast.error('خطا در باز کردن صفحه چاپ')
+    }
+  }
+
+  const closeInvoiceModal = () => {
+    setShowInvoiceModal(false)
+    setTransactionToPrint(null)
+  }
 
   const handleBarcodePrint = useReactToPrint({
     contentRef: barcodePrintRef
@@ -55,6 +91,10 @@ export default function SaleProductPage() {
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0]
     setReceiptDate(today)
+  }, [])
+
+  useEffect(() => {
+    if (typeof getCompanyData === 'function') getCompanyData()
   }, [])
 
   useEffect(() => {
@@ -134,11 +174,7 @@ export default function SaleProductPage() {
   const remainingAmount = totalAmount - paidNum
 
   useEffect(() => {
-    if (!transactionToPrint || !printRef.current) return
-    const t = setTimeout(() => {
-      handlePrint()
-    }, 400)
-    return () => clearTimeout(t)
+    if (transactionToPrint) setShowInvoiceModal(true)
   }, [transactionToPrint])
 
   const createTransaction = async () => {
@@ -413,10 +449,41 @@ export default function SaleProductPage() {
         </div>
       )}
 
-      {/* Hidden bill for printing */}
-      <div style={{ position: 'absolute', left: '-9999px', top: 0 }} ref={printRef}>
-        {transactionToPrint && <SaleBillPrint data={transactionToPrint} />}
-      </div>
+      {/* Invoice modal after successful sale */}
+      {showInvoiceModal && transactionToPrint && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal/60 backdrop-blur-sm">
+          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white dark:bg-slate-900 shadow-2xl">
+            <button
+              type="button"
+              onClick={closeInvoiceModal}
+              className="absolute top-4 left-4 z-10 p-2 rounded-full bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-600 dark:text-slate-300 transition-colors"
+              aria-label="بستن"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="p-4 sm:p-6">
+              <SaleInvoice data={transactionToPrint} company={companyForInvoice} forPrint={false} />
+            </div>
+            <div className="sticky bottom-0 left-0 right-0 flex gap-3 p-4 bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-slate-700 rounded-b-2xl">
+              <button
+                type="button"
+                onClick={openPrintPage}
+                className="btn-luxury btn-luxury-primary flex-1 py-3 flex items-center justify-center gap-2"
+              >
+                <Printer className="w-5 h-5" />
+                چاپ فاکتور
+              </button>
+              <button
+                type="button"
+                onClick={closeInvoiceModal}
+                className="btn-luxury btn-luxury-outline flex-1 py-3"
+              >
+                بستن
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Hidden barcode labels for printing */}
       <div style={{ position: 'absolute', left: '-9999px', top: 0 }} ref={barcodePrintRef}>
