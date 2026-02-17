@@ -226,6 +226,23 @@ body {
   animation: float 3s ease-in-out infinite;
 }
 
+/* Spring Animation for Premium Navbar */
+@keyframes spring {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+.spring-animation {
+  animation: spring 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 /* Sidebar Item Active Effect */
 /* Sidebar Item Active Effect */
 .sidebar-item-active {

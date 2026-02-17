@@ -1,6 +1,6 @@
 'use client'
 
-import Navbar from '@/components/Navbar'
+import PremiumNavbar from '@/components/PremiumNavbar'
 import SideBar from '@/components/SideBar'
 
 export default function DashboardLayout({
@@ -15,8 +15,8 @@ export default function DashboardLayout({
       <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute top-[30%] left-[20%] w-[300px] h-[300px] bg-purple-500/10 dark:bg-purple-500/5 rounded-full blur-[80px] pointer-events-none" />
 
-      <header className="h-20 shrink-0 sticky top-0 z-30 transition-all duration-300">
-        <Navbar />
+      <header className="shrink-0 transition-all duration-300">
+        <PremiumNavbar />
       </header>
       
       <div className="flex flex-1 min-h-0 relative z-20">
