@@ -1,13 +1,12 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import FilterBar from '@/components/ui/FilterBar'
 import DataTable from '@/components/ui/DataTable'
 import type { ColumnDef } from '@/components/ui/DataTable'
-import CustomerFormModal from '@/components/customer/CustomerFormModal'
-import type { CustomerFormData } from '@/components/customer/CustomerFormModal'
 
 interface Customer {
   id: number
@@ -36,8 +35,6 @@ export default function CustomerRegistrationPage() {
   const [limit, setLimit] = useState(10)
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(false)
-  const [modalOpen, setModalOpen] = useState(false)
-  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null)
 
   const fetchCustomers = useCallback(async () => {
     setLoading(true)
@@ -61,16 +58,6 @@ export default function CustomerRegistrationPage() {
   useEffect(() => {
     fetchCustomers()
   }, [fetchCustomers])
-
-  const openCreate = () => {
-    setEditingCustomer(null)
-    setModalOpen(true)
-  }
-
-  const openEdit = (row: Customer) => {
-    setEditingCustomer(row)
-    setModalOpen(true)
-  }
 
   const columns: ColumnDef<Customer>[] = [
     {
@@ -101,13 +88,12 @@ export default function CustomerRegistrationPage() {
       label: 'عملیات',
       render: (r) => (
         <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => openEdit(r)}
+          <Link
+            href={`/customer-registration/${r.id}/edit`}
             className="btn-luxury btn-luxury-outline py-1.5 px-3 text-sm"
           >
             ویرایش
-          </button>
+          </Link>
           <button
             type="button"
             onClick={() => router.push(`/customer-registration/${r.id}`)}
@@ -127,13 +113,12 @@ export default function CustomerRegistrationPage() {
           <h1 className="font-heading text-2xl font-semibold text-charcoal">ثبت مشتریان</h1>
           <p className="mt-1 text-sm text-charcoal-soft">لیست مشتریان را با فیلتر و صفحه‌بندی مشاهده کنید.</p>
         </div>
-        <button
-          type="button"
-          onClick={openCreate}
+        <Link
+          href="/customer-registration/new"
           className="btn-luxury btn-luxury-primary px-6 py-2 shrink-0"
         >
           افزودن مشتری
-        </button>
+        </Link>
       </header>
 
       <section>
@@ -162,14 +147,6 @@ export default function CustomerRegistrationPage() {
           />
         </div>
       </section>
-
-      <CustomerFormModal
-        open={modalOpen}
-        onClose={() => { setModalOpen(false); setEditingCustomer(null) }}
-        mode={editingCustomer ? 'edit' : 'create'}
-        initialData={editingCustomer ? (editingCustomer as CustomerFormData) : null}
-        onSuccess={fetchCustomers}
-      />
     </div>
   )
 }

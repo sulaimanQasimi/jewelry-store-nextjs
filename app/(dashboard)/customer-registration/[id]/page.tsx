@@ -95,9 +95,17 @@ export default function CustomerShowPage() {
 
   return (
     <div className="space-y-6 transition-opacity duration-200">
-      <Link href="/customer-registration" className="inline-flex items-center gap-1 text-gold-600 hover:underline text-sm">
-        بازگشت به لیست مشتریان
-      </Link>
+      <div className="flex flex-wrap items-center gap-3">
+        <Link href="/customer-registration" className="inline-flex items-center gap-1 text-gold-600 hover:underline text-sm">
+          بازگشت به لیست مشتریان
+        </Link>
+        <Link
+          href={`/customer-registration/${customer.id}/edit`}
+          className="btn-luxury btn-luxury-outline py-1.5 px-4 text-sm"
+        >
+          ویرایش
+        </Link>
+      </div>
 
       <div className="card-luxury rounded-2xl border border-gold-200/50 overflow-hidden">
         <div className="flex flex-col sm:flex-row gap-8 p-6 sm:p-8">

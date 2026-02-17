@@ -408,14 +408,14 @@ DROP FUNCTION IF EXISTS fn_next_bell_number//
 
 DELIMITER //
 
--- Get currency rate for a date (returns usdToAfn or NULL)
+-- Get currency rate for a date (returns usdToAfn or NULL). COLLATE avoids mix of collations (utf8mb4_unicode_ci vs utf8mb4_0900_ai_ci).
 CREATE FUNCTION fn_get_currency_rate(p_date VARCHAR(50))
 RETURNS FLOAT
 DETERMINISTIC
 READS SQL DATA
 BEGIN
     DECLARE v_rate FLOAT DEFAULT NULL;
-    SELECT usdToAfn INTO v_rate FROM currency_rates WHERE date = p_date LIMIT 1;
+    SELECT usdToAfn INTO v_rate FROM currency_rates WHERE date = CONVERT(p_date USING utf8mb4) COLLATE utf8mb4_unicode_ci LIMIT 1;
     RETURN v_rate;
 END//
 

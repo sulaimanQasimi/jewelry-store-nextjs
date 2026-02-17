@@ -28,7 +28,8 @@ import {
   Wallet,
   DollarSign,
   FileText,
-  ShoppingCart
+  ShoppingCart,
+  UserCog
 } from 'lucide-react'
 
 const groups = [
@@ -107,7 +108,8 @@ const groups = [
     label: 'تنظیمات',
     icon: Info,
     items: [
-      { href: '/company-information', icon: Info, label: 'درباره ما', color: 'from-gray-400 to-gray-600' }
+      { href: '/company-information', icon: Info, label: 'درباره ما', color: 'from-gray-400 to-gray-600' },
+      { href: '/users', icon: UserCog, label: 'مدیریت کاربران', color: 'from-slate-500 to-slate-600' }
     ]
   }
 ]

@@ -11,9 +11,12 @@ export function parseJson(val: unknown): any {
   return val
 }
 
-/** Get currency rate for a date. Returns usdToAfn or null. */
+/** Get currency rate for a date. Returns usdToAfn or null. Uses explicit collation to avoid ER_CANT_AGGREGATE_2COLLATIONS. */
 export async function fnGetCurrencyRate(date: string): Promise<number | null> {
-  const rows = (await query('SELECT fn_get_currency_rate(?) AS rate', [date])) as any[]
+  const rows = (await query(
+    'SELECT usdToAfn AS rate FROM currency_rates WHERE date = CONVERT(? USING utf8mb4) COLLATE utf8mb4_unicode_ci LIMIT 1',
+    [date]
+  )) as any[]
   const rate = rows?.[0]?.rate
   return rate != null ? Number(rate) : null
 }
