@@ -67,7 +67,7 @@ export default function SaleProductPage() {
   const openPrintPage = () => {
     if (!transactionToPrint) return
     try {
-      sessionStorage.setItem(
+      localStorage.setItem(
         SALE_INVOICE_PRINT_KEY,
         JSON.stringify({ transaction: transactionToPrint, company: companyForInvoice })
       )

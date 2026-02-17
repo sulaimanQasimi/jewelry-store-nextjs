@@ -14,13 +14,14 @@ export default function SaleProductPrintPage() {
 
   useEffect(() => {
     try {
-      const raw = typeof window !== 'undefined' ? window.sessionStorage.getItem(SALE_INVOICE_PRINT_KEY) : null
+      const raw = typeof window !== 'undefined' ? window.localStorage.getItem(SALE_INVOICE_PRINT_KEY) : null
       if (raw) {
         const parsed = JSON.parse(raw) as { transaction: TransactionForPrint; company?: CompanyInfo | null }
         if (parsed.transaction?.customerName && parsed.transaction?.receipt) {
           setData(parsed.transaction)
           setCompany(parsed.company ?? null)
           setReady(true)
+          window.localStorage.removeItem(SALE_INVOICE_PRINT_KEY)
           return
         }
       }
@@ -41,16 +42,16 @@ export default function SaleProductPrintPage() {
 
   if (!ready) {
     return (
-      <div className="min-h-[50vh] flex items-center justify-center" dir="rtl">
-        <p className="text-charcoal-soft">در حال آماده‌سازی چاپ...</p>
+      <div className="min-h-screen flex items-center justify-center bg-white" dir="rtl">
+        <p className="text-gray-500">در حال آماده‌سازی چاپ...</p>
       </div>
     )
   }
 
   if (!data) {
     return (
-      <div className="min-h-[50vh] flex flex-col items-center justify-center gap-4" dir="rtl">
-        <p className="text-charcoal-soft">اطلاعات فاکتور یافت نشد.</p>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-white" dir="rtl">
+        <p className="text-gray-500">اطلاعات فاکتور یافت نشد.</p>
         <button
           type="button"
           onClick={() => window.close()}
@@ -68,15 +69,13 @@ export default function SaleProductPrintPage() {
         dangerouslySetInnerHTML={{
           __html: `
             @media print {
-              header, aside, .absolute, nav, [data-print-hide] { display: none !important; }
               body { background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-              main { margin: 0 !important; padding: 0 !important; max-width: none !important; }
               .print-invoice-wrapper { padding: 0 !important; }
             }
           `
         }}
       />
-      <div className="print-invoice-wrapper py-0">
+      <div className="print-invoice-wrapper py-6 px-4">
         <SaleInvoice data={data} company={company} forPrint />
       </div>
     </>

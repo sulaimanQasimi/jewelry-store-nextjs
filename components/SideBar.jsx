@@ -47,6 +47,7 @@ const groups = [
     icon: Gem,
     items: [
       { href: '/sale-product', icon: Gem, label: 'فروش جنس', color: 'from-pink-500 to-rose-500' },
+      { href: '/sales', icon: FileText, label: 'لیست فروشات', color: 'from-rose-500 to-pink-600' },
       { href: '/product-from-supplier', icon: ShoppingBag, label: 'خرید جنس از تمویل کننده', color: 'from-sky-500 to-blue-600' },
       { href: '/purchases', icon: ShoppingCart, label: 'خریدها', color: 'from-sky-600 to-blue-700' },
       { href: '/add-fragment', icon: Puzzle, label: 'خرید شکسته', color: 'from-amber-400 to-orange-500' }
