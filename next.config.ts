@@ -10,10 +10,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Enable file uploads
-  serverRuntimeConfig: {
-    maxFileSize: '10mb',
-  },
   // API configuration
   async headers() {
     return [

@@ -68,15 +68,25 @@ export default function SaleProductPrintPage() {
       <style
         dangerouslySetInnerHTML={{
           __html: `
+            @page {
+              size: A4;
+              margin: 15mm;
+            }
             @media print {
-              body { background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-              .print-invoice-wrapper { padding: 0 !important; }
+              body { background: #fff !important; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+              .print-root.print-invoice-wrapper { position: relative !important; width: 100% !important; min-height: 100vh; box-sizing: border-box; padding: 0 !important; }
+              .print-invoice-a4 { width: 100% !important; max-width: 180mm !important; margin: 0 auto !important; box-sizing: border-box; }
+            }
+            @media screen {
+              .print-invoice-a4 { width: 100%; max-width: 210mm; margin: 0 auto; min-height: 297mm; box-sizing: border-box; box-shadow: 0 0 0 1px rgba(0,0,0,0.1); background: #fff; }
             }
           `
         }}
       />
-      <div className="print-invoice-wrapper py-6 px-4">
-        <SaleInvoice data={data} company={company} forPrint />
+      <div className="print-root print-invoice-wrapper py-6 px-4">
+        <div className="print-invoice-a4">
+          <SaleInvoice data={data} company={company} forPrint />
+        </div>
       </div>
     </>
   )

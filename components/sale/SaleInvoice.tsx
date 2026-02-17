@@ -64,7 +64,7 @@ export default function SaleInvoice({ data, company, forPrint = false }: SaleInv
 
   return (
     <div
-      className={`bg-white text-gray-900 ${forPrint ? '' : 'rounded-2xl shadow-xl overflow-hidden'} max-w-2xl mx-auto`}
+      className={`bg-white text-gray-900 ${forPrint ? 'w-full' : 'rounded-2xl shadow-xl overflow-hidden max-w-2xl mx-auto'}`}
       dir="rtl"
       style={{ fontFamily: 'Vazirmatn, Tahoma, Arial, sans-serif' }}
     >
