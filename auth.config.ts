@@ -21,6 +21,7 @@ async function verifyBearerToken(request: Request): Promise<boolean> {
 
 export default {
   secret: process.env.AUTH_SECRET || process.env.JWT_SECRET || 'galaxy',
+  trustHost: true,
   providers: [],
   pages: {
     signIn: '/login'
