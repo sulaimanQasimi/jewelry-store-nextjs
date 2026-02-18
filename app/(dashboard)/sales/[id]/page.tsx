@@ -173,10 +173,11 @@ export default function SaleDetailPage() {
         <p className="text-red-500 dark:text-red-400 mb-4">{error ?? 'فروش یافت نشد'}</p>
         <Link
           href="/sales"
-          className="btn-luxury btn-luxury-outline inline-flex items-center gap-2"
+          className="btn-luxury btn-luxury-outline p-2 inline-flex items-center justify-center"
+          aria-label="بازگشت به لیست فروشات"
+          title="بازگشت به لیست فروشات"
         >
           <ArrowRight className="w-4 h-4" />
-          بازگشت به لیست فروشات
         </Link>
       </div>
     )
@@ -197,27 +198,30 @@ export default function SaleDetailPage() {
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <Link
           href="/sales"
-          className="inline-flex items-center gap-2 text-charcoal dark:text-slate-200 hover:text-gold-600 dark:hover:text-gold-400 transition-colors font-medium"
+          className="p-2 inline-flex items-center justify-center text-charcoal dark:text-slate-200 hover:text-gold-600 dark:hover:text-gold-400 transition-colors rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700/50"
+          aria-label="بازگشت به فروشات"
+          title="بازگشت به فروشات"
         >
           <ArrowRight className="w-5 h-5" />
-          بازگشت به فروشات
         </Link>
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={copyLink}
-            className="btn-luxury btn-luxury-outline py-2 px-4 inline-flex items-center gap-2"
+            className="btn-luxury btn-luxury-outline p-2 inline-flex items-center justify-center"
+            aria-label="کپی لینک"
+            title="کپی لینک"
           >
             <Copy className="w-4 h-4" />
-            کپی لینک
           </button>
           <button
             type="button"
             onClick={() => sale && openPrintInvoice(sale)}
-            className="btn-luxury btn-luxury-primary py-2 px-4 inline-flex items-center gap-2"
+            className="btn-luxury btn-luxury-primary p-2 inline-flex items-center justify-center"
+            aria-label="چاپ"
+            title="چاپ"
           >
             <Printer className="w-4 h-4" />
-            چاپ
           </button>
         </div>
       </div>
