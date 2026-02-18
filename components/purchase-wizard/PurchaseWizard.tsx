@@ -71,7 +71,7 @@ export default function PurchaseWizard() {
         items: state.items
           .filter((i) => (i.name?.trim() || i.total > 0))
           .map((i) => ({
-            productMasterId: 0,
+            productMasterId: null,
             name: i.name?.trim() || '',
             type: i.category?.trim() || '',
             gram: i.weight || 0,

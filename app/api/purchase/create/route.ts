@@ -43,12 +43,13 @@ export async function POST(request: NextRequest) {
       for (const it of items) {
         const qty = parseInt(it.quantity) || 0
         const price = parseFloat(it.price) || 0
+        const productMasterId = it.productMasterId ? parseInt(it.productMasterId) : null
         await query(
           `INSERT INTO purchase_items (purchaseId, productMasterId, name, type, gram, karat, quantity, remainingQty, price)
            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             purchaseId,
-            parseInt(it.productMasterId) || 0,
+            productMasterId,
             it.name?.trim() || '',
             it.type?.trim() || '',
             parseFloat(it.gram) || 0,
