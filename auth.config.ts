@@ -2,9 +2,15 @@ import type { NextAuthConfig } from 'next-auth'
 import { NextResponse } from 'next/server'
 import { jwtVerify } from 'jose'
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.AUTH_SECRET || process.env.JWT_SECRET || 'galaxy'
-)
+function getAuthSecret(): Uint8Array {
+  const secret = process.env.AUTH_SECRET || process.env.JWT_SECRET
+  if (!secret || secret.length < 16) {
+    throw new Error(
+      'AUTH_SECRET or JWT_SECRET must be set in environment (min 16 characters). Do not use default secrets in production.'
+    )
+  }
+  return new TextEncoder().encode(secret)
+}
 
 async function verifyBearerToken(request: Request): Promise<boolean> {
   const authHeader = request.headers.get('Authorization')
@@ -12,6 +18,7 @@ async function verifyBearerToken(request: Request): Promise<boolean> {
   const token = authHeader.slice(7)
   if (!token) return false
   try {
+    const JWT_SECRET = getAuthSecret()
     await jwtVerify(token, JWT_SECRET)
     return true
   } catch {
@@ -20,7 +27,7 @@ async function verifyBearerToken(request: Request): Promise<boolean> {
 }
 
 export default {
-  secret: process.env.AUTH_SECRET || process.env.JWT_SECRET || 'galaxy',
+  secret: process.env.AUTH_SECRET || process.env.JWT_SECRET,
   trustHost: true,
   providers: [],
   pages: {

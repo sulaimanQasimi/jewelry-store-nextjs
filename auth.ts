@@ -17,34 +17,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const loginIdentifier = String(credentials.email).trim()
         const password = String(credentials.password)
 
-        let users: any[]
-        let useHash = true
+        let users: { id: unknown; username?: string; email?: string; password_hash?: string; role?: string }[]
         try {
           users = (await query(
             'SELECT id, username, email, password_hash, role FROM users WHERE (email = ? OR username = ?) AND is_active = 1 LIMIT 1',
             [loginIdentifier, loginIdentifier]
-          )) as any[]
-        } catch (e: any) {
-          if (e?.message?.includes('password_hash') || e?.code === 'ER_BAD_FIELD_ERROR') {
-            useHash = false
-            users = (await query(
-              'SELECT id, username, email, password AS password_hash FROM users WHERE (email = ? OR username = ?) LIMIT 1',
-              [loginIdentifier, loginIdentifier]
-            )) as any[]
-          } else {
-            throw e
-          }
+          )) as typeof users
+        } catch {
+          return null
         }
 
         if (!users || users.length === 0) return null
         const user = users[0]
-
-        let valid: boolean
-        if (useHash && user.password_hash?.startsWith('$2')) {
-          valid = await bcrypt.compare(password, user.password_hash)
-        } else {
-          valid = password === (user.password_hash ?? user.password)
-        }
+        const hash = user.password_hash
+        if (!hash || !hash.startsWith('$2')) return null
+        const valid = await bcrypt.compare(password, hash)
         if (!valid) return null
 
         return {

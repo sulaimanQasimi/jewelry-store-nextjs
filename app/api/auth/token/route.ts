@@ -2,43 +2,53 @@ import { NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import { query } from '@/lib/db'
+import { TokenLoginSchema } from '@/lib/validations'
+import { isRateLimited, recordAttempt } from '@/lib/rate-limit'
 
-const JWT_SECRET = process.env.AUTH_SECRET || process.env.JWT_SECRET || 'galaxy'
 const MAX_AGE = 60 * 60 * 24 // 1 day
 
-export async function POST(request: Request) {
-  try {
-    const body = await request.json()
-    const loginIdentifier = body?.email?.trim?.()
-    const password = body?.password
+function getJwtSecret(): string {
+  const secret = process.env.AUTH_SECRET || process.env.JWT_SECRET
+  if (!secret || secret.length < 16) {
+    throw new Error('AUTH_SECRET or JWT_SECRET must be set (min 16 characters)')
+  }
+  return secret
+}
 
-    if (!loginIdentifier || !password) {
+export async function POST(request: Request) {
+  if (isRateLimited(request)) {
+    return NextResponse.json(
+      { success: false, message: 'Too many login attempts. Try again later.' },
+      { status: 429 }
+    )
+  }
+  try {
+    const raw = await request.json()
+    const parsed = TokenLoginSchema.safeParse(raw)
+    if (!parsed.success) {
+      recordAttempt(request)
+      return NextResponse.json(
+        { success: false, message: 'Invalid credentials' },
+        { status: 401 }
+      )
+    }
+    const { email: loginIdentifier, password } = parsed.data
+
+    let users: { id: unknown; username?: string; email?: string; password_hash?: string; role?: string }[]
+    try {
+      users = (await query(
+        'SELECT id, username, email, password_hash, role FROM users WHERE (email = ? OR username = ?) AND is_active = 1 LIMIT 1',
+        [loginIdentifier, loginIdentifier]
+      )) as typeof users
+    } catch {
       return NextResponse.json(
         { success: false, message: 'Invalid credentials' },
         { status: 401 }
       )
     }
 
-    let users: any[]
-    let useHash = true
-    try {
-      users = (await query(
-        'SELECT id, username, email, password_hash, role FROM users WHERE (email = ? OR username = ?) AND is_active = 1 LIMIT 1',
-        [loginIdentifier, loginIdentifier]
-      )) as any[]
-    } catch (e: any) {
-      if (e?.message?.includes('password_hash') || e?.code === 'ER_BAD_FIELD_ERROR') {
-        useHash = false
-        users = (await query(
-          'SELECT id, username, email, password AS password_hash FROM users WHERE (email = ? OR username = ?) LIMIT 1',
-          [loginIdentifier, loginIdentifier]
-        )) as any[]
-      } else {
-        throw e
-      }
-    }
-
     if (!users || users.length === 0) {
+      recordAttempt(request)
       return NextResponse.json(
         { success: false, message: 'Invalid credentials' },
         { status: 401 }
@@ -46,14 +56,17 @@ export async function POST(request: Request) {
     }
 
     const user = users[0]
-    let valid: boolean
-    if (useHash && user.password_hash?.startsWith('$2')) {
-      valid = await bcrypt.compare(password, user.password_hash)
-    } else {
-      valid = password === (user.password_hash ?? user.password)
+    const hash = user.password_hash
+    if (!hash || !hash.startsWith('$2')) {
+      recordAttempt(request)
+      return NextResponse.json(
+        { success: false, message: 'Invalid credentials' },
+        { status: 401 }
+      )
     }
-
+    const valid = await bcrypt.compare(password, hash)
     if (!valid) {
+      recordAttempt(request)
       return NextResponse.json(
         { success: false, message: 'Invalid credentials' },
         { status: 401 }
@@ -67,17 +80,18 @@ export async function POST(request: Request) {
       role: user.role ?? 'admin'
     }
 
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: MAX_AGE })
+    const secret = getJwtSecret()
+    const token = jwt.sign(payload, secret, { expiresIn: MAX_AGE })
 
     return NextResponse.json({
       success: true,
       token,
       user: payload
     })
-  } catch (error: any) {
-    console.error('Token login error:', error)
+  } catch (err) {
+    console.error('Token login error:', err)
     return NextResponse.json(
-      { success: false, message: error?.message || 'Server error' },
+      { success: false, message: 'Server error' },
       { status: 500 }
     )
   }

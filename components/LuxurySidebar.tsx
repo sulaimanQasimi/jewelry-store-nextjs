@@ -198,7 +198,15 @@ const LuxuryMenuItem: React.FC<{
 const LuxurySidebar: React.FC = () => {
   const pathname = usePathname()
   const { data: session } = useSession()
-  const [collapsedGroups, setCollapsedGroups] = useState(() => new Set())
+  // Start with all groups collapsed; open the one containing the current route
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(() => {
+    const allIds = new Set(groups.map((g) => g.id))
+    const activeGroup = groups.find((g) =>
+      g.items.some((item) => pathname === item.href || pathname.startsWith(item.href + '/'))
+    )
+    if (activeGroup) allIds.delete(activeGroup.id)
+    return allIds
+  })
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isCollectionOpen, setIsCollectionOpen] = useState(false)
 

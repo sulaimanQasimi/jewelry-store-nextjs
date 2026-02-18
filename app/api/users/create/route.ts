@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { auth } from '@/auth'
 import { query } from '@/lib/db'
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+import { CreateUserSchema } from '@/lib/validations'
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,25 +12,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, message: 'Forbidden' }, { status: 403 })
     }
 
-    const { username, email, password, role } = await request.json()
-    const usernameTrim = username?.trim()
-    const emailTrim = email?.trim()
-
-    if (!usernameTrim || !emailTrim || !password) {
-      return NextResponse.json(
-        { success: false, message: 'نام کاربری، ایمیل و رمز عبور الزامی است' },
-        { status: 400 }
-      )
+    const raw = await request.json()
+    const parsed = CreateUserSchema.safeParse(raw)
+    if (!parsed.success) {
+      const msg = parsed.error.errors[0]?.message ?? 'نام کاربری، ایمیل و رمز عبور الزامی است'
+      return NextResponse.json({ success: false, message: msg }, { status: 400 })
     }
-
-    if (!EMAIL_REGEX.test(emailTrim)) {
-      return NextResponse.json(
-        { success: false, message: 'فرمت ایمیل نامعتبر است' },
-        { status: 400 }
-      )
-    }
-
-    const validRole = role === 'user' ? 'user' : 'admin'
+    const { username: usernameTrim, email: emailTrim, password, role: validRole } = parsed.data
 
     const existing = (await query(
       'SELECT id FROM users WHERE username = ? OR email = ? LIMIT 1',

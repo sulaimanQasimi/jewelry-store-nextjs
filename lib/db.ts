@@ -1,12 +1,12 @@
 import mysql from 'mysql2/promise'
 
-// Parse DATABASE_URL or use individual variables
+// Parse DATABASE_URL or use individual variables. No default password - set DB_PASSWORD or DATABASE_URL.
 let connectionConfig: mysql.PoolOptions = {
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || 'password',
+  password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME || 'jewelry_store',
-  port: parseInt(process.env.DB_PORT || '3306'),
+  port: parseInt(process.env.DB_PORT || '3306', 10),
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
