@@ -7,8 +7,6 @@ import { toast } from 'react-toastify'
 import FilterBar from '@/components/ui/FilterBar'
 import DataTable from '@/components/ui/DataTable'
 import type { ColumnDef } from '@/components/ui/DataTable'
-import ProductFormModal from '@/components/product/ProductFormModal'
-import type { ProductFormData } from '@/components/product/ProductFormModal'
 import { ChevronDown, ChevronUp, Filter } from 'lucide-react'
 
 interface Product {
@@ -108,8 +106,6 @@ export default function ProductsPage() {
   const [appliedFilters, setAppliedFilters] = useState<FilterState>(emptyFilters)
   const [advancedOpen, setAdvancedOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [modalOpen, setModalOpen] = useState(false)
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [deletingId, setDeletingId] = useState<number | null>(null)
 
   const fetchProducts = useCallback(async () => {
@@ -154,10 +150,7 @@ export default function ProductsPage() {
 
   const openCreate = () => router.push('/products/new')
 
-  const openEdit = (row: Product) => {
-    setEditingProduct(row)
-    setModalOpen(true)
-  }
+  const openEdit = (row: Product) => router.push(`/products/${row.id}/edit`)
 
   const handleDelete = async (id: number) => {
     if (!confirm('آیا از حذف این محصول اطمینان دارید؟')) return
@@ -490,14 +483,6 @@ export default function ProductsPage() {
           />
         </div>
       </section>
-
-      <ProductFormModal
-        open={modalOpen}
-        onClose={() => { setModalOpen(false); setEditingProduct(null) }}
-        mode={editingProduct ? 'edit' : 'create'}
-        initialData={editingProduct ? (editingProduct as ProductFormData) : null}
-        onSuccess={fetchProducts}
-      />
     </div>
   )
 }

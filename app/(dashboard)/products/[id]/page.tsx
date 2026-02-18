@@ -4,8 +4,6 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import axios from 'axios'
-import ProductFormModal from '@/components/product/ProductFormModal'
-import type { ProductFormData } from '@/components/product/ProductFormModal'
 
 interface Product {
   id: number
@@ -45,7 +43,6 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
-  const [editModalOpen, setEditModalOpen] = useState(false)
 
   useEffect(() => {
     if (!id) {
@@ -144,15 +141,14 @@ export default function ProductDetailPage() {
       </Link>
 
       <div className="card-luxury rounded-2xl border border-gold-200/50 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gold-200 bg-gold-50/50 flex flex-row items-center justify-between">
-          <h1 className="font-heading text-2xl font-semibold text-charcoal">{product.productName}</h1>
-          <button
-            type="button"
-            onClick={() => setEditModalOpen(true)}
+        <div className="px-6 py-4 border-b border-gold-200 dark:border-slate-600 bg-gold-50/50 dark:bg-slate-800/50 flex flex-row items-center justify-between">
+          <h1 className="font-heading text-2xl font-semibold text-charcoal dark:text-white">{product.productName}</h1>
+          <Link
+            href={`/products/${product.id}/edit`}
             className="btn-luxury btn-luxury-primary py-2 px-4"
           >
             ویرایش
-          </button>
+          </Link>
         </div>
         <div className="p-6 flex flex-col sm:flex-row gap-6">
           {imgSrc && (
@@ -208,14 +204,6 @@ export default function ProductDetailPage() {
           </dl>
         </div>
       </div>
-
-      <ProductFormModal
-        open={editModalOpen}
-        onClose={() => setEditModalOpen(false)}
-        mode="edit"
-        initialData={product as ProductFormData}
-        onSuccess={() => { refresh(); setEditModalOpen(false) }}
-      />
     </div>
   )
 }
