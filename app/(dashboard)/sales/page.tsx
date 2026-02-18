@@ -11,7 +11,8 @@ import type { CustomerOption } from '@/components/ui/CustomerCombobox'
 import { AppContext } from '@/lib/context/AppContext'
 import type { TransactionForPrint } from '@/components/sale/SaleBillPrint'
 import type { CompanyInfo } from '@/components/sale/SaleInvoice'
-import { Printer, RotateCcw, ShoppingCart, Hash, X } from 'lucide-react'
+import Link from 'next/link'
+import { Printer, RotateCcw, ShoppingCart, Hash, X, FileText } from 'lucide-react'
 
 const SALE_INVOICE_PRINT_KEY = 'saleInvoicePrint'
 const BILL_NUMBER_DEBOUNCE_MS = 320
@@ -261,7 +262,14 @@ export default function SalesPage() {
       key: 'actions',
       label: 'عملیات',
       render: (r) => (
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
+          <Link
+            href={`/sales/${r.id}`}
+            className="btn-luxury btn-luxury-outline py-1.5 px-3 text-sm inline-flex items-center gap-1"
+          >
+            <FileText className="w-4 h-4" />
+            مشاهده
+          </Link>
           <button
             type="button"
             onClick={() => openPrintInvoice(r)}
@@ -315,35 +323,6 @@ export default function SalesPage() {
         </div>
       </header>
 
-      {/* Find Bill # - top of page */}
-      <div className="rounded-xl border border-gold-200/60 dark:border-slate-600/50 bg-white dark:bg-slate-800/80 p-4 shadow-sm">
-        <label className="block text-sm font-medium text-charcoal dark:text-slate-300 mb-2">
-          Find Bill #
-        </label>
-        <div className="relative max-w-xs">
-          <Hash className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" aria-hidden />
-          <input
-            type="text"
-            inputMode="numeric"
-            value={billNumberInput}
-            onChange={(e) => setBillNumberInput(e.target.value.replace(/\D/g, ''))}
-            placeholder="شماره بل را وارد کنید"
-            className="input-luxury w-full pl-10 pr-10 focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
-            aria-label="جستجوی شماره بل"
-          />
-          {billNumberInput ? (
-            <button
-              type="button"
-              onClick={clearBillNumber}
-              className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-charcoal dark:hover:text-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 rounded"
-              aria-label="پاک کردن فیلتر شماره بل"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          ) : null}
-        </div>
-      </div>
-
       <section>
         <h2 className="font-heading text-lg font-semibold text-charcoal dark:text-white mb-4">
           لیست فروشات
@@ -355,6 +334,33 @@ export default function SalesPage() {
           onReset={resetFilters}
           extraFilters={
             <>
+              <div className="min-w-[140px]">
+                <label className="block text-sm font-medium text-charcoal dark:text-slate-300 mb-1">
+                  Find Bill #
+                </label>
+                <div className="relative">
+                  <Hash className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" aria-hidden />
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={billNumberInput}
+                    onChange={(e) => setBillNumberInput(e.target.value.replace(/\D/g, ''))}
+                    placeholder="شماره بل"
+                    className="input-luxury w-full pl-10 pr-9 focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500"
+                    aria-label="جستجوی شماره بل"
+                  />
+                  {billNumberInput ? (
+                    <button
+                      type="button"
+                      onClick={clearBillNumber}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-charcoal dark:hover:text-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 rounded"
+                      aria-label="پاک کردن فیلتر شماره بل"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  ) : null}
+                </div>
+              </div>
               <CustomerCombobox
                 value={customerIdParam ? parseInt(customerIdParam, 10) : 0}
                 selectedCustomer={selectedCustomer}
