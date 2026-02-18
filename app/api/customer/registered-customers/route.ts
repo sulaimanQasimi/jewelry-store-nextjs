@@ -30,19 +30,36 @@ export async function GET(request: NextRequest) {
     const search = urlQuery.get('search')?.trim() || ''
     const offset = (page - 1) * limit
 
+    const isNumericSearch = /^\d+$/.test(search)
     const countResult = await query(
       search
-        ? 'SELECT COUNT(*) AS total FROM customers WHERE customerName LIKE ? OR phone LIKE ?'
+        ? isNumericSearch
+          ? 'SELECT COUNT(*) AS total FROM customers WHERE id = ? OR customerName LIKE ? OR phone LIKE ?'
+          : 'SELECT COUNT(*) AS total FROM customers WHERE customerName LIKE ? OR phone LIKE ?'
         : 'SELECT COUNT(*) AS total FROM customers',
-      search ? [`%${search}%`, `%${search}%`] : []
+      search
+        ? isNumericSearch
+          ? [parseInt(search, 10), `%${search}%`, `%${search}%`]
+          : [`%${search}%`, `%${search}%`]
+        : []
     ) as { total: number }[]
     const total = Number(countResult?.[0]?.total ?? 0)
 
-    const whereClause = search ? 'WHERE customerName LIKE ? OR phone LIKE ?' : ''
-    const whereParams = search ? [`%${search}%`, `%${search}%`] : []
+    const whereClause = search
+      ? isNumericSearch
+        ? 'WHERE id = ? OR customerName LIKE ? OR phone LIKE ?'
+        : 'WHERE customerName LIKE ? OR phone LIKE ?'
+      : ''
+    const whereParams = search
+      ? isNumericSearch
+        ? [parseInt(search, 10), `%${search}%`, `%${search}%`]
+        : [`%${search}%`, `%${search}%`]
+      : []
     // LIMIT/OFFSET as literals to avoid "Incorrect arguments to mysqld_stmt_execute" (limit/offset are already sanitized integers)
-    const sql = `SELECT * FROM customers ${whereClause} ORDER BY id DESC LIMIT ${limit} OFFSET ${offset}`
-    const rows = (await query(sql, whereParams)) as Record<string, unknown>[]
+    const orderBy = isNumericSearch && search ? 'ORDER BY id = ? DESC, id DESC' : 'ORDER BY id DESC'
+    const orderParams = isNumericSearch && search ? [parseInt(search, 10)] : []
+    const sql = `SELECT * FROM customers ${whereClause} ${orderBy} LIMIT ${limit} OFFSET ${offset}`
+    const rows = (await query(sql, [...whereParams, ...orderParams])) as Record<string, unknown>[]
     const list = Array.isArray(rows) ? rows.map((r) => toPlainCustomer(r)) : []
 
     return NextResponse.json({

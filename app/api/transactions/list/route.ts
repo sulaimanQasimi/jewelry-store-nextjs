@@ -10,6 +10,8 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search')?.trim() || ''
     const dateFrom = searchParams.get('dateFrom')?.trim() || ''
     const dateTo = searchParams.get('dateTo')?.trim() || ''
+    const customerIdParam = searchParams.get('customerId')?.trim()
+    const bellNumberParam = searchParams.get('bellNumber')?.trim()
     const offset = (page - 1) * limit
 
     const conditions: string[] = []
@@ -21,6 +23,22 @@ export async function GET(request: NextRequest) {
       const term = `%${search}%`
       countParams.push(term, term)
       listParams.push(term, term)
+    }
+    if (customerIdParam) {
+      const customerId = parseInt(customerIdParam, 10)
+      if (!Number.isNaN(customerId)) {
+        conditions.push('customerId = ?')
+        countParams.push(customerId)
+        listParams.push(customerId)
+      }
+    }
+    if (bellNumberParam) {
+      const bellNum = parseInt(bellNumberParam, 10)
+      if (!Number.isNaN(bellNum)) {
+        conditions.push('bellNumber = ?')
+        countParams.push(bellNum)
+        listParams.push(bellNum)
+      }
     }
     if (dateFrom) {
       conditions.push('DATE(createdAt) >= ?')

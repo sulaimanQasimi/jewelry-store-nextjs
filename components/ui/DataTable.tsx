@@ -40,7 +40,7 @@ export default function DataTable<T extends Record<string, any>>({
       <div className="overflow-x-auto">
         <table className="w-full text-sm" style={{ minWidth: typeof minWidth === 'number' ? `${minWidth}px` : minWidth }}>
           <thead>
-            <tr className="bg-charcoal text-white">
+            <tr className="bg-slate-700 text-white dark:bg-slate-800">
               {columns.map((col) => (
                 <th
                   key={col.key}
