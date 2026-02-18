@@ -216,7 +216,7 @@ const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
 
               {/* Currency Exchange */}
               <div className="hidden md:block">
-                <CurrencyExchange />
+                <CurrencyExchange isCurrencyToggle={false} />
               </div>
 
               {/* Primary CTA Button */}
@@ -284,7 +284,7 @@ const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                   <StorageRate />
                 </div>
                 <div className="md:hidden">
-                  <CurrencyExchange />
+                  <CurrencyExchange isCurrencyToggle={false} />
                 </div>
               </div>
             </div>
