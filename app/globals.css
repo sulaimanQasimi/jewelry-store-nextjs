@@ -309,6 +309,16 @@ body {
   letter-spacing: 0.02em;
 }
 
+/* Luxury Serif for Boutique Pages */
+.font-luxury-serif {
+  font-family: 'Playfair Display', 'Cinzel', 'naskh', serif;
+  letter-spacing: 0.01em;
+}
+
+.font-luxury-sans {
+  font-family: 'Inter', 'iransans', 'vazirmatn', sans-serif;
+}
+
 /* Luxury button base - Upgraded with gradients */
 .btn-luxury {
   border-radius: 0.75rem;
