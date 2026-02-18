@@ -10,7 +10,6 @@ const formatNum = (n: number) => Number(n).toLocaleString('fa-IR', { useGrouping
 
 interface Step2ItemsProps {
   state: PurchaseWizardState
-  onItemsChange: (items: PurchaseItemRow[]) => void
   onAddItem: () => void
   onRemoveItem: (id: string) => void
   onUpdateItem: (id: string, patch: Partial<PurchaseItemRow>) => void
@@ -19,7 +18,6 @@ interface Step2ItemsProps {
 
 export default function Step2Items({
   state,
-  onItemsChange,
   onAddItem,
   onRemoveItem,
   onUpdateItem,
