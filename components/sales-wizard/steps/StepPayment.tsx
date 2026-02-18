@@ -1,8 +1,9 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import { motion } from 'framer-motion'
-import { CreditCard, Calendar, FileText, Banknote } from 'lucide-react'
+import { CreditCard, Calendar, FileText, Banknote, Sparkles } from 'lucide-react'
 import type { PaymentFormData } from '../types'
 
 interface StepPaymentProps {
@@ -22,6 +23,29 @@ export default function StepPayment({
   const [receiptDate, setReceiptDate] = useState(initialPayment.receiptDate)
   const [paidAmount, setPaidAmount] = useState(initialPayment.paidAmount)
   const [note, setNote] = useState(initialPayment.note)
+  const [loadingNextBell, setLoadingNextBell] = useState(false)
+
+  // Sync from parent when initialPayment or totalAmount changes (e.g. returning to step 3 or cart updated)
+  useEffect(() => {
+    setBellNumber(initialPayment.bellNumber)
+    setReceiptDate(initialPayment.receiptDate)
+    setPaidAmount(initialPayment.paidAmount)
+    setNote(initialPayment.note)
+  }, [initialPayment.bellNumber, initialPayment.receiptDate, initialPayment.paidAmount, initialPayment.note])
+
+  const fetchNextBellNumber = async () => {
+    setLoadingNextBell(true)
+    try {
+      const { data } = await axios.get<{ success?: boolean; nextBellNumber?: number }>('/api/transaction/next-bell')
+      if (data.success && data.nextBellNumber != null) {
+        setBellNumber(String(data.nextBellNumber))
+      }
+    } catch {
+      // ignore
+    } finally {
+      setLoadingNextBell(false)
+    }
+  }
 
   const convertToEnglish = (str: string) => {
     const map: Record<string, string> = {
@@ -33,8 +57,8 @@ export default function StepPayment({
     return str.replace(/[۰-۹٠-٩]/g, (d) => map[d] ?? d)
   }
 
-  const paidNum = Number(convertToEnglish(paidAmount)) || 0
-  const remaining = Math.max(0, totalAmount - paidNum)
+  const paidNum = Number(typeof paidAmount === 'string' ? convertToEnglish(paidAmount) : paidAmount) || 0
+  const remaining = Math.max(0, Number(totalAmount) - paidNum)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -75,17 +99,35 @@ export default function StepPayment({
               <label htmlFor="payment-bell" className="block text-xs font-medium text-slate-400 mb-1.5">
                 شماره بل
               </label>
-              <input
-                id="payment-bell"
-                type="text"
-                value={bellNumber}
-                onChange={(e) => setBellNumber(convertToEnglish(e.target.value))}
-                inputMode="numeric"
-                required
-                className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all"
-                placeholder="مثال: ۱۲۳۴"
-                aria-required="true"
-              />
+              <div className="flex gap-2">
+                <input
+                  id="payment-bell"
+                  type="number"
+                  min={1}
+                  value={bellNumber}
+                  onChange={(e) => setBellNumber(e.target.value)}
+                  required
+                  className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  placeholder="مثال: 1234"
+                  aria-required="true"
+                />
+                <button
+                  type="button"
+                  onClick={fetchNextBellNumber}
+                  disabled={loadingNextBell}
+                  className="btn-luxury btn-luxury-outline shrink-0 px-3 py-2 flex items-center gap-1.5 text-sm disabled:opacity-60"
+                  title="تولید خودکار شماره بل"
+                >
+                  {loadingNextBell ? (
+                    <span className="animate-pulse">...</span>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      تولید
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
             <div>
               <label htmlFor="payment-date" className="block text-xs font-medium text-slate-400 mb-1.5 flex items-center gap-1">
@@ -111,13 +153,14 @@ export default function StepPayment({
             </label>
             <motion.input
               id="payment-amount"
-              type="text"
-              value={paidAmount}
-              onChange={(e) => setPaidAmount(convertToEnglish(e.target.value))}
-              inputMode="numeric"
+              type="number"
+              min={0}
+              step={1}
+              value={paidAmount ? (typeof paidAmount === 'string' ? paidAmount : String(paidAmount)) : ''}
+              onChange={(e) => setPaidAmount(e.target.value)}
               required
-              className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-4 text-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all"
-              placeholder="۰"
+              className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-4 text-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              placeholder="0"
               whileFocus={{ scale: 1.01 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             />
@@ -142,14 +185,14 @@ export default function StepPayment({
           <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-white/10">
             <div className="flex-1 rounded-xl bg-white/5 p-4">
               <p className="text-xs text-slate-400">مجموع کل</p>
-              <p className="text-2xl font-bold text-white mt-0.5">
-                {totalAmount.toLocaleString('fa-IR')}
+              <p className="text-2xl font-bold text-white mt-0.5" dir="ltr">
+                {Number(totalAmount).toLocaleString('fa-IR')}
               </p>
             </div>
             <div className="flex-1 rounded-xl bg-white/5 p-4">
               <p className="text-xs text-slate-400">باقی‌مانده</p>
-              <p className="text-2xl font-bold text-gold-400 mt-0.5">
-                {remaining.toLocaleString('fa-IR')}
+              <p className="text-2xl font-bold text-gold-400 mt-0.5" dir="ltr">
+                {Number(remaining).toLocaleString('fa-IR')}
               </p>
             </div>
           </div>

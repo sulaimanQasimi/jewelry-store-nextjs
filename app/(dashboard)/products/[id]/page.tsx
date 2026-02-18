@@ -83,32 +83,6 @@ export default function ProductDetailPage() {
     return () => { cancelled = true }
   }, [id])
 
-  const refresh = () => {
-    if (id) {
-      axios.get<{ success: boolean; data?: Record<string, unknown> }>(`/api/product/${id}`).then(({ data: res }) => {
-        if (res.success && res.data) {
-          const r = res.data
-          setProduct({
-            id: Number(r.id),
-            productName: String(r.productName ?? r.productname ?? ''),
-            type: String(r.type ?? ''),
-            gram: Number(r.gram ?? 0),
-            karat: Number(r.karat ?? 0),
-            purchasePriceToAfn: Number(r.purchasePriceToAfn ?? r.purchasepricetoafn ?? 0),
-            bellNumber: r.bellNumber != null || r.bellnumber != null ? Number(r.bellNumber ?? r.bellnumber) : null,
-            isSold: Boolean(r.isSold ?? r.issold),
-            image: r.image != null ? String(r.image) : null,
-            barcode: String(r.barcode ?? ''),
-            wage: r.wage != null ? Number(r.wage) : null,
-            auns: r.auns != null ? Number(r.auns) : null,
-            createdAt: r.createdAt != null ? String(r.createdAt) : undefined,
-            updatedAt: r.updatedAt != null ? String(r.updatedAt) : undefined
-          })
-        }
-      })
-    }
-  }
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[40vh]">

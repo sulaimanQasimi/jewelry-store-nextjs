@@ -202,7 +202,7 @@ export default function SalesWizard() {
       toast.warn('سبد خرید خالی است')
       return
     }
-    const bell = Number(convertToEnglish(data.bellNumber))
+    const bell = Number(convertToEnglish(String(data.bellNumber ?? '')))
     if (!bell || isNaN(bell)) {
       toast.warn('شماره بل معتبر وارد کنید')
       return
@@ -243,11 +243,23 @@ export default function SalesWizard() {
         }
         goTo(4)
       } else {
-        toast.error(res.message || 'خطا در ثبت تراکنش')
+        const msg = res.message || 'خطا در ثبت تراکنش'
+        toast.error(msg)
+        if (typeof msg === 'string' && msg.includes('فروخته شده')) {
+          clearCart()
+          goTo(1)
+          toast.warn('سبد خالی شد. لطفاً دوباره محصولات را انتخاب کنید.')
+        }
       }
     } catch (err: unknown) {
       const msg = axios.isAxiosError(err) ? err.response?.data?.message : (err as Error)?.message
-      toast.error(String(msg || 'خطا در ثبت تراکنش'))
+      const strMsg = String(msg || 'خطا در ثبت تراکنش')
+      toast.error(strMsg)
+      if (strMsg.includes('فروخته شده')) {
+        clearCart()
+        goTo(1)
+        toast.warn('سبد خالی شد. لطفاً دوباره محصولات را انتخاب کنید.')
+      }
     } finally {
       setSubmitting(false)
     }

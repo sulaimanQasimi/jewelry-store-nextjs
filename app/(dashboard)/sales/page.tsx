@@ -9,7 +9,7 @@ import type { ColumnDef } from '@/components/ui/DataTable'
 import { AppContext } from '@/lib/context/AppContext'
 import type { TransactionForPrint } from '@/components/sale/SaleBillPrint'
 import type { CompanyInfo } from '@/components/sale/SaleInvoice'
-import { Printer, ShoppingCart } from 'lucide-react'
+import { Printer, RotateCcw, ShoppingCart } from 'lucide-react'
 
 const SALE_INVOICE_PRINT_KEY = 'saleInvoicePrint'
 
@@ -235,6 +235,15 @@ export default function SalesPage() {
                   className="input-luxury w-full"
                 />
               </div>
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="btn-luxury btn-luxury-outline py-2 px-4 inline-flex items-center gap-2"
+                title="بازنشانی فیلترها"
+              >
+                <RotateCcw className="w-4 h-4" />
+                بازنشانی
+              </button>
             </>
           }
         />
