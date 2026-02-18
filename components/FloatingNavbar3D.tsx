@@ -66,9 +66,9 @@ const FloatingNavbar3D: React.FC<FloatingNavbar3DProps> = ({
 
     const nav = document.querySelector('[data-nav-3d]')
     if (nav) {
-      nav.addEventListener('mousemove', handleMouseMove)
+      nav.addEventListener('mousemove', handleMouseMove as EventListener)
       return () => {
-        nav.removeEventListener('mousemove', handleMouseMove)
+        nav.removeEventListener('mousemove', handleMouseMove as EventListener)
         if (rafId) cancelAnimationFrame(rafId)
       }
     }
@@ -184,7 +184,7 @@ const FloatingNavbar3D: React.FC<FloatingNavbar3DProps> = ({
 
               {/* Currency Exchange */}
               <div className="hidden md:block" style={{ transformStyle: 'preserve-3d' }}>
-                <CurrencyExchange />
+                <CurrencyExchange isCurrencyToggle={false} />
               </div>
 
               {/* Logout Button */}

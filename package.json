@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "axios": "^1.13.5",
     "bcryptjs": "^3.0.3",
     "bwip-js": "^4.8.0",
@@ -27,6 +28,7 @@
     "react-barcode": "^1.6.1",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "19.2.3",
+    "react-hook-form": "^7.71.1",
     "react-multi-date-picker": "^4.5.2",
     "react-to-print": "^3.2.0",
     "react-toastify": "^11.0.5",
