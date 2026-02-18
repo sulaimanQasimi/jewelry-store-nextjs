@@ -1,9 +1,8 @@
 'use client'
 
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { useReactToPrint } from 'react-to-print'
 import axios from 'axios'
 import { motion } from 'framer-motion'
 import {
@@ -15,6 +14,11 @@ import {
   ShoppingBag
 } from 'lucide-react'
 import { toast } from 'react-toastify'
+import { AppContext } from '@/lib/context/AppContext'
+import type { TransactionForPrint } from '@/components/sale/SaleBillPrint'
+import type { CompanyInfo } from '@/components/sale/SaleInvoice'
+
+const SALE_INVOICE_PRINT_KEY = 'saleInvoicePrint'
 
 interface ProductItem {
   productId?: number
@@ -68,19 +72,61 @@ const formatMoney = (n: number) =>
 export default function SaleDetailPage() {
   const params = useParams()
   const id = params?.id as string
+  const { companyData: contextCompany } = useContext(AppContext)
+  const companyForInvoice: CompanyInfo | null =
+    Array.isArray(contextCompany) && contextCompany[0]
+      ? {
+          companyName: contextCompany[0].companyName ?? contextCompany[0].CompanyName,
+          slogan: contextCompany[0].slogan,
+          phone: contextCompany[0].phone,
+          address: contextCompany[0].address,
+          email: contextCompany[0].email,
+          image: contextCompany[0].image
+        }
+      : typeof contextCompany === 'object' && contextCompany?.companyName
+        ? {
+            companyName: contextCompany.companyName,
+            slogan: contextCompany.slogan,
+            phone: contextCompany.phone,
+            address: contextCompany.address,
+            email: contextCompany.email,
+            image: contextCompany.image
+          }
+        : null
+
   const [sale, setSale] = useState<SaleDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const printRef = useRef<HTMLDivElement>(null)
 
-  const handlePrint = useReactToPrint({
-    contentRef: printRef,
-    documentTitle: `Sale-${sale?.bellNumber ?? id}`,
-    pageStyle: `
-      @page { size: A4; margin: 12mm; }
-      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    `
-  })
+  const openPrintInvoice = (row: SaleDetail) => {
+    const product = Array.isArray(row.product)
+      ? row.product.map((p) => ({
+          productName: p.productName ?? '',
+          barcode: p.barcode,
+          gram: p.gram,
+          karat: p.karat,
+          salePrice: p.salePrice
+        }))
+      : []
+    const tx: TransactionForPrint = {
+      customerName: row.customerName,
+      customerPhone: row.customerPhone,
+      product,
+      receipt: row.receipt ?? { totalAmount: 0, paidAmount: 0, remainingAmount: 0 },
+      bellNumber: row.bellNumber,
+      createdAt: row.createdAt,
+      note: row.note ?? null
+    }
+    try {
+      localStorage.setItem(
+        SALE_INVOICE_PRINT_KEY,
+        JSON.stringify({ transaction: tx, company: companyForInvoice })
+      )
+      window.open('/sale-product/print', '_blank', 'noopener,noreferrer')
+    } catch (_) {
+      // ignore
+    }
+  }
 
   useEffect(() => {
     if (!id) return
@@ -167,7 +213,7 @@ export default function SaleDetailPage() {
           </button>
           <button
             type="button"
-            onClick={() => handlePrint()}
+            onClick={() => sale && openPrintInvoice(sale)}
             className="btn-luxury btn-luxury-primary py-2 px-4 inline-flex items-center gap-2"
           >
             <Printer className="w-4 h-4" />
@@ -176,9 +222,8 @@ export default function SaleDetailPage() {
         </div>
       </div>
 
-      {/* Printable receipt container - luxury card with jewelry border */}
+      {/* Receipt container - luxury card with jewelry border */}
       <div
-        ref={printRef}
         className="relative bg-white dark:bg-slate-800/95 rounded-2xl border-2 border-gold-200/60 dark:border-gold-800/50 shadow-lg overflow-hidden"
         style={{
           backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(255,215,0,0.03) 0%, transparent 50%)'

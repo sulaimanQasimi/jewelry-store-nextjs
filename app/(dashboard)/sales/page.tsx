@@ -265,18 +265,20 @@ export default function SalesPage() {
         <div className="flex gap-2 flex-wrap">
           <Link
             href={`/sales/${r.id}`}
-            className="btn-luxury btn-luxury-outline py-1.5 px-3 text-sm inline-flex items-center gap-1"
+            className="btn-luxury btn-luxury-outline p-2 inline-flex items-center justify-center"
+            aria-label="مشاهده"
+            title="مشاهده"
           >
             <FileText className="w-4 h-4" />
-            مشاهده
           </Link>
           <button
             type="button"
             onClick={() => openPrintInvoice(r)}
-            className="btn-luxury btn-luxury-outline py-1.5 px-3 text-sm inline-flex items-center gap-1"
+            className="btn-luxury btn-luxury-outline p-2 inline-flex items-center justify-center"
+            aria-label="چاپ فاکتور"
+            title="چاپ فاکتور"
           >
             <Printer className="w-4 h-4" />
-            چاپ فاکتور
           </button>
         </div>
       )
