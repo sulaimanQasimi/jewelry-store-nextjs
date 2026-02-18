@@ -81,22 +81,22 @@ export default function StepPayment({
         شماره بل، تاریخ و مبلغ پرداختی را وارد کنید.
       </p>
 
-      {/* Card-style layout */}
+      {/* Card-style layout: light in light mode, dark in dark mode */}
       <motion.div
-        className="rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 dark:from-slate-900 dark:to-slate-950 p-6 sm:p-8 text-white shadow-xl"
+        className="rounded-2xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 border border-slate-200 dark:border-slate-700 p-6 sm:p-8 text-charcoal dark:text-white shadow-xl shadow-slate-200/50 dark:shadow-none"
         initial={{ scale: 0.98 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', damping: 25 }}
       >
         <div className="flex items-center gap-2 mb-6">
-          <CreditCard className="w-5 h-5 text-gold-400" />
-          <span className="text-sm font-medium text-slate-300">اطلاعات رسید</span>
+          <CreditCard className="w-5 h-5 text-gold-600 dark:text-gold-400" />
+          <span className="text-sm font-medium text-slate-600 dark:text-slate-300">اطلاعات رسید</span>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="payment-bell" className="block text-xs font-medium text-slate-400 mb-1.5">
+              <label htmlFor="payment-bell" className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">
                 شماره بل
               </label>
               <div className="flex gap-2">
@@ -107,7 +107,7 @@ export default function StepPayment({
                   value={bellNumber}
                   onChange={(e) => setBellNumber(e.target.value)}
                   required
-                  className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="w-full rounded-xl bg-white dark:bg-white/10 border border-slate-200 dark:border-white/20 px-4 py-3 text-charcoal dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   placeholder="مثال: 1234"
                   aria-required="true"
                 />
@@ -130,7 +130,7 @@ export default function StepPayment({
               </div>
             </div>
             <div>
-              <label htmlFor="payment-date" className="block text-xs font-medium text-slate-400 mb-1.5 flex items-center gap-1">
+              <label htmlFor="payment-date" className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5 flex items-center gap-1">
                 <Calendar className="w-3.5 h-3.5" aria-hidden />
                 تاریخ
               </label>
@@ -140,14 +140,14 @@ export default function StepPayment({
                 value={receiptDate}
                 onChange={(e) => setReceiptDate(e.target.value)}
                 required
-                className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all [color-scheme:dark]"
+                className="w-full rounded-xl bg-white dark:bg-white/10 border border-slate-200 dark:border-white/20 px-4 py-3 text-charcoal dark:text-white focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all [color-scheme:light] dark:[color-scheme:dark]"
                 aria-required="true"
               />
             </div>
           </div>
 
           <div>
-            <label htmlFor="payment-amount" className="block text-xs font-medium text-slate-400 mb-1.5 flex items-center gap-1">
+            <label htmlFor="payment-amount" className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5 flex items-center gap-1">
               <Banknote className="w-3.5 h-3.5" aria-hidden />
               مبلغ پرداختی (رسید)
             </label>
@@ -159,7 +159,7 @@ export default function StepPayment({
               value={paidAmount ? (typeof paidAmount === 'string' ? paidAmount : String(paidAmount)) : ''}
               onChange={(e) => setPaidAmount(e.target.value)}
               required
-              className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-4 text-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-full rounded-xl bg-white dark:bg-white/10 border border-slate-200 dark:border-white/20 px-4 py-4 text-xl text-charcoal dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               placeholder="0"
               whileFocus={{ scale: 1.01 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
@@ -167,7 +167,7 @@ export default function StepPayment({
           </div>
 
           <div>
-            <label htmlFor="payment-note" className="block text-xs font-medium text-slate-400 mb-1.5 flex items-center gap-1">
+            <label htmlFor="payment-note" className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5 flex items-center gap-1">
               <FileText className="w-3.5 h-3.5" aria-hidden />
               یادداشت (اختیاری)
             </label>
@@ -176,22 +176,22 @@ export default function StepPayment({
               value={note}
               onChange={(e) => setNote(e.target.value)}
               rows={2}
-              className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all resize-none"
+              className="w-full rounded-xl bg-white dark:bg-white/10 border border-slate-200 dark:border-white/20 px-4 py-3 text-charcoal dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all resize-none"
               placeholder="توضیحات..."
               aria-label="یادداشت اختیاری"
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-white/10">
-            <div className="flex-1 rounded-xl bg-white/5 p-4">
-              <p className="text-xs text-slate-400">مجموع کل</p>
-              <p className="text-2xl font-bold text-white mt-0.5" dir="ltr">
+          <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-slate-200 dark:border-white/10">
+            <div className="flex-1 rounded-xl bg-slate-100/80 dark:bg-white/5 p-4">
+              <p className="text-xs text-slate-600 dark:text-slate-400">مجموع کل</p>
+              <p className="text-2xl font-bold text-charcoal dark:text-white mt-0.5" dir="ltr">
                 {Number(totalAmount).toLocaleString('fa-IR')}
               </p>
             </div>
-            <div className="flex-1 rounded-xl bg-white/5 p-4">
-              <p className="text-xs text-slate-400">باقی‌مانده</p>
-              <p className="text-2xl font-bold text-gold-400 mt-0.5" dir="ltr">
+            <div className="flex-1 rounded-xl bg-slate-100/80 dark:bg-white/5 p-4">
+              <p className="text-xs text-slate-600 dark:text-slate-400">باقی‌مانده</p>
+              <p className="text-2xl font-bold text-gold-600 dark:text-gold-400 mt-0.5" dir="ltr">
                 {Number(remaining).toLocaleString('fa-IR')}
               </p>
             </div>
