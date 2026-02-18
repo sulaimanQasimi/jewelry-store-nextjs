@@ -1,0 +1,31 @@
+# Dependencies and build
+node_modules
+.next
+out
+.npm
+.pnp
+.pnp.*
+
+# Git and IDE
+.git
+.gitignore
+.cursor
+*.md
+!README.md
+
+# Env (use compose env or .env at run time)
+.env
+.env.*
+!.env.example
+
+# Misc
+backups
+*.log
+.DS_Store
+coverage
+.vercel
+*.tsbuildinfo
+
+# Docs and dev
+document
+MIGRATION_NOTES.md

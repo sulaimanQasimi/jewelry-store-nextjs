@@ -2,7 +2,49 @@
 
 This is the migrated Next.js application combining the Express.js backend and React Vite frontend into a unified Next.js application with MySQL database.
 
-## Setup Instructions
+**Repository:** [https://github.com/sulaimanQasimi/jewelry-store-nextjs](https://github.com/sulaimanQasimi/jewelry-store-nextjs) (public)
+
+---
+
+## Docker (MySQL + PM2, recommended for dev/deploy)
+
+Clone and run with Docker Compose. MySQL is auto-configured and the schema (`db.sql`) is applied on first run. The app runs with PM2 inside the container.
+
+```bash
+git clone https://github.com/sulaimanQasimi/jewelry-store-nextjs.git
+cd jewelry-store-nextjs
+```
+
+Optional: copy env example and edit (defaults work for local dev):
+
+```bash
+cp .env.docker.example .env
+```
+
+Build and start:
+
+```bash
+docker compose up -d
+```
+
+- **App:** http://localhost:3000  
+- **MySQL:** localhost:3306 (user `jewelry`, password `jewelrypass`, database `jewelry_store` by default)
+
+Stop:
+
+```bash
+docker compose down
+```
+
+To persist MySQL data and use custom env values, set in `.env` before `docker compose up`:
+
+- `MYSQL_ROOT_PASSWORD`, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_PORT`
+- `AUTH_SECRET` / `JWT_SECRET` (min 16 chars; required for auth in production)
+- `APP_PORT` (default 3000)
+
+---
+
+## Setup Instructions (without Docker)
 
 ### 1. Install Dependencies
 

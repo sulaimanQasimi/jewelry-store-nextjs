@@ -1,0 +1,53 @@
+# Jewelry Store - Docker Compose (MySQL + Next.js with PM2)
+# Clone: git clone https://github.com/sulaimanQasimi/jewelry-store-nextjs.git
+# Run:   docker compose up -d
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: jewelry-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-jewelry_store}
+      MYSQL_USER: ${MYSQL_USER:-jewelry}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-jewelrypass}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jewelry-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER:-jewelry}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-jewelrypass}
+      DB_NAME: ${MYSQL_DATABASE:-jewelry_store}
+      AUTH_SECRET: ${AUTH_SECRET:-change-me-in-production-min-16-chars}
+      JWT_SECRET: ${JWT_SECRET:-${AUTH_SECRET:-change-me-in-production-min-16-chars}}
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    # Optional: persist backups and uploads on host
+    volumes:
+      - ./backups:/app/backups
+      - ./public/uploads:/app/public/uploads
+
+volumes:
+  mysql_data:
