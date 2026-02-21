@@ -36,7 +36,8 @@ import {
   Settings,
   Coins,
   Wrench,
-  TrendingUp
+  TrendingUp,
+  Heart
 } from 'lucide-react'
 
 const groups = [
@@ -89,6 +90,7 @@ const groups = [
     icon: CreditCard,
     items: [
       { href: '/customer-registration', icon: UserPlus, label: 'ثبت مشتریان' },
+      { href: '/customers/crm', icon: Heart, label: 'CRM مشتریان' },
       { href: '/loan-management', icon: CreditCard, label: 'بلانس مشتریان' },
       { href: '/loan-reports', icon: FileText, label: 'گزارش قرض' }
     ]

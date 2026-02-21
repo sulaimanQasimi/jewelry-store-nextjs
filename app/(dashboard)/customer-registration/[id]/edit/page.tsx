@@ -37,6 +37,7 @@ export default function EditCustomerPage() {
             companyName: res.data.companyName ?? null,
             notes: res.data.notes ?? null,
             birthDate: res.data.birthDate ?? null,
+            anniversary_date: (res.data as any).anniversary_date ?? null,
             nationalId: res.data.nationalId ?? null,
             facebookUrl: res.data.facebookUrl ?? null,
             instagramUrl: res.data.instagramUrl ?? null,

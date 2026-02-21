@@ -17,6 +17,7 @@ export interface CustomerFormData {
   companyName?: string | null
   notes?: string | null
   birthDate?: string | null
+  anniversary_date?: string | null
   nationalId?: string | null
   facebookUrl?: string | null
   instagramUrl?: string | null
@@ -44,6 +45,7 @@ const emptyForm: CustomerFormData = {
   companyName: '',
   notes: '',
   birthDate: '',
+  anniversary_date: '',
   nationalId: '',
   facebookUrl: '',
   instagramUrl: '',
@@ -74,6 +76,7 @@ export default function CustomerForm({
         companyName: initialData.companyName ?? '',
         notes: initialData.notes ?? '',
         birthDate: initialData.birthDate ?? '',
+        anniversary_date: initialData.anniversary_date ?? '',
         nationalId: initialData.nationalId ?? '',
         facebookUrl: initialData.facebookUrl ?? '',
         instagramUrl: initialData.instagramUrl ?? '',
@@ -114,6 +117,7 @@ export default function CustomerForm({
     if (form.companyName) fd.append('companyName', form.companyName)
     if (form.notes) fd.append('notes', form.notes)
     if (form.birthDate) fd.append('birthDate', form.birthDate)
+    if (form.anniversary_date) fd.append('anniversary_date', form.anniversary_date)
     if (form.nationalId) fd.append('nationalId', form.nationalId)
     if (form.facebookUrl) fd.append('facebookUrl', form.facebookUrl)
     if (form.instagramUrl) fd.append('instagramUrl', form.instagramUrl)
@@ -257,6 +261,15 @@ export default function CustomerForm({
             name="birthDate"
             className="input-luxury w-full"
             value={form.birthDate ?? ''}
+            onChange={handleChange}
+          />
+        </FormField>
+        <FormField label="سالگرد (تاریخ)">
+          <input
+            type="date"
+            name="anniversary_date"
+            className="input-luxury w-full"
+            value={form.anniversary_date ?? ''}
             onChange={handleChange}
           />
         </FormField>

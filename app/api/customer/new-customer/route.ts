@@ -27,6 +27,7 @@ export async function POST(request: NextRequest) {
     let companyName: string | null = null
     let notes: string | null = null
     let birthDate: string | null = null
+    let anniversary_date: string | null = null
     let nationalId: string | null = null
     let facebookUrl: string | null = null
     let instagramUrl: string | null = null
@@ -45,6 +46,7 @@ export async function POST(request: NextRequest) {
       companyName = getString(formData, 'companyName') || null
       notes = getString(formData, 'notes') || null
       birthDate = getDate(formData, 'birthDate')
+      anniversary_date = getDate(formData, 'anniversary_date')
       nationalId = getString(formData, 'nationalId') || null
       facebookUrl = getString(formData, 'facebookUrl') || null
       instagramUrl = getString(formData, 'instagramUrl') || null
@@ -73,6 +75,7 @@ export async function POST(request: NextRequest) {
       companyName = body.companyName?.trim() || null
       notes = body.notes?.trim() || null
       birthDate = body.birthDate || null
+      anniversary_date = body.anniversary_date || body.anniversaryDate || null
       nationalId = body.nationalId?.trim() || null
       facebookUrl = body.facebookUrl?.trim() || null
       instagramUrl = body.instagramUrl?.trim() || null
@@ -87,8 +90,8 @@ export async function POST(request: NextRequest) {
     const result = (await query(
       `INSERT INTO customers (
         customerName, phone, email, address, date, image, secondaryPhone,
-        companyName, notes, birthDate, nationalId, facebookUrl, instagramUrl, whatsappUrl, telegramUrl
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        companyName, notes, birthDate, anniversary_date, nationalId, facebookUrl, instagramUrl, whatsappUrl, telegramUrl
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         customerName,
         phone,
@@ -100,6 +103,7 @@ export async function POST(request: NextRequest) {
         companyName,
         notes,
         birthDate,
+        anniversary_date ?? null,
         nationalId,
         facebookUrl,
         instagramUrl,

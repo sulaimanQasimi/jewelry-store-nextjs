@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import axios from 'axios'
 import { FacebookIcon, InstagramIcon, WhatsAppIcon, TelegramIcon } from '@/components/icons/SocialIcons'
+import { Receipt, Gift } from 'lucide-react'
 
 interface Customer {
   id: number
@@ -18,6 +19,7 @@ interface Customer {
   companyName: string | null
   notes: string | null
   birthDate: string | null
+  anniversary_date: string | null
   nationalId: string | null
   facebookUrl: string | null
   instagramUrl: string | null
@@ -38,6 +40,7 @@ export default function CustomerShowPage() {
   const params = useParams()
   const id = params?.id as string | undefined
   const [customer, setCustomer] = useState<Customer | null>(null)
+  const [purchases, setPurchases] = useState<{ purchases: { id: number; bellNumber: number; createdAt: string; totalAmount: number; productCount: number }[]; totalSpent: number; lastPurchaseAt: string | null } | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
 
@@ -62,6 +65,17 @@ export default function CustomerShowPage() {
       })
     return () => { cancelled = true }
   }, [id])
+
+  useEffect(() => {
+    if (!id || !customer?.id) return
+    axios
+      .get<{ success?: boolean; data?: { purchases: { id: number; bellNumber: number; createdAt: string; totalAmount: number; productCount: number }[]; totalSpent: number; lastPurchaseAt: string | null } }>(`/api/customer/${id}/purchases`)
+      .then(({ data }) => {
+        if (data?.success && data?.data) setPurchases(data.data)
+        else setPurchases(null)
+      })
+      .catch(() => setPurchases(null))
+  }, [id, customer?.id])
 
   if (loading) {
     return (
@@ -155,6 +169,12 @@ export default function CustomerShowPage() {
                   <dd className="font-medium text-charcoal">{formatDate(customer.birthDate)}</dd>
                 </div>
               )}
+              {customer.anniversary_date && (
+                <div>
+                  <dt className="text-charcoal-soft">سالگرد</dt>
+                  <dd className="font-medium text-charcoal">{formatDate(customer.anniversary_date)}</dd>
+                </div>
+              )}
               {customer.nationalId && (
                 <div>
                   <dt className="text-charcoal-soft">شناسه ملی</dt>
@@ -190,6 +210,79 @@ export default function CustomerShowPage() {
               )}
             </div>
           </div>
+        </div>
+      </div>
+
+      {(customer.birthDate || customer.anniversary_date) && (
+        <div className="card-luxury rounded-2xl border border-amber-200/50 overflow-hidden">
+          <div className="px-6 py-4 border-b border-amber-200/60 dark:border-slate-600 flex items-center gap-2">
+            <Gift className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+            <h2 className="font-heading text-lg font-semibold text-charcoal dark:text-white">مناسبت‌های نزدیک</h2>
+          </div>
+          <div className="p-6 space-y-2">
+            {customer.birthDate && (() => {
+              const [_, m, d] = customer.birthDate.split('-').map(Number)
+              const now = new Date()
+              let next = new Date(now.getFullYear(), m - 1, d)
+              if (next < now) next = new Date(now.getFullYear() + 1, m - 1, d)
+              const days = Math.ceil((next.getTime() - now.getTime()) / (24 * 60 * 60 * 1000))
+              return <p className="text-sm text-slate-600 dark:text-slate-400 font-stat">{days <= 30 ? `${days} روز تا تولد` : `تولد: ${formatDate(customer.birthDate)}`}</p>
+            })()}
+            {customer.anniversary_date && (() => {
+              const [_, m, d] = customer.anniversary_date.split('-').map(Number)
+              const now = new Date()
+              let next = new Date(now.getFullYear(), m - 1, d)
+              if (next < now) next = new Date(now.getFullYear() + 1, m - 1, d)
+              const days = Math.ceil((next.getTime() - now.getTime()) / (24 * 60 * 60 * 1000))
+              return <p className="text-sm text-slate-600 dark:text-slate-400 font-stat">{days <= 30 ? `${days} روز تا سالگرد` : `سالگرد: ${formatDate(customer.anniversary_date)}`}</p>
+            })()}
+          </div>
+        </div>
+      )}
+
+      <div className="card-luxury rounded-2xl border border-amber-200/50 overflow-hidden">
+        <div className="px-6 py-4 border-b border-amber-200/60 dark:border-slate-600 flex items-center gap-2">
+          <Receipt className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+          <h2 className="font-heading text-lg font-semibold text-charcoal dark:text-white">تاریخچه خرید</h2>
+          {purchases && (
+            <span className="text-sm text-slate-500 dark:text-slate-400 font-stat mr-auto">
+              مجموع: {purchases.totalSpent.toLocaleString('fa-IR')} افغانی
+            </span>
+          )}
+        </div>
+        <div className="p-6 overflow-x-auto">
+          {!purchases ? (
+            <p className="text-slate-500 dark:text-slate-400 text-sm">در حال بارگذاری...</p>
+          ) : purchases.purchases.length === 0 ? (
+            <p className="text-slate-500 dark:text-slate-400 text-sm">خریدی ثبت نشده است</p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-amber-200/60 dark:border-slate-600">
+                  <th className="text-right py-2 px-2 font-medium text-slate-600 dark:text-slate-400">تاریخ</th>
+                  <th className="text-right py-2 px-2 font-medium text-slate-600 dark:text-slate-400">شماره بل</th>
+                  <th className="text-right py-2 px-2 font-medium text-slate-600 dark:text-slate-400">مبلغ</th>
+                  <th className="text-right py-2 px-2 font-medium text-slate-600 dark:text-slate-400">تعداد اقلام</th>
+                  <th className="text-right py-2 px-2 font-medium text-slate-600 dark:text-slate-400">لینک</th>
+                </tr>
+              </thead>
+              <tbody>
+                {purchases.purchases.map((p) => (
+                  <tr key={p.id} className="border-b border-amber-100 dark:border-slate-700/50">
+                    <td className="py-2 px-2 font-stat">{formatDate(p.createdAt)}</td>
+                    <td className="py-2 px-2 font-stat">{p.bellNumber.toLocaleString('fa-IR')}</td>
+                    <td className="py-2 px-2 font-stat">{p.totalAmount.toLocaleString('fa-IR')}</td>
+                    <td className="py-2 px-2 font-stat">{p.productCount.toLocaleString('fa-IR')}</td>
+                    <td className="py-2 px-2">
+                      <Link href={`/sales/${p.id}`} className="text-amber-600 dark:text-amber-400 hover:underline text-xs">
+                        مشاهده فاکتور
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>
