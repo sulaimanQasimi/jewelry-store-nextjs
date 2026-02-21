@@ -3,6 +3,7 @@
 import React from 'react'
 import PaginationBar from './PaginationBar'
 import type { PaginationBarProps } from './PaginationBar'
+import EmptyState from './EmptyState'
 
 export interface ColumnDef<T = any> {
   key: string
@@ -60,8 +61,8 @@ export default function DataTable<T extends Record<string, any>>({
               </tr>
             ) : data.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="py-8 text-center text-charcoal-soft dark:text-slate-400">
-                  {emptyMessage}
+                <td colSpan={columns.length} className="p-0">
+                  <EmptyState message={emptyMessage} className="rounded-none border-0 min-h-[200px]" />
                 </td>
               </tr>
             ) : (

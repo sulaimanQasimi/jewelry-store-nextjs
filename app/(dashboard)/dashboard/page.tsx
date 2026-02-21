@@ -18,6 +18,8 @@ import {
 } from 'lucide-react'
 import StatCard from '@/components/dashboard/StatCard'
 import GoldRatesCard from '@/components/dashboard/GoldRatesCard'
+import Loader from '@/components/ui/Loader'
+import { motion } from 'framer-motion'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -129,11 +131,7 @@ export default function DashboardPage() {
   }, [])
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin h-12 w-12 border-4 border-gold-500 border-t-transparent rounded-full" />
-      </div>
-    )
+    return <Loader message="در حال بارگذاری…" className="min-h-[400px]" />
   }
 
   if (error || !stats) {
@@ -260,27 +258,36 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="max-w-sm">
+      <motion.section
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          visible: { transition: { staggerChildren: 0.06, delayChildren: 0.1 } },
+          hidden: {}
+        }}
+      >
+        <motion.div className="max-w-sm" variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } }}>
           <GoldRatesCard
             pricePerGramAfn={latestGold?.price_per_gram_afn ?? null}
             date={latestGold?.date ?? null}
             pricePerOunceUsd={latestGold?.price_per_ounce_usd ?? null}
             href="/gold-rate"
           />
-        </div>
+        </motion.div>
         {statCards.map((card) => (
-          <StatCard
-            key={card.label}
-            label={card.label}
-            value={card.value}
-            sub={card.sub || undefined}
-            icon={card.icon}
-            variant={card.variant}
-            href={card.href}
-          />
+          <motion.div key={card.label} variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } }}>
+            <StatCard
+              label={card.label}
+              value={card.value}
+              sub={card.sub || undefined}
+              icon={card.icon}
+              variant={card.variant}
+              href={card.href}
+            />
+          </motion.div>
         ))}
-      </section>
+      </motion.section>
 
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 card-luxury p-6 rounded-xl border border-gold-200/50 dark:border-slate-600/50">

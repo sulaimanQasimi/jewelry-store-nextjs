@@ -306,7 +306,7 @@ body {
 /* Luxury typography */
 .font-heading {
   font-family: 'naskh', 'vazirmatn', serif;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.025em;
 }
 
 /* Luxury Serif for Boutique Pages */
@@ -439,8 +439,12 @@ body {
   border-radius: 1px;
 }
 
-/* Printing */
+/* Print: hide nav/sidebar so only main content prints */
 @media print {
+  .no-print {
+    display: none !important;
+  }
+
   body {
     margin: 0;
     padding: 0;
@@ -471,5 +475,15 @@ body {
   @page {
     size: 5cm 2.5cm;
     margin: 0;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .card-luxury:hover,
+  .btn-luxury-primary:hover:not(:disabled),
+  .btn-luxury-outline:hover:not(:disabled),
+  .input-luxury:focus {
+    transform: none;
   }
 }

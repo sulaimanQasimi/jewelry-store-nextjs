@@ -17,6 +17,7 @@ import {
 } from 'chart.js'
 import { Bar, Line } from 'react-chartjs-2'
 import StatCard from '@/components/dashboard/StatCard'
+import Loader from '@/components/ui/Loader'
 import { BarChart3, TrendingUp, Gem } from 'lucide-react'
 
 ChartJS.register(
@@ -166,9 +167,7 @@ export default function AnalyticsPage() {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center min-h-[300px]">
-          <div className="animate-spin h-12 w-12 border-4 border-amber-400 border-t-transparent rounded-full" />
-        </div>
+        <Loader message="در حال بارگذاری…" className="min-h-[300px]" />
       ) : (
         <>
           <section className="grid grid-cols-1 md:grid-cols-2 gap-4">

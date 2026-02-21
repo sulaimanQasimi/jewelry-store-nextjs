@@ -15,7 +15,7 @@ export default function DashboardLayout({
       <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute top-[30%] left-[20%] w-[300px] h-[300px] bg-purple-500/10 dark:bg-purple-500/5 rounded-full blur-[80px] pointer-events-none" />
 
-      <header className="shrink-0 transition-all duration-300">
+      <header className="shrink-0 transition-all duration-300 no-print">
         <PremiumNavbar />
       </header>
       
@@ -26,7 +26,7 @@ export default function DashboardLayout({
           </div>
         </main>
         
-        <aside className="order-1 shrink-0 m-4 ml-0 rounded-2xl overflow-hidden hidden md:block">
+        <aside className="order-1 shrink-0 m-4 ml-0 rounded-2xl overflow-hidden hidden md:block no-print">
           <LuxurySidebar />
         </aside>
       </div>
