@@ -83,7 +83,7 @@ export default function EditProductPage() {
         </h1>
       </header>
 
-      <div className="card-luxury p-6 rounded-2xl border border-gold-200/50 dark:border-slate-600/50">
+      <div className="bg-white dark:bg-slate-800/90 p-6 sm:p-8 rounded-2xl border border-amber-100 dark:border-slate-600/50 shadow-sm">
         <ProductFormContent
           mode="edit"
           initialData={initialData}

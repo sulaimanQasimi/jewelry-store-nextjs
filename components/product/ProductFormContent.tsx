@@ -1,9 +1,19 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import FormField from '@/components/ui/FormField'
+import {
+  Tag,
+  Layers,
+  Scale,
+  Sparkles,
+  Coins,
+  TrendingUp,
+  FileText,
+  Plus,
+  Camera
+} from 'lucide-react'
 import type { ProductFormData } from './ProductFormModal'
 
 const emptyForm: ProductFormData = {
@@ -14,6 +24,36 @@ const emptyForm: ProductFormData = {
   wage: 0,
   auns: 0,
   bellNumber: null
+}
+
+const inputBase =
+  'input-luxury w-full pe-10 rounded-xl border border-amber-100 dark:border-slate-600 bg-white dark:bg-slate-800/80 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-500/40 focus:border-amber-300 dark:focus:border-amber-500/60 transition-all duration-200'
+
+function FieldWithIcon({
+  label,
+  icon: Icon,
+  children
+}: {
+  label: string
+  icon: React.ComponentType<{ className?: string }>
+  children: React.ReactNode
+}) {
+  return (
+    <div className="flex flex-col gap-1.5" dir="rtl">
+      <label className="text-sm font-medium text-slate-600 dark:text-slate-400 font-stat">
+        {label}
+      </label>
+      <div className="relative">
+        {children}
+        <span
+          className="absolute top-1/2 -translate-y-1/2 end-3 pointer-events-none text-amber-600/70 dark:text-amber-400/80"
+          aria-hidden
+        >
+          <Icon className="w-5 h-5" strokeWidth={1.75} />
+        </span>
+      </div>
+    </div>
+  )
 }
 
 export interface ProductFormContentProps {
@@ -33,6 +73,8 @@ export default function ProductFormContent({
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  const [dragActive, setDragActive] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (mode === 'edit' && initialData) {
@@ -66,15 +108,37 @@ export default function ProductFormContent({
     }))
   }
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      setImageFile(file)
-      setImagePreview(URL.createObjectURL(file))
-    } else {
+  const processFile = (file: File | null) => {
+    if (!file) {
       setImageFile(null)
       setImagePreview(mode === 'edit' && initialData?.image ? (initialData.image as string) : null)
+      return
     }
+    if (!file.type.startsWith('image/')) {
+      toast.error('لطفاً یک فایل تصویری انتخاب کنید')
+      return
+    }
+    setImageFile(file)
+    setImagePreview(URL.createObjectURL(file))
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    processFile(e.target.files?.[0] ?? null)
+  }
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(e.type === 'dragenter' || e.type === 'dragover')
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+    if (mode === 'edit') return
+    const file = e.dataTransfer.files?.[0]
+    processFile(file ?? null)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -137,109 +201,210 @@ export default function ProductFormContent({
       : (typeof window !== 'undefined' ? window.location.origin : '') + imagePreview)
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <FormField label="نام جنس">
-          <input
-            name="productName"
-            className="input-luxury w-full"
-            value={form.productName}
-            onChange={handleChange}
-            required
-          />
-        </FormField>
-        <FormField label="نوع">
-          <input name="type" className="input-luxury w-full" value={form.type} onChange={handleChange} placeholder="مثال: انگشتر" />
-        </FormField>
-        <FormField label="وزن (گرام)">
-          <input
-            name="gram"
-            type="number"
-            step="any"
-            min="0"
-            className="input-luxury w-full"
-            value={form.gram || ''}
-            onChange={handleChange}
-            required
-          />
-        </FormField>
-        <FormField label="عیار">
-          <input
-            name="karat"
-            type="number"
-            step="any"
-            min="0"
-            className="input-luxury w-full"
-            value={form.karat || ''}
-            onChange={handleChange}
-            required
-          />
-        </FormField>
-        <FormField label="اجرت">
-          <input name="wage" type="number" step="any" min="0" className="input-luxury w-full" value={form.wage || ''} onChange={handleChange} />
-        </FormField>
-        <FormField label="اونس">
-          <input name="auns" type="number" step="any" min="0" className="input-luxury w-full" value={form.auns || ''} onChange={handleChange} />
-        </FormField>
-        <FormField label="شماره بل">
-          <input
-            name="bellNumber"
-            type="number"
-            className="input-luxury w-full"
-            value={form.bellNumber ?? ''}
-            onChange={handleChange}
-            placeholder="اختیاری"
-          />
-        </FormField>
-        {mode === 'edit' && (
-          <>
-            <FormField label="قیمت خرید (افغانی)">
+    <form onSubmit={handleSubmit} className="space-y-8" dir="rtl">
+      {/* Basic Information */}
+      <section className="space-y-4">
+        <h2 className="font-heading text-lg font-semibold text-slate-800 dark:text-white border-b border-amber-100 dark:border-slate-600 pb-2">
+          اطلاعات پایه
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <FieldWithIcon label="نام جنس" icon={Tag}>
+            <input
+              name="productName"
+              className={inputBase}
+              value={form.productName}
+              onChange={handleChange}
+              required
+              placeholder="نام جنس را وارد کنید"
+            />
+          </FieldWithIcon>
+          <FieldWithIcon label="نوع" icon={Layers}>
+            <input
+              name="type"
+              className={inputBase}
+              value={form.type}
+              onChange={handleChange}
+              placeholder="مثال: انگشتر"
+            />
+          </FieldWithIcon>
+          <FieldWithIcon label="وزن (گرام)" icon={Scale}>
+            <input
+              name="gram"
+              type="number"
+              step="any"
+              min="0"
+              className={inputBase}
+              value={form.gram || ''}
+              onChange={handleChange}
+              required
+            />
+          </FieldWithIcon>
+          <FieldWithIcon label="عیار" icon={Sparkles}>
+            <input
+              name="karat"
+              type="number"
+              step="any"
+              min="0"
+              className={inputBase}
+              value={form.karat || ''}
+              onChange={handleChange}
+              required
+            />
+          </FieldWithIcon>
+        </div>
+      </section>
+
+      {/* Financial & Logistics */}
+      <section className="space-y-4">
+        <h2 className="font-heading text-lg font-semibold text-slate-800 dark:text-white border-b border-amber-100 dark:border-slate-600 pb-2">
+          مالی و لجستیک
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <FieldWithIcon label="اجرت" icon={Coins}>
+            <input
+              name="wage"
+              type="number"
+              step="any"
+              min="0"
+              className={inputBase}
+              value={form.wage || ''}
+              onChange={handleChange}
+            />
+          </FieldWithIcon>
+          <FieldWithIcon label="اونس" icon={TrendingUp}>
+            <input
+              name="auns"
+              type="number"
+              step="any"
+              min="0"
+              className={inputBase}
+              value={form.auns || ''}
+              onChange={handleChange}
+            />
+          </FieldWithIcon>
+          <FieldWithIcon label="شماره بل" icon={FileText}>
+            <input
+              name="bellNumber"
+              type="number"
+              className={inputBase}
+              value={form.bellNumber ?? ''}
+              onChange={handleChange}
+              placeholder="اختیاری"
+            />
+          </FieldWithIcon>
+        </div>
+      </section>
+
+      {/* Edit-only fields */}
+      {mode === 'edit' && (
+        <section className="space-y-4">
+          <h2 className="font-heading text-lg font-semibold text-slate-800 dark:text-white border-b border-amber-100 dark:border-slate-600 pb-2">
+            ویرایش
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <FieldWithIcon label="قیمت خرید (افغانی)" icon={Coins}>
               <input
                 name="purchasePriceToAfn"
                 type="number"
                 step="any"
                 min="0"
-                className="input-luxury w-full"
+                className={inputBase}
                 value={form.purchasePriceToAfn ?? ''}
                 onChange={handleChange}
               />
-            </FormField>
+            </FieldWithIcon>
             {form.barcode && (
-              <FormField label="بارکود">
-                <input name="barcode" className="input-luxury w-full bg-gold-50 dark:bg-slate-800" value={form.barcode} readOnly dir="ltr" />
-              </FormField>
-            )}
-          </>
-        )}
-      </div>
-
-      <FormField label="عکس">
-        <div className="flex items-center gap-4">
-          <div className="w-24 h-24 rounded-xl border-2 border-gold-200 dark:border-slate-600 bg-gold-50/50 dark:bg-slate-800/50 flex items-center justify-center overflow-hidden">
-            {imagePreviewUrl ? (
-              <img src={imagePreviewUrl} alt="" className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-charcoal-soft dark:text-slate-400 text-sm">بدون عکس</span>
+              <div className="flex flex-col gap-1.5" dir="rtl">
+                <label className="text-sm font-medium text-slate-600 dark:text-slate-400 font-stat">بارکود</label>
+                <input
+                  name="barcode"
+                  className={inputBase + ' bg-slate-50 dark:bg-slate-800'}
+                  value={form.barcode}
+                  readOnly
+                  dir="ltr"
+                />
+              </div>
             )}
           </div>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="input-luxury text-sm"
-            disabled={mode === 'edit'}
-          />
-          {mode === 'edit' && (
-            <span className="text-charcoal-soft dark:text-slate-400 text-xs">تغییر عکس در ویرایش پشتیبانی نمی‌شود</span>
-          )}
-        </div>
-      </FormField>
+        </section>
+      )}
 
-      <div className="flex gap-3 justify-end pt-4 border-t border-gold-200 dark:border-slate-600">
-        <button type="button" onClick={onCancel} className="btn-luxury btn-luxury-outline px-6 py-2">
+      {/* Image Upload */}
+      <section className="space-y-3">
+        <h2 className="font-heading text-lg font-semibold text-slate-800 dark:text-white border-b border-amber-100 dark:border-slate-600 pb-2">
+          عکس جنس
+        </h2>
+        {mode === 'edit' ? (
+          <div className="flex items-center gap-4">
+            <div className="w-28 h-28 rounded-xl border border-amber-100 dark:border-slate-600 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center overflow-hidden">
+              {imagePreviewUrl ? (
+                <img src={imagePreviewUrl} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-slate-400 dark:text-slate-500 text-sm font-stat">بدون عکس</span>
+              )}
+            </div>
+            <span className="text-slate-500 dark:text-slate-400 text-xs">تغییر عکس در ویرایش پشتیبانی نمی‌شود</span>
+          </div>
+        ) : (
+          <>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+            <div
+              onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+            className={`
+              relative w-full max-w-xs rounded-xl border-2 border-dashed transition-all duration-200 cursor-pointer
+              flex flex-col items-center justify-center gap-2 py-8 px-6
+              ${dragActive
+                ? 'border-amber-400 bg-amber-50/80 dark:bg-amber-900/20'
+                : 'border-amber-200 dark:border-slate-600 bg-slate-50/80 dark:bg-slate-800/50 hover:border-amber-300 hover:bg-amber-50/50 dark:hover:bg-slate-700/50'
+              }
+            `}
+          >
+            {imagePreviewUrl ? (
+              <>
+                <img src={imagePreviewUrl} alt="" className="w-24 h-24 rounded-lg object-cover border border-amber-100" />
+                <span className="text-sm text-slate-600 dark:text-slate-300 font-stat">کلیک یا کشیدن برای تعویض</span>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-amber-100/80 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
+                  <Plus className="w-7 h-7" strokeWidth={2} />
+                </div>
+                <div className="flex items-center gap-1.5 text-amber-600/90 dark:text-amber-400/90">
+                  <Camera className="w-4 h-4" strokeWidth={1.75} />
+                  <span className="text-sm font-medium font-stat">کلیک یا فایل را اینجا رها کنید</span>
+                </div>
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-stat">PNG, JPG تا ۵ مگابایت</span>
+              </>
+            )}
+            </div>
+          </>
+        )}
+      </section>
+
+      {/* Actions */}
+      <div className="flex flex-wrap gap-3 justify-end pt-6 border-t border-amber-100 dark:border-slate-600">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-6 py-2.5 rounded-xl font-medium border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 focus:ring-2 focus:ring-slate-200 dark:focus:ring-slate-600 focus:outline-none transition-all duration-200 font-stat"
+        >
           لغو
         </button>
-        <button type="submit" disabled={submitting} className="btn-luxury btn-luxury-primary px-6 py-2 disabled:opacity-60">
+        <button
+          type="submit"
+          disabled={submitting}
+          className="px-6 py-2.5 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-500 disabled:opacity-70 text-white shadow-sm hover:shadow-md focus:ring-2 focus:ring-emerald-300 focus:ring-offset-2 focus:outline-none transition-all duration-200 font-stat"
+        >
           {submitting ? 'در حال ذخیره...' : mode === 'create' ? 'ثبت جنس' : 'ذخیره تغییرات'}
         </button>
       </div>
