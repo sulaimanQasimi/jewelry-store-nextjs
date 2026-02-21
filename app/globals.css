@@ -319,6 +319,11 @@ body {
   font-family: 'Inter', 'iransans', 'vazirmatn', sans-serif;
 }
 
+/* Dashboard stat cards: clean elegant sans (Vazirmatn preferred) */
+.font-stat {
+  font-family: 'vazirmatn', 'iransans', sans-serif;
+}
+
 /* Luxury button base - Upgraded with gradients */
 .btn-luxury {
   border-radius: 0.75rem;

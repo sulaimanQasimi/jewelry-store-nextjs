@@ -5,16 +5,17 @@ import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import Link from 'next/link'
 import {
-  Package,
-  ShoppingCart,
-  Users,
-  CreditCard,
   TrendingUp,
   Wallet,
+  Gem,
+  User,
+  ShoppingBag,
   Receipt,
-  BarChart3,
-  Gem
+  CreditCard,
+  Handshake,
+  BarChart3
 } from 'lucide-react'
+import StatCard from '@/components/dashboard/StatCard'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -164,8 +165,7 @@ export default function DashboardPage() {
       value: formatNum(stats.todaySales),
       sub: `${stats.todayTransactions} تراکنش`,
       icon: TrendingUp,
-      color: 'from-emerald-500 to-green-600',
-      bg: 'bg-emerald-50 dark:bg-emerald-900/20',
+      variant: 'emerald' as const,
       href: '/daily-report'
     },
     {
@@ -173,44 +173,31 @@ export default function DashboardPage() {
       value: formatNum(stats.todayRemaining),
       sub: 'افغانی',
       icon: Wallet,
-      color: 'from-amber-500 to-orange-600',
-      bg: 'bg-amber-50 dark:bg-amber-900/20',
+      variant: 'gold' as const,
       href: '/loan-management'
     },
     {
       label: 'اجناس موجود',
       value: formatNum(stats.productsAvailable),
       sub: `از ${formatNum(stats.productsTotal)} کل`,
-      icon: Package,
-      color: 'from-blue-500 to-indigo-600',
-      bg: 'bg-blue-50 dark:bg-blue-900/20',
+      icon: Gem,
+      variant: 'gold' as const,
       href: '/products'
     },
     {
       label: 'مشتریان',
       value: formatNum(stats.customersCount),
       sub: '',
-      icon: Users,
-      color: 'from-violet-500 to-purple-600',
-      bg: 'bg-violet-50 dark:bg-violet-900/20',
+      icon: User,
+      variant: 'neutral' as const,
       href: '/customer-registration'
-    },
-    {
-      label: 'وام‌های باز',
-      value: formatNum(stats.loanReportsTotal),
-      sub: `${stats.loanReportsCount} گزارش`,
-      icon: CreditCard,
-      color: 'from-rose-500 to-pink-600',
-      bg: 'bg-rose-50 dark:bg-rose-900/20',
-      href: '/loan-management'
     },
     {
       label: 'خریدها',
       value: formatNum(stats.purchasesCount),
       sub: '',
-      icon: ShoppingCart,
-      color: 'from-cyan-500 to-teal-600',
-      bg: 'bg-cyan-50 dark:bg-cyan-900/20',
+      icon: ShoppingBag,
+      variant: 'gold' as const,
       href: '/purchases'
     },
     {
@@ -218,23 +205,29 @@ export default function DashboardPage() {
       value: formatNum(stats.expensesTotal),
       sub: 'افغانی',
       icon: Receipt,
-      color: 'from-red-500 to-rose-600',
-      bg: 'bg-red-50 dark:bg-red-900/20',
+      variant: 'ruby' as const,
       href: '/expenses'
+    },
+    {
+      label: 'وام‌های باز',
+      value: formatNum(stats.loanReportsTotal),
+      sub: `${stats.loanReportsCount} گزارش`,
+      icon: CreditCard,
+      variant: 'neutral' as const,
+      href: '/loan-management'
     },
     {
       label: 'تمویل‌کنندگان',
       value: formatNum(stats.suppliersCount),
       sub: '',
-      icon: Users,
-      color: 'from-teal-500 to-emerald-600',
-      bg: 'bg-teal-50 dark:bg-teal-900/20',
+      icon: Handshake,
+      variant: 'neutral' as const,
       href: '/suppliers'
     }
   ]
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" dir="rtl">
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="font-heading text-2xl font-semibold text-charcoal dark:text-white">داشبورد</h1>
@@ -242,26 +235,17 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((card) => (
-          <Link
+          <StatCard
             key={card.label}
+            label={card.label}
+            value={card.value}
+            sub={card.sub || undefined}
+            icon={card.icon}
+            variant={card.variant}
             href={card.href}
-            className={`card-luxury p-5 rounded-xl border border-gold-200/50 dark:border-slate-600/50 hover:shadow-lg hover:border-gold-300 dark:hover:border-gold-500/50 transition-all group ${card.bg}`}
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm font-medium text-charcoal-soft dark:text-slate-400">{card.label}</p>
-                <p className="text-2xl font-bold text-charcoal dark:text-white mt-1">{card.value}</p>
-                {card.sub && (
-                  <p className="text-xs text-charcoal-soft dark:text-slate-500 mt-0.5">{card.sub}</p>
-                )}
-              </div>
-              <div className={`p-2.5 rounded-xl bg-gradient-to-br ${card.color} text-white shadow-sm group-hover:scale-110 transition-transform`}>
-                <card.icon className="h-6 w-6" />
-              </div>
-            </div>
-          </Link>
+          />
         ))}
       </section>
 
