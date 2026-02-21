@@ -6,11 +6,15 @@
 --
 -- Setup: mysql -u root -p < db.sql
 -- Or import via your MySQL client.
+--
+-- Last updated: schema aligned with Company Settings, Products (wage, auns, bellNumber, image),
+-- and purchase_items.productMasterId nullable for manual wizard entries.
+
 Drop Database If Exists jewelry_store;
 CREATE DATABASE IF NOT EXISTS jewelry_store;
 USE jewelry_store;
 
--- Company Information Table
+-- Company Information Table (brand identity, logo, contact; app uses ORDER BY id DESC LIMIT 1 for current company)
 CREATE TABLE IF NOT EXISTS companies (
     id INT AUTO_INCREMENT PRIMARY KEY,
     companyName VARCHAR(255) NOT NULL,
@@ -150,11 +154,11 @@ CREATE TABLE IF NOT EXISTS purchases (
     FOREIGN KEY (supplierId) REFERENCES suppliers(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Purchase Items Table
+-- Purchase Items Table (productMasterId nullable for manual wizard entries without a product master)
 CREATE TABLE IF NOT EXISTS purchase_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     purchaseId INT NOT NULL,
-    productMasterId INT NOT NULL,
+    productMasterId INT NULL,
     name VARCHAR(255) NOT NULL,
     type VARCHAR(100) NOT NULL,
     gram FLOAT NOT NULL,

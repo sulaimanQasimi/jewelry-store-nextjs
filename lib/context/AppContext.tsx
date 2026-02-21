@@ -171,6 +171,7 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
     setCompanyInformation,
     companyData,
     setCompanyData,
+    getCompanyData,
     getExistProduct,
     existProduct,
     setExistProduct,

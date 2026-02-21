@@ -32,7 +32,8 @@ import {
   ShoppingCart,
   UserCog,
   Crown,
-  Sparkles
+  Sparkles,
+  Settings
 } from 'lucide-react'
 
 const groups = [
@@ -112,6 +113,7 @@ const groups = [
     label: 'تنظیمات',
     icon: Info,
     items: [
+      { href: '/company-settings', icon: Settings, label: 'تنظیمات شرکت' },
       { href: '/company-information', icon: Info, label: 'درباره ما' },
       { href: '/users', icon: UserCog, label: 'مدیریت کاربران' }
     ]
