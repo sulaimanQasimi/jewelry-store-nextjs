@@ -9,10 +9,14 @@ const MAX_AGE = 60 * 60 * 24 // 1 day
 
 function getJwtSecret(): string {
   const secret = process.env.AUTH_SECRET || process.env.JWT_SECRET
-  if (!secret || secret.length < 16) {
-    throw new Error('AUTH_SECRET or JWT_SECRET must be set (min 16 characters)')
+  if (secret && secret.length >= 16) return secret
+  if (process.env.NODE_ENV === 'development') {
+    console.warn(
+      'AUTH_SECRET or JWT_SECRET missing or shorter than 16 characters. Using dev-only placeholder. Set AUTH_SECRET in .env for production.'
+    )
+    return 'dev-only-secret-min-16-chars'
   }
-  return secret
+  throw new Error('AUTH_SECRET or JWT_SECRET must be set (min 16 characters)')
 }
 
 export async function POST(request: Request) {

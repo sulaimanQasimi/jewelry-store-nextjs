@@ -2,12 +2,21 @@ import type { NextAuthConfig } from 'next-auth'
 import { NextResponse } from 'next/server'
 import { jwtVerify } from 'jose'
 
+const DEV_PLACEHOLDER_SECRET = 'dev-only-secret-min-16-chars'
+
 function getAuthSecret(): Uint8Array {
-  const secret = process.env.AUTH_SECRET || process.env.JWT_SECRET
+  let secret = process.env.AUTH_SECRET || process.env.JWT_SECRET
   if (!secret || secret.length < 16) {
-    throw new Error(
-      'AUTH_SECRET or JWT_SECRET must be set in environment (min 16 characters). Do not use default secrets in production.'
-    )
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(
+        'AUTH_SECRET or JWT_SECRET missing or too short. Using dev-only placeholder. Set AUTH_SECRET in .env for production.'
+      )
+      secret = DEV_PLACEHOLDER_SECRET
+    } else {
+      throw new Error(
+        'AUTH_SECRET or JWT_SECRET must be set in environment (min 16 characters). Do not use default secrets in production.'
+      )
+    }
   }
   return new TextEncoder().encode(secret)
 }
@@ -26,8 +35,15 @@ async function verifyBearerToken(request: Request): Promise<boolean> {
   }
 }
 
+function getSecretForNextAuth(): string {
+  const secret = process.env.AUTH_SECRET || process.env.JWT_SECRET
+  if (secret && secret.length >= 16) return secret
+  if (process.env.NODE_ENV === 'development') return DEV_PLACEHOLDER_SECRET
+  throw new Error('AUTH_SECRET or JWT_SECRET must be set (min 16 characters)')
+}
+
 export default {
-  secret: process.env.AUTH_SECRET || process.env.JWT_SECRET,
+  secret: getSecretForNextAuth(),
   trustHost: true,
   providers: [],
   pages: {
