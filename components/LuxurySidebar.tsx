@@ -116,7 +116,8 @@ const groups = [
     icon: BarChart3,
     items: [
       { href: '/daily-report', icon: CalendarCheck, label: 'گزارش یومیه' },
-      { href: '/report', icon: BarChart3, label: 'گزارشات' }
+      { href: '/report', icon: BarChart3, label: 'گزارشات' },
+      { href: '/report/analytics', icon: TrendingUp, label: 'تحلیل فروش' }
     ]
   },
   {

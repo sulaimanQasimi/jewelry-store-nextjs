@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import { useSearchParams } from 'next/navigation'
 import axios from 'axios'
 import FormField from '@/components/ui/FormField'
 import FilterBar from '@/components/ui/FilterBar'
@@ -52,16 +53,22 @@ function formatDate(d: string | null | undefined) {
 const formatNum = (n: number | null) => (n != null ? n.toLocaleString('fa-IR') : '—')
 
 export default function RepairsPage() {
+  const searchParams = useSearchParams()
   const [data, setData] = useState<RepairRow[]>([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(10)
-  const [statusFilter, setStatusFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState(() => searchParams?.get('status') ?? '')
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
   const [loading, setLoading] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<RepairRow | null>(null)
+
+  useEffect(() => {
+    const status = searchParams?.get('status') ?? ''
+    setStatusFilter(status)
+  }, [searchParams])
 
   const fetchData = useCallback(async () => {
     setLoading(true)
