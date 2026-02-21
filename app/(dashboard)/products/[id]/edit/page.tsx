@@ -38,6 +38,8 @@ export default function EditProductPage() {
             bellNumber: r.bellNumber != null || r.bellnumber != null ? Number(r.bellNumber ?? r.bellnumber) : null,
             wage: r.wage != null ? Number(r.wage) : null,
             auns: r.auns != null ? Number(r.auns) : null,
+            pricing_mode: r.pricing_mode === 'gold_based' ? 'gold_based' : 'fixed',
+            wage_per_gram: r.wage_per_gram != null ? Number(r.wage_per_gram) : null,
             barcode: r.barcode != null ? String(r.barcode) : '',
             image: r.image != null ? String(r.image) : null
           })

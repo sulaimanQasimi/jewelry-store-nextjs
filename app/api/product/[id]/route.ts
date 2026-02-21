@@ -15,6 +15,8 @@ function toProduct(row: Record<string, unknown>) {
     barcode: row.barcode,
     wage: row.wage,
     auns: row.auns,
+    pricing_mode: row.pricing_mode ?? 'fixed',
+    wage_per_gram: row.wage_per_gram,
     isFragment: row.isFragment ?? row.isfragment,
     createdAt: row.createdAt ?? row.createdat,
     updatedAt: row.updatedAt ?? row.updatedat
@@ -65,11 +67,14 @@ export async function PUT(
     const bellNumber = body.bellNumber ?? body.bellnumber
     const wage = body.wage
     const auns = body.auns
+    const pricing_mode = body.pricing_mode === 'gold_based' ? 'gold_based' : 'fixed'
+    const wage_per_gram = body.wage_per_gram != null ? parseFloat(body.wage_per_gram) : null
 
     await query(
       `UPDATE products SET 
         productName = ?, type = ?, gram = ?, karat = ?, 
-        purchasePriceToAfn = ?, bellNumber = ?, wage = ?, auns = ?, updatedAt = NOW()
+        purchasePriceToAfn = ?, bellNumber = ?, wage = ?, auns = ?,
+        pricing_mode = ?, wage_per_gram = ?, updatedAt = NOW()
        WHERE id = ?`,
       [
         productName ?? '',
@@ -80,6 +85,8 @@ export async function PUT(
         bellNumber ?? null,
         wage ?? null,
         auns ?? null,
+        pricing_mode,
+        wage_per_gram,
         productId
       ]
     )

@@ -14,6 +14,9 @@ export async function POST(request: NextRequest) {
     const bellNumber = formData.get('bellNumber') ? parseInt(formData.get('bellNumber') as string, 10) : null
     const wage = parseFloat((formData.get('wage') as string) || '0')
     const auns = parseFloat((formData.get('auns') as string) || '0')
+    const pricingMode = (formData.get('pricing_mode') as string) === 'gold_based' ? 'gold_based' : 'fixed'
+    const wagePerGramRaw = formData.get('wage_per_gram') as string | null
+    const wagePerGram = wagePerGramRaw != null && wagePerGramRaw !== '' ? parseFloat(wagePerGramRaw) : null
     const imageFile = formData.get('image') as File | null
 
     if (!productName.trim() || !gram || !karat) {
@@ -46,8 +49,8 @@ export async function POST(request: NextRequest) {
     const purchasePriceToAfn = (Number(auns / 12.15 / 24) * (Number(karat) + 0.12) + Number(wage)) * Number(rate.usdToAfn) * Number(gram)
 
     await query(
-      `INSERT INTO products (productName, type, gram, karat, purchasePriceToAfn, bellNumber, isSold, barcode, image, wage, auns, isFragment)
-       VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, 0)`,
+      `INSERT INTO products (productName, type, gram, karat, purchasePriceToAfn, bellNumber, isSold, barcode, image, wage, auns, pricing_mode, wage_per_gram, isFragment)
+       VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, 0)`,
       [
         productName,
         type,
@@ -58,7 +61,9 @@ export async function POST(request: NextRequest) {
         barcode,
         imagePath ?? null,
         wage || null,
-        auns || null
+        auns || null,
+        pricingMode,
+        wagePerGram ?? null
       ]
     )
     const inserted = (await query('SELECT * FROM products WHERE barcode = ? ORDER BY id DESC LIMIT 1', [barcode])) as Record<string, unknown>[]

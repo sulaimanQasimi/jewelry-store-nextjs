@@ -14,6 +14,8 @@ export interface ProductFormData {
   bellNumber?: number | null
   wage?: number | null
   auns?: number | null
+  pricing_mode?: 'fixed' | 'gold_based'
+  wage_per_gram?: number | null
   barcode?: string
   image?: string | null
   isSold?: boolean

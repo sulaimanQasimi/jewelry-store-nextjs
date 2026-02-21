@@ -33,7 +33,9 @@ import {
   UserCog,
   Crown,
   Sparkles,
-  Settings
+  Settings,
+  Coins,
+  Wrench
 } from 'lucide-react'
 
 const groups = [
@@ -76,7 +78,8 @@ const groups = [
     items: [
       { href: '/expenses', icon: Receipt, label: 'مصارف' },
       { href: '/personal-expenses', icon: Wallet, label: 'مصارف شخصی' },
-      { href: '/currency-rates', icon: DollarSign, label: 'نرخ ارز' }
+      { href: '/currency-rates', icon: DollarSign, label: 'نرخ ارز' },
+      { href: '/gold-rate', icon: Coins, label: 'نرخ طلا' }
     ]
   },
   {
@@ -97,6 +100,14 @@ const groups = [
       { href: '/suppliers', icon: Users, label: 'لیست تمویل کنندگان' },
       { href: '/persons', icon: UserCircle, label: 'اشخاص' },
       { href: '/new-trade', icon: Handshake, label: 'معامله داران' }
+    ]
+  },
+  {
+    id: 'repairs',
+    label: 'تعمیرات',
+    icon: Wrench,
+    items: [
+      { href: '/repairs', icon: Wrench, label: 'لیست تعمیرات' }
     ]
   },
   {

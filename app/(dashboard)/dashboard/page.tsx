@@ -13,9 +13,11 @@ import {
   Receipt,
   CreditCard,
   Handshake,
-  BarChart3
+  BarChart3,
+  Wrench
 } from 'lucide-react'
 import StatCard from '@/components/dashboard/StatCard'
+import GoldRatesCard from '@/components/dashboard/GoldRatesCard'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -94,6 +96,8 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [last7Days, setLast7Days] = useState<DayData[]>([])
   const [salesByType, setSalesByType] = useState<TypeData[]>([])
+  const [latestGold, setLatestGold] = useState<{ date: string; price_per_gram_afn: number | null; price_per_ounce_usd?: number } | null>(null)
+  const [repairsReceivedCount, setRepairsReceivedCount] = useState<number>(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -109,6 +113,13 @@ export default function DashboardPage() {
       })
       .catch(() => setError('خطا در بارگذاری'))
       .finally(() => setLoading(false))
+  }, [])
+
+  useEffect(() => {
+    axios.get<{ success?: boolean; data?: { date: string; price_per_gram_afn: number | null; price_per_ounce_usd?: number } | null }>('/api/gold-rate/latest').then(({ data }) => {
+      if (data?.success && data?.data) setLatestGold(data.data)
+      else setLatestGold(null)
+    }).catch(() => setLatestGold(null))
   }, [])
 
   if (loading) {
@@ -236,6 +247,14 @@ export default function DashboardPage() {
       </header>
 
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="max-w-sm">
+          <GoldRatesCard
+            pricePerGramAfn={latestGold?.price_per_gram_afn ?? null}
+            date={latestGold?.date ?? null}
+            pricePerOunceUsd={latestGold?.price_per_ounce_usd ?? null}
+            href="/gold-rate"
+          />
+        </div>
         {statCards.map((card) => (
           <StatCard
             key={card.label}

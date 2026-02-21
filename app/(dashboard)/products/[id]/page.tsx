@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import axios from 'axios'
+import LabelPrintModal from '@/components/product/LabelPrintModal'
 
 interface Product {
   id: number
@@ -43,6 +44,7 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const [labelModalOpen, setLabelModalOpen] = useState(false)
 
   useEffect(() => {
     if (!id) {
@@ -115,14 +117,23 @@ export default function ProductDetailPage() {
       </Link>
 
       <div className="card-luxury rounded-2xl border border-gold-200/50 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gold-200 dark:border-slate-600 bg-gold-50/50 dark:bg-slate-800/50 flex flex-row items-center justify-between">
+        <div className="px-6 py-4 border-b border-gold-200 dark:border-slate-600 bg-gold-50/50 dark:bg-slate-800/50 flex flex-row items-center justify-between gap-3 flex-wrap">
           <h1 className="font-heading text-2xl font-semibold text-charcoal dark:text-white">{product.productName}</h1>
-          <Link
-            href={`/products/${product.id}/edit`}
-            className="btn-luxury btn-luxury-primary py-2 px-4"
-          >
-            ویرایش
-          </Link>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setLabelModalOpen(true)}
+              className="py-2 px-4 rounded-xl border border-amber-300 dark:border-amber-600 text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20 font-medium text-sm transition-colors"
+            >
+              چاپ برچسب
+            </button>
+            <Link
+              href={`/products/${product.id}/edit`}
+              className="btn-luxury btn-luxury-primary py-2 px-4"
+            >
+              ویرایش
+            </Link>
+          </div>
         </div>
         <div className="p-6 flex flex-col sm:flex-row gap-6">
           {imgSrc && (
@@ -178,6 +189,12 @@ export default function ProductDetailPage() {
           </dl>
         </div>
       </div>
+
+      <LabelPrintModal
+        open={labelModalOpen}
+        onClose={() => setLabelModalOpen(false)}
+        product={product ? { id: product.id, productName: product.productName, barcode: product.barcode, gram: product.gram, karat: product.karat } : null}
+      />
     </div>
   )
 }

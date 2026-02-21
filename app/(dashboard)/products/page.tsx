@@ -7,6 +7,8 @@ import { toast } from 'react-toastify'
 import FilterBar from '@/components/ui/FilterBar'
 import DataTable from '@/components/ui/DataTable'
 import type { ColumnDef } from '@/components/ui/DataTable'
+import LabelPrintModal from '@/components/product/LabelPrintModal'
+import type { LabelPrintProduct } from '@/components/product/LabelPrintModal'
 import { ChevronDown, ChevronUp, Filter } from 'lucide-react'
 
 interface Product {
@@ -107,6 +109,7 @@ export default function ProductsPage() {
   const [advancedOpen, setAdvancedOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [deletingId, setDeletingId] = useState<number | null>(null)
+  const [labelModalProduct, setLabelModalProduct] = useState<LabelPrintProduct | null>(null)
 
   const fetchProducts = useCallback(async () => {
     setLoading(true)
@@ -224,7 +227,14 @@ export default function ProductsPage() {
       key: 'actions',
       label: 'عملیات',
       render: (r) => (
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setLabelModalProduct({ id: r.id, productName: r.productName, barcode: r.barcode, gram: r.gram, karat: r.karat })}
+            className="py-1.5 px-3 text-sm rounded-lg border border-amber-300 dark:border-amber-600 text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+          >
+            چاپ برچسب
+          </button>
           <button
             type="button"
             onClick={() => openEdit(r)}
@@ -483,6 +493,12 @@ export default function ProductsPage() {
           />
         </div>
       </section>
+
+      <LabelPrintModal
+        open={labelModalProduct != null}
+        onClose={() => setLabelModalProduct(null)}
+        product={labelModalProduct}
+      />
     </div>
   )
 }

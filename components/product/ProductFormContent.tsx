@@ -23,7 +23,9 @@ const emptyForm: ProductFormData = {
   karat: 0,
   wage: 0,
   auns: 0,
-  bellNumber: null
+  bellNumber: null,
+  pricing_mode: 'fixed',
+  wage_per_gram: null
 }
 
 const inputBase =
@@ -74,6 +76,7 @@ export default function ProductFormContent({
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [dragActive, setDragActive] = useState(false)
+  const [suggestedPriceAfn, setSuggestedPriceAfn] = useState<number | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -88,6 +91,8 @@ export default function ProductFormContent({
         bellNumber: initialData.bellNumber ?? null,
         wage: initialData.wage ?? 0,
         auns: initialData.auns ?? 0,
+        pricing_mode: initialData.pricing_mode ?? 'fixed',
+        wage_per_gram: initialData.wage_per_gram ?? null,
         barcode: initialData.barcode ?? '',
         image: initialData.image ?? null
       })
@@ -99,12 +104,28 @@ export default function ProductFormContent({
     setImageFile(null)
   }, [mode, initialData])
 
+  useEffect(() => {
+    if (form.pricing_mode !== 'gold_based' || form.gram <= 0 || form.karat <= 0) {
+      setSuggestedPriceAfn(null)
+      return
+    }
+    const wagePerGram = form.wage_per_gram ?? 0
+    axios
+      .get<{ success?: boolean; suggestedPriceAfn?: number | null }>('/api/gold-rate/suggested-price', {
+        params: { gram: form.gram, karat: form.karat, wagePerGram }
+      })
+      .then(({ data }) => {
+        setSuggestedPriceAfn(data?.suggestedPriceAfn ?? null)
+      })
+      .catch(() => setSuggestedPriceAfn(null))
+  }, [form.pricing_mode, form.gram, form.karat, form.wage_per_gram])
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
-    const numKeys = ['gram', 'karat', 'wage', 'auns', 'bellNumber', 'purchasePriceToAfn']
+    const numKeys = ['gram', 'karat', 'wage', 'auns', 'bellNumber', 'purchasePriceToAfn', 'wage_per_gram']
     setForm((prev) => ({
       ...prev,
-      [name]: numKeys.includes(name) ? (value === '' ? (name === 'bellNumber' ? null : 0) : parseFloat(value) || 0) : value
+      [name]: numKeys.includes(name) ? (value === '' ? (name === 'bellNumber' || name === 'wage_per_gram' ? null : 0) : parseFloat(value) || 0) : value
     }))
   }
 
@@ -161,6 +182,8 @@ export default function ProductFormContent({
         fd.append('karat', String(form.karat))
         fd.append('wage', String(form.wage ?? 0))
         fd.append('auns', String(form.auns ?? 0))
+        fd.append('pricing_mode', form.pricing_mode ?? 'fixed')
+        if (form.wage_per_gram != null) fd.append('wage_per_gram', String(form.wage_per_gram))
         if (form.bellNumber != null) fd.append('bellNumber', String(form.bellNumber))
         if (imageFile) fd.append('image', imageFile)
         const { data } = await axios.post('/api/product/new-product', fd, {
@@ -179,7 +202,9 @@ export default function ProductFormContent({
           purchasePriceToAfn: form.purchasePriceToAfn ?? 0,
           bellNumber: form.bellNumber ?? null,
           wage: form.wage ?? null,
-          auns: form.auns ?? null
+          auns: form.auns ?? null,
+          pricing_mode: form.pricing_mode ?? 'fixed',
+          wage_per_gram: form.wage_per_gram ?? null
         })
         if (data.success) {
           toast.success('محصول به‌روزرسانی شد')
@@ -282,6 +307,42 @@ export default function ProductFormContent({
               onChange={handleChange}
             />
           </FieldWithIcon>
+          <div className="flex flex-col gap-1.5" dir="rtl">
+            <label className="text-sm font-medium text-slate-600 dark:text-slate-400 font-stat">نحوه قیمت‌گذاری</label>
+            <select
+              name="pricing_mode"
+              className={inputBase}
+              value={form.pricing_mode ?? 'fixed'}
+              onChange={handleChange}
+            >
+              <option value="fixed">قیمت ثابت</option>
+              <option value="gold_based">بر اساس طلا</option>
+            </select>
+          </div>
+          {(form.pricing_mode ?? 'fixed') === 'gold_based' && (
+            <>
+              <FieldWithIcon label="اجرت هر گرم (افغانی)" icon={Coins}>
+                <input
+                  name="wage_per_gram"
+                  type="number"
+                  step="any"
+                  min="0"
+                  className={inputBase}
+                  value={form.wage_per_gram ?? ''}
+                  onChange={handleChange}
+                  placeholder="اختیاری"
+                />
+              </FieldWithIcon>
+              {suggestedPriceAfn != null && (
+                <div className="flex flex-col gap-1.5 rounded-xl border border-amber-200/60 dark:border-amber-700/40 bg-amber-50/50 dark:bg-amber-900/20 p-3" dir="rtl">
+                  <span className="text-sm font-medium text-slate-600 dark:text-slate-400 font-stat">قیمت پیشنهادی (بر اساس نرخ طلا)</span>
+                  <span className="text-xl font-bold text-amber-700 dark:text-amber-400 font-stat tabular-nums">
+                    {suggestedPriceAfn.toLocaleString('fa-IR')} افغانی
+                  </span>
+                </div>
+              )}
+            </>
+          )}
           <FieldWithIcon label="شماره بل" icon={FileText}>
             <input
               name="bellNumber"

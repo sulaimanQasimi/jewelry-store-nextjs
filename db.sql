@@ -41,6 +41,8 @@ CREATE TABLE IF NOT EXISTS products (
     barcode VARCHAR(100) NOT NULL UNIQUE,
     wage FLOAT,
     auns FLOAT,
+    pricing_mode ENUM('fixed','gold_based') DEFAULT 'fixed',
+    wage_per_gram FLOAT NULL,
     isFragment BOOLEAN DEFAULT FALSE,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -68,6 +70,8 @@ CREATE TABLE IF NOT EXISTS customers (
     instagramUrl VARCHAR(500),
     whatsappUrl VARCHAR(500),
     telegramUrl VARCHAR(500),
+    anniversary_date DATE NULL,
+    special_dates JSON NULL,
     INDEX idx_phone (phone),
     INDEX idx_customerName (customerName)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -242,6 +246,18 @@ CREATE TABLE IF NOT EXISTS currency_rates (
     INDEX idx_date (date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Gold Rates Table (for dynamic gold-based pricing)
+CREATE TABLE IF NOT EXISTS gold_rates (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    date VARCHAR(50) NOT NULL UNIQUE,
+    price_per_ounce_usd FLOAT NOT NULL,
+    price_per_gram_afn FLOAT NULL,
+    source VARCHAR(50) DEFAULT 'manual',
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_date (date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Loan Reports Table
 CREATE TABLE IF NOT EXISTS loan_reports (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -256,6 +272,28 @@ CREATE TABLE IF NOT EXISTS loan_reports (
     INDEX idx_cId (cId),
     INDEX idx_date (date),
     FOREIGN KEY (cId) REFERENCES customers(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Repairs Table (customer repair requests and work orders)
+CREATE TABLE IF NOT EXISTS repairs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    customer_name VARCHAR(255) NOT NULL,
+    customer_phone VARCHAR(50) NOT NULL,
+    product_description TEXT,
+    incoming_notes TEXT,
+    estimated_cost FLOAT NULL,
+    currency VARCHAR(10) DEFAULT 'AFN',
+    status ENUM('received','in_progress','ready','delivered','cancelled') DEFAULT 'received',
+    due_date DATE NULL,
+    completed_at DATETIME NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_customer_id (customer_id),
+    INDEX idx_status (status),
+    INDEX idx_due_date (due_date),
+    INDEX idx_created_at (created_at),
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Persons Table
@@ -386,6 +424,10 @@ ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash);
 -- Then insert/update test user: run the INSERT above (after ensuring password_hash column exists).
 
 -- Optional: Migration for existing customers table missing newer columns (see commented ALTERs above in customers section).
+-- ALTER TABLE customers ADD COLUMN anniversary_date DATE NULL AFTER telegramUrl;
+-- ALTER TABLE customers ADD COLUMN special_dates JSON NULL AFTER anniversary_date;
+-- ALTER TABLE products ADD COLUMN pricing_mode ENUM('fixed','gold_based') DEFAULT 'fixed' AFTER auns;
+-- ALTER TABLE products ADD COLUMN wage_per_gram FLOAT NULL AFTER pricing_mode;
 
 -- =============================================================================
 -- AUDIT LOG TABLE (for triggers)
