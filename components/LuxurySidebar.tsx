@@ -35,7 +35,8 @@ import {
   Sparkles,
   Settings,
   Coins,
-  Wrench
+  Wrench,
+  TrendingUp
 } from 'lucide-react'
 
 const groups = [

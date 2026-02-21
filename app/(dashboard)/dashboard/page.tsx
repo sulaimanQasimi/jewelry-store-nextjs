@@ -122,6 +122,12 @@ export default function DashboardPage() {
     }).catch(() => setLatestGold(null))
   }, [])
 
+  useEffect(() => {
+    axios.get<{ success?: boolean; count?: number }>('/api/repairs/count', { params: { status: 'received' } }).then(({ data }) => {
+      setRepairsReceivedCount(data?.count ?? 0)
+    }).catch(() => setRepairsReceivedCount(0))
+  }, [])
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -234,6 +240,14 @@ export default function DashboardPage() {
       icon: Handshake,
       variant: 'neutral' as const,
       href: '/suppliers'
+    },
+    {
+      label: 'تعمیرات در انتظار',
+      value: formatNum(repairsReceivedCount),
+      sub: 'دریافت شده',
+      icon: Wrench,
+      variant: 'gold' as const,
+      href: '/repairs?status=received'
     }
   ]
 

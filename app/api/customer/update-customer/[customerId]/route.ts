@@ -35,6 +35,7 @@ export async function PUT(
     let companyName: string | null
     let notes: string | null
     let birthDate: string | null
+    let anniversary_date: string | null
     let nationalId: string | null
     let facebookUrl: string | null
     let instagramUrl: string | null
@@ -51,6 +52,7 @@ export async function PUT(
       companyName = getString(formData, 'companyName') || null
       notes = getString(formData, 'notes') || null
       birthDate = getDate(formData, 'birthDate')
+      anniversary_date = getDate(formData, 'anniversary_date')
       nationalId = getString(formData, 'nationalId') || null
       facebookUrl = getString(formData, 'facebookUrl') || null
       instagramUrl = getString(formData, 'instagramUrl') || null
@@ -78,6 +80,7 @@ export async function PUT(
       companyName = body.companyName?.trim() || null
       notes = body.notes?.trim() || null
       birthDate = body.birthDate || null
+      anniversary_date = body.anniversary_date || body.anniversaryDate || null
       nationalId = body.nationalId?.trim() || null
       facebookUrl = body.facebookUrl?.trim() || null
       instagramUrl = body.instagramUrl?.trim() || null
@@ -100,7 +103,7 @@ export async function PUT(
     await query(
       `UPDATE customers SET
        customerName = ?, phone = ?, email = ?, address = ?,
-       image = ?, secondaryPhone = ?, companyName = ?, notes = ?, birthDate = ?, nationalId = ?,
+       image = ?, secondaryPhone = ?, companyName = ?, notes = ?, birthDate = ?, anniversary_date = ?, nationalId = ?,
        facebookUrl = ?, instagramUrl = ?, whatsappUrl = ?, telegramUrl = ?
        WHERE id = ?`,
       [
@@ -113,6 +116,7 @@ export async function PUT(
         companyName,
         notes,
         birthDate,
+        anniversary_date ?? null,
         nationalId,
         facebookUrl,
         instagramUrl,
@@ -123,7 +127,7 @@ export async function PUT(
     )
 
     const updated = (await query(
-      'SELECT id, customerName, phone, email, address, date, image, secondaryPhone, companyName, notes, birthDate, nationalId, facebookUrl, instagramUrl, whatsappUrl, telegramUrl FROM customers WHERE id = ?',
+      'SELECT id, customerName, phone, email, address, date, image, secondaryPhone, companyName, notes, birthDate, anniversary_date, nationalId, facebookUrl, instagramUrl, whatsappUrl, telegramUrl FROM customers WHERE id = ?',
       [id]
     )) as any[]
 

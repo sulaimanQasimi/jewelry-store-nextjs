@@ -14,7 +14,8 @@ export async function GET(
 
     const rows = (await query(
       `SELECT id, customerName, phone, email, address, date, image, secondaryPhone,
-       companyName, notes, birthDate, nationalId, facebookUrl, instagramUrl, whatsappUrl, telegramUrl
+       companyName, notes, birthDate, nationalId, facebookUrl, instagramUrl, whatsappUrl, telegramUrl,
+       anniversary_date, special_dates
        FROM customers WHERE id = ?`,
       [id]
     )) as any[]
