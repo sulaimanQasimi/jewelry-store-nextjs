@@ -16,7 +16,7 @@ function FieldWithIcon({
   children
 }: {
   label: string
-  icon: React.ComponentType<{ className?: string }>
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>
   children: React.ReactNode
 }) {
   return (
