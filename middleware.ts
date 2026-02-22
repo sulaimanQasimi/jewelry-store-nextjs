@@ -11,13 +11,27 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Authorization, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, token',
 }
 
+/** True if path is root (any variant: "", "/", "//", /index, encoded, etc.). */
+function isRootPath(pathname: string): boolean {
+  if (pathname == null) return true
+  let s = String(pathname).trim()
+  try {
+    if (s.includes('%')) s = decodeURIComponent(s).trim()
+  } catch {
+    // ignore
+  }
+  if (s === '' || s === '/') return true
+  if (s.replace(/\//g, '').trim() === '') return true
+  const lower = s.toLowerCase()
+  if (lower === '/index' || lower === '/index.html' || lower === '/index.htm') return true
+  return false
+}
+
 /** Public paths: skip auth entirely so root and storefront never hit NextAuth redirect. */
 function isPublicPath(pathname: string): boolean {
   const path = (pathname ?? '').trim() || '/'
   const normalized = path.replace(/\/+$/, '') || '/'
-  // Root (server/proxy may send "" or "/")
-  if (normalized === '/' || normalized === '') return true
-  // Optional base path when app is served at e.g. /app (set BASE_PATH on server)
+  if (isRootPath(normalized) || isRootPath(path)) return true
   const basePath = (process.env.BASE_PATH || process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/\/+$/, '')
   if (basePath && (normalized === basePath || normalized === `${basePath}/`)) return true
   if (normalized === '/login' || normalized === '/about' || normalized === '/contact') return true
@@ -42,15 +56,17 @@ export default async function middleware(request: NextRequest) {
   if (request.method === 'OPTIONS') {
     return new NextResponse(null, { status: 204, headers: corsHeaders })
   }
-  // Use both nextUrl.pathname and request.url pathname (can differ behind proxy on server)
   const pathname = getPathname(request)
-  const urlPathname = (() => {
-    try {
-      return new URL(request.url).pathname || '/'
-    } catch {
-      return '/'
-    }
-  })()
+  let urlPathname = '/'
+  try {
+    urlPathname = new URL(request.url).pathname || '/'
+  } catch {
+    // keep '/'
+  }
+  // Root: allow immediately without ever calling auth (handles all server/proxy variants)
+  if (isRootPath(pathname) || isRootPath(urlPathname)) {
+    return NextResponse.next()
+  }
   const publicAccess = isPublicPath(pathname) || isPublicPath(urlPathname)
   if (process.env.DEBUG_AUTH_PATH === '1') {
     console.log('[middleware] pathname:', JSON.stringify(pathname), 'urlPathname:', JSON.stringify(urlPathname), 'public:', publicAccess)
