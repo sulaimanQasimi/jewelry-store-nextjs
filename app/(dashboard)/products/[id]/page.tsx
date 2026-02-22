@@ -21,6 +21,7 @@ interface Product {
   auns?: number | null
   createdAt?: string
   updatedAt?: string
+  categories?: { id: number; name: string }[]
 }
 
 function formatDate(d: string | null | undefined) {
@@ -58,6 +59,9 @@ export default function ProductDetailPage() {
       .then(({ data: res }) => {
         if (!cancelled && res.success && res.data) {
           const r = res.data
+          const categories = Array.isArray(r.categories)
+            ? (r.categories as { id: number; name: string }[]).map((c) => ({ id: Number(c.id), name: String(c.name ?? '') }))
+            : []
           setProduct({
             id: Number(r.id),
             productName: String(r.productName ?? r.productname ?? ''),
@@ -72,7 +76,8 @@ export default function ProductDetailPage() {
             wage: r.wage != null ? Number(r.wage) : null,
             auns: r.auns != null ? Number(r.auns) : null,
             createdAt: r.createdAt != null ? String(r.createdAt) : undefined,
-            updatedAt: r.updatedAt != null ? String(r.updatedAt) : undefined
+            updatedAt: r.updatedAt != null ? String(r.updatedAt) : undefined,
+            categories
           })
         } else if (!cancelled) setNotFound(true)
       })
@@ -146,6 +151,18 @@ export default function ProductDetailPage() {
               <dt className="text-charcoal-soft">نوع</dt>
               <dd className="font-medium text-charcoal">{product.type || '—'}</dd>
             </div>
+            {(product.categories ?? []).length > 0 && (
+              <div className="sm:col-span-2">
+                <dt className="text-charcoal-soft">دسته‌ها</dt>
+                <dd className="font-medium text-charcoal flex flex-wrap gap-2 mt-1">
+                  {(product.categories ?? []).map((c) => (
+                    <span key={c.id} className="inline-flex items-center px-2.5 py-1 rounded-lg text-sm bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200">
+                      {c.name}
+                    </span>
+                  ))}
+                </dd>
+              </div>
+            )}
             <div>
               <dt className="text-charcoal-soft">وزن (گرام)</dt>
               <dd className="font-medium text-charcoal">{product.gram.toLocaleString('fa-IR')}</dd>

@@ -12,7 +12,8 @@ import {
   TrendingUp,
   FileText,
   Plus,
-  Camera
+  Camera,
+  FolderOpen
 } from 'lucide-react'
 import type { ProductFormData } from './ProductFormModal'
 
@@ -25,7 +26,8 @@ const emptyForm: ProductFormData = {
   auns: 0,
   bellNumber: null,
   pricing_mode: 'fixed',
-  wage_per_gram: null
+  wage_per_gram: null,
+  categoryIds: []
 }
 
 const inputBase =
@@ -77,7 +79,14 @@ export default function ProductFormContent({
   const [submitting, setSubmitting] = useState(false)
   const [dragActive, setDragActive] = useState(false)
   const [suggestedPriceAfn, setSuggestedPriceAfn] = useState<number | null>(null)
+  const [categories, setCategories] = useState<{ id: number; name: string }[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+       axios.get<{ success?: boolean; data?: { id: number; name: string }[] }>('/api/categories/list').then(({ data }) => {
+      if (data?.success && Array.isArray(data.data)) setCategories(data.data)
+    }).catch(() => setCategories([]))
+  }, [])
 
   useEffect(() => {
     if (mode === 'edit' && initialData) {
@@ -94,7 +103,8 @@ export default function ProductFormContent({
         pricing_mode: initialData.pricing_mode ?? 'fixed',
         wage_per_gram: initialData.wage_per_gram ?? null,
         barcode: initialData.barcode ?? '',
-        image: initialData.image ?? null
+        image: initialData.image ?? null,
+        categoryIds: initialData.categoryIds ?? []
       })
       setImagePreview(initialData.image ? initialData.image : null)
     } else {
@@ -185,6 +195,7 @@ export default function ProductFormContent({
         fd.append('pricing_mode', form.pricing_mode ?? 'fixed')
         if (form.wage_per_gram != null) fd.append('wage_per_gram', String(form.wage_per_gram))
         if (form.bellNumber != null) fd.append('bellNumber', String(form.bellNumber))
+        if ((form.categoryIds ?? []).length > 0) fd.append('categoryIds', JSON.stringify(form.categoryIds))
         if (imageFile) fd.append('image', imageFile)
         const { data } = await axios.post('/api/product/new-product', fd, {
           headers: { 'Content-Type': 'multipart/form-data' }
@@ -204,7 +215,8 @@ export default function ProductFormContent({
           wage: form.wage ?? null,
           auns: form.auns ?? null,
           pricing_mode: form.pricing_mode ?? 'fixed',
-          wage_per_gram: form.wage_per_gram ?? null
+          wage_per_gram: form.wage_per_gram ?? null,
+          categoryIds: form.categoryIds ?? []
         })
         if (data.success) {
           toast.success('محصول به‌روزرسانی شد')
@@ -277,6 +289,36 @@ export default function ProductFormContent({
             />
           </FieldWithIcon>
         </div>
+        {categories.length > 0 && (
+          <div className="flex flex-col gap-1.5" dir="rtl">
+            <label className="text-sm font-medium text-slate-600 dark:text-slate-400 font-stat flex items-center gap-2">
+              <FolderOpen className="w-5 h-5 text-amber-600/70 dark:text-amber-400/80" />
+              دسته‌بندی‌ها
+            </label>
+            <div className="flex flex-wrap gap-3 p-3 rounded-xl border border-amber-100 dark:border-slate-600 bg-slate-50/50 dark:bg-slate-800/30">
+              {categories.map((cat) => {
+                const checked = (form.categoryIds ?? []).includes(cat.id)
+                return (
+                  <label key={cat.id} className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => {
+                        setForm((prev) => {
+                          const ids = prev.categoryIds ?? []
+                          const next = checked ? ids.filter((id) => id !== cat.id) : [...ids, cat.id]
+                          return { ...prev, categoryIds: next }
+                        })
+                      }}
+                      className="w-4 h-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500"
+                    />
+                    <span className="text-sm text-slate-700 dark:text-slate-300 font-stat">{cat.name}</span>
+                  </label>
+                )
+              })}
+            </div>
+          </div>
+        )}
       </section>
 
       {/* Financial & Logistics */}

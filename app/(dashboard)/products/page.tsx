@@ -26,9 +26,13 @@ interface Product {
   auns?: number | null
   createdAt?: string
   updatedAt?: string
+  categories?: { id: number; name: string }[]
 }
 
 function normalizeProduct(row: Record<string, unknown>): Product {
+  const categories = Array.isArray(row.categories)
+    ? (row.categories as { id: number; name: string }[]).map((c) => ({ id: Number(c.id), name: String(c.name ?? '') }))
+    : undefined
   return {
     id: Number(row.id),
     productName: String(row.productName ?? row.productname ?? ''),
@@ -43,7 +47,8 @@ function normalizeProduct(row: Record<string, unknown>): Product {
     wage: row.wage != null ? Number(row.wage) : null,
     auns: row.auns != null ? Number(row.auns) : null,
     createdAt: row.createdAt != null ? String(row.createdAt) : undefined,
-    updatedAt: row.updatedAt != null ? String(row.updatedAt) : undefined
+    updatedAt: row.updatedAt != null ? String(row.updatedAt) : undefined,
+    categories
   }
 }
 
@@ -210,6 +215,21 @@ export default function ProductsPage() {
     { key: 'id', label: '#' },
     { key: 'productName', label: 'نام جنس' },
     { key: 'type', label: 'نوع' },
+    {
+      key: 'categories',
+      label: 'دسته‌ها',
+      render: (r) => (
+        <div className="flex flex-wrap gap-1">
+          {(r.categories ?? []).length === 0
+            ? '—'
+            : (r.categories ?? []).map((c) => (
+                <span key={c.id} className="inline-flex items-center px-2 py-0.5 rounded-md text-xs bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200">
+                  {c.name}
+                </span>
+              ))}
+        </div>
+      )
+    },
     { key: 'gram', label: 'وزن', render: (r) => r.gram.toLocaleString('fa-IR') },
     { key: 'karat', label: 'عیار', render: (r) => r.karat.toLocaleString('fa-IR') },
     {

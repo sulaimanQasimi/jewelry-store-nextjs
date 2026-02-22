@@ -41,7 +41,8 @@ export default function EditProductPage() {
             pricing_mode: r.pricing_mode === 'gold_based' ? 'gold_based' : 'fixed',
             wage_per_gram: r.wage_per_gram != null ? Number(r.wage_per_gram) : null,
             barcode: r.barcode != null ? String(r.barcode) : '',
-            image: r.image != null ? String(r.image) : null
+            image: r.image != null ? String(r.image) : null,
+            categoryIds: Array.isArray(r.categoryIds) ? (r.categoryIds as number[]) : []
           })
         } else setNotFound(true)
       })

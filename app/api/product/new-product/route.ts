@@ -18,6 +18,16 @@ export async function POST(request: NextRequest) {
     const wagePerGramRaw = formData.get('wage_per_gram') as string | null
     const wagePerGram = wagePerGramRaw != null && wagePerGramRaw !== '' ? parseFloat(wagePerGramRaw) : null
     const imageFile = formData.get('image') as File | null
+    const categoryIdsRaw = formData.get('categoryIds') as string | null
+    let categoryIds: number[] = []
+    if (categoryIdsRaw) {
+      try {
+        const parsed = JSON.parse(categoryIdsRaw) as unknown
+        categoryIds = Array.isArray(parsed) ? parsed.filter((x): x is number => typeof x === 'number') : []
+      } catch {
+        categoryIds = []
+      }
+    }
 
     if (!productName.trim() || !gram || !karat) {
       return NextResponse.json({ success: false, message: 'لطفا نام جنس، وزن و عیار را وارد کنید' })
@@ -68,6 +78,13 @@ export async function POST(request: NextRequest) {
     )
     const inserted = (await query('SELECT * FROM products WHERE barcode = ? ORDER BY id DESC LIMIT 1', [barcode])) as Record<string, unknown>[]
     const newProduct = inserted?.[0] ?? null
+    const newProductId = newProduct ? Number((newProduct as Record<string, unknown>).id) : null
+
+    if (newProductId != null && categoryIds.length > 0) {
+      for (const catId of categoryIds) {
+        if (catId > 0) await query('INSERT IGNORE INTO product_categories (product_id, category_id) VALUES (?, ?)', [newProductId, catId])
+      }
+    }
 
     return NextResponse.json({
       success: true,

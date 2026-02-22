@@ -126,7 +126,26 @@ export async function GET(request: NextRequest) {
       listParams
     )) as any[]
 
-    return NextResponse.json({ success: true, data, total, page, limit })
+    const productIds = (data ?? []).map((p: any) => p.id).filter((id: unknown) => id != null)
+    const categoriesByProduct: Record<number, { id: number; name: string }[]> = {}
+    if (productIds.length > 0) {
+      const placeholders = productIds.map(() => '?').join(',')
+      const catRows = (await query(
+        `SELECT pc.product_id, c.id, c.name FROM product_categories pc JOIN categories c ON c.id = pc.category_id WHERE pc.product_id IN (${placeholders}) ORDER BY c.name`,
+        productIds
+      )) as { product_id: number; id: number; name: string }[]
+      for (const r of catRows ?? []) {
+        if (!categoriesByProduct[r.product_id]) categoriesByProduct[r.product_id] = []
+        categoriesByProduct[r.product_id].push({ id: r.id, name: r.name })
+      }
+    }
+    const dataWithCategories = (data ?? []).map((p: any) => ({
+      ...p,
+      categoryIds: (categoriesByProduct[p.id] ?? []).map((c) => c.id),
+      categories: categoriesByProduct[p.id] ?? []
+    }))
+
+    return NextResponse.json({ success: true, data: dataWithCategories, total, page, limit })
   } catch (error: any) {
     console.log(error)
     return NextResponse.json({ success: false, message: error.message })

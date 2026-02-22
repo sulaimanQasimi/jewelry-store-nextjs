@@ -19,6 +19,7 @@ export interface ProductFormData {
   barcode?: string
   image?: string | null
   isSold?: boolean
+  categoryIds?: number[]
 }
 
 interface ProductFormModalProps {
