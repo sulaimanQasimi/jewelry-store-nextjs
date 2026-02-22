@@ -53,7 +53,7 @@ function FieldWithIcon({
           className="absolute top-1/2 -translate-y-1/2 end-3 pointer-events-none text-amber-600/70 dark:text-amber-400/80"
           aria-hidden
         >
-          <Icon className="w-5 h-5" strokeWidth={1.75} />
+          <Icon className="w-5 h-5" />
         </span>
       </div>
     </div>
