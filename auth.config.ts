@@ -59,12 +59,12 @@ export default {
   },
   callbacks: {
     async authorized({ auth: session, request }) {
-      const pathname = request.nextUrl?.pathname ?? '/'
+      const rawPath = request.nextUrl?.pathname ?? ''
+      const pathname = typeof rawPath === 'string' ? rawPath.trim() || '/' : '/'
       // Allow CORS preflight (OPTIONS) without auth - required for cross-origin Flutter web
       if (request.method === 'OPTIONS') return true
-      // Normalize root (pathname can be '' or '/' depending on server/proxy)
-      const normalizedPath = (pathname || '/').replace(/\/+$/, '') || '/'
-      const isRoot = normalizedPath === '/'
+      // Root: allow '' or '/' (proxies/servers may send empty pathname for root)
+      const isRoot = pathname === '/' || pathname === ''
       // Storefront and auth pages are public
       if (isRoot || pathname === '/login' || pathname === '/about' || pathname === '/contact') return true
       if (pathname === '/shop' || pathname.startsWith('/shop/')) return true
