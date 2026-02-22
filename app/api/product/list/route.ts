@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
     const dateFrom = searchParams.get('dateFrom')?.trim() || ''
     const dateTo = searchParams.get('dateTo')?.trim() || ''
     const isFragment = searchParams.get('isFragment')
+    const categoryId = searchParams.get('categoryId')
     const sortBy = searchParams.get('sortBy') || 'createdAt'
     const sortOrder = searchParams.get('sortOrder') || 'desc'
     const offset = (page - 1) * limit
@@ -107,6 +108,14 @@ export async function GET(request: NextRequest) {
       conditions.push('DATE(createdAt) <= ?')
       countParams.push(dateTo)
       listParams.push(dateTo)
+    }
+    if (categoryId != null && categoryId !== '') {
+      const cid = parseInt(categoryId, 10)
+      if (!isNaN(cid)) {
+        conditions.push('id IN (SELECT product_id FROM product_categories WHERE category_id = ?)')
+        countParams.push(cid)
+        listParams.push(cid)
+      }
     }
 
     const validSortColumns = ['createdAt', 'productName', 'gram', 'karat', 'purchasePriceToAfn', 'bellNumber']

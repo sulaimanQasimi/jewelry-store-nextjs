@@ -49,6 +49,30 @@
   /* Radius */
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
+
+  /* Storefront: luxury jewelry (cream, gold, charcoal) */
+  --color-cream-50: #FDFBF7;
+  --color-cream-100: #FAF8F5;
+  --color-cream-200: #F0EDE8;
+  --color-cream-300: #E5E0D9;
+  --color-gold-accent: #D4AF37;
+  --color-charcoal: #2C2C2C;
+  --color-charcoal-deep: #1a1a1a;
+  --font-serif-store: Georgia, 'Times New Roman', serif;
+}
+
+/* Storefront: elegant serif headings and subtle hover */
+.store-layout .font-serif {
+  font-family: var(--font-serif-store);
+}
+.store-layout a:hover,
+.store-layout button:not(:disabled):hover {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .store-layout .group:hover .group-hover\:scale-105 {
+    transform: scale(1.05);
+  }
 }
 
 /* Accessibility: screen-reader only (fallback if Tailwind sr-only not in scope) */

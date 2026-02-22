@@ -58,12 +58,19 @@ export default {
       const { pathname } = request.nextUrl
       // Allow CORS preflight (OPTIONS) without auth - required for cross-origin Flutter web
       if (request.method === 'OPTIONS') return true
-      if (pathname === '/' || pathname === '/login') return true
+      // Storefront and auth pages are public
+      if (pathname === '/' || pathname === '/login' || pathname === '/about' || pathname === '/contact') return true
+      if (pathname === '/shop' || pathname.startsWith('/shop/')) return true
       if (pathname.startsWith('/api/auth')) return true
       if (pathname.startsWith('/_next')) return true
       if (pathname.startsWith('/api/')) {
         const bearerValid = await verifyBearerToken(request)
         if (bearerValid) return true
+        // Storefront: allow unauthenticated GET for product list, categories, and single product
+        if (request.method === 'GET') {
+          if (pathname === '/api/product/list' || pathname === '/api/categories/list') return true
+          if (/^\/api\/product\/[^/]+$/.test(pathname)) return true
+        }
         if (!session?.user) {
           return NextResponse.json(
             { success: false, message: 'Not Authorized Login Again' },

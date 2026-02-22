@@ -1,4 +1,4 @@
-export const PUBLIC_PATHS = ['/', '/login'] as const
+export const PUBLIC_PATHS = ['/', '/login', '/about', '/contact', '/shop'] as const
 export const API_AUTH_PUBLIC = ['/api/admin/login', '/api/auth/login', '/api/auth/logout', '/api/auth/session', '/api/auth/token'] as const
 
 export function isPublicPath(pathname: string): boolean {
