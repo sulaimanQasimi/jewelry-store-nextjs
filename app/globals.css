@@ -60,7 +60,7 @@
   --color-charcoal-deep: #1a1a1a;
   --color-shop-cream: #FDFBF7;
   --color-shop-charcoal: #2D2D2D;
-  --font-serif-store: Georgia, 'Times New Roman', serif;
+  --font-serif-store: var(--font-playfair, 'Playfair Display'), Georgia, serif;
 }
 
 /* Shop: gold-accented range slider */
