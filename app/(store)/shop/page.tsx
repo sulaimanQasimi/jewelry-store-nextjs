@@ -16,6 +16,7 @@ function normalizeProduct(raw: Record<string, unknown>): StoreProduct {
     karat: raw.karat != null ? Number(raw.karat) : null,
     purchasePriceToAfn: raw.purchasePriceToAfn != null ? Number(raw.purchasePriceToAfn) : (raw.purchasepricetoafn != null ? Number(raw.purchasepricetoafn) : null),
     image: raw.image != null ? String(raw.image) : null,
+    imageSecondary: (raw as { imageSecondary?: string }).imageSecondary != null ? String((raw as { imageSecondary?: string }).imageSecondary) : null,
     categories: Array.isArray(raw.categories) ? (raw.categories as { id: number; name: string }[]) : [],
   }
 }
@@ -106,20 +107,20 @@ export default function ShopPage() {
   const totalPages = Math.ceil(total / limit)
 
   return (
-    <div className="store-products min-h-screen bg-cream-50">
-      <section className="py-10 px-4 border-b border-cream-200">
-        <div className="max-w-7xl mx-auto">
-          <p className="font-serif text-[#D4AF37] tracking-[0.2em] text-sm mb-1">مجموعه</p>
-          <h1 className="font-serif text-3xl md:text-4xl font-light text-[#2C2C2C]">
+    <div className="store-products min-h-screen" style={{ backgroundColor: '#FDFBF7' }}>
+      <section className="py-12 md:py-14 px-4 sm:px-6 lg:px-8 border-b border-[#F0EDE8]">
+        <div className="max-w-[1600px] mx-auto">
+          <p className="text-[#D4AF37] tracking-[0.2em] text-sm mb-1 font-medium">مجموعه</p>
+          <h1 className="text-2xl md:text-4xl font-semibold text-[#2D2D2D]">
             جواهرات ما
           </h1>
-          <p className="text-[#2C2C2C]/70 mt-2">فقط قطعات موجود نمایش داده می‌شوند.</p>
+          <p className="text-[#2D2D2D]/70 mt-2 text-sm">فقط قطعات موجود نمایش داده می‌شوند.</p>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto py-8 px-4">
-        <div className="flex flex-col lg:flex-row gap-8">
-          <div className="w-full lg:w-64 shrink-0">
+      <div className="max-w-[1600px] mx-auto py-10 px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-12">
+          <div className="w-full lg:w-72 shrink-0">
             <FilterSidebar
               categories={categories}
               filter={filter}
@@ -131,41 +132,41 @@ export default function ShopPage() {
 
           <div className="flex-1 min-w-0">
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="aspect-square bg-cream-200 rounded-sm animate-pulse" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} className="aspect-[3/4] rounded-sm bg-[#F0EDE8]/50 animate-pulse" />
                 ))}
               </div>
             ) : products.length === 0 ? (
-              <div className="text-center py-16 text-[#2C2C2C]/70">
-                <p className="font-serif text-xl text-[#2C2C2C] mb-2">قطعه‌ای یافت نشد</p>
-                <p>فیلترها را تغییر دهید یا بعداً مراجعه کنید.</p>
+              <div className="text-center py-24 text-[#2D2D2D]/70">
+                <p className="text-xl font-semibold text-[#2D2D2D] mb-2">قطعه‌ای یافت نشد</p>
+                <p className="text-sm">فیلترها را تغییر دهید یا بعداً مراجعه کنید.</p>
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
                   {products.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
                 </div>
                 {totalPages > 1 && (
-                  <div className="flex justify-center gap-2 mt-10">
+                  <div className="flex justify-center items-center gap-3 mt-14">
                     <button
                       type="button"
                       onClick={() => setPage((p) => Math.max(1, p - 1))}
                       disabled={page <= 1}
-                      className="px-4 py-2 rounded-sm border border-cream-300 text-[#2C2C2C] disabled:opacity-50 hover:bg-cream-200 transition-colors"
+                      className="px-5 py-2.5 rounded-sm border border-[#E5E0D9] text-[#2D2D2D] disabled:opacity-40 hover:bg-[#F0EDE8]/60 transition-all duration-300 text-sm font-medium"
                     >
                       قبلی
                     </button>
-                    <span className="px-4 py-2 text-[#2C2C2C]/80">
+                    <span className="px-4 py-2 text-[#2D2D2D]/80 text-sm">
                       صفحهٔ {page} از {totalPages}
                     </span>
                     <button
                       type="button"
                       onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                       disabled={page >= totalPages}
-                      className="px-4 py-2 rounded-sm border border-cream-300 text-[#2C2C2C] disabled:opacity-50 hover:bg-cream-200 transition-colors"
+                      className="px-5 py-2.5 rounded-sm border border-[#E5E0D9] text-[#2D2D2D] disabled:opacity-40 hover:bg-[#F0EDE8]/60 transition-all duration-300 text-sm font-medium"
                     >
                       بعدی
                     </button>

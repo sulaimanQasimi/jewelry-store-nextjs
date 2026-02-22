@@ -58,7 +58,36 @@
   --color-gold-accent: #D4AF37;
   --color-charcoal: #2C2C2C;
   --color-charcoal-deep: #1a1a1a;
+  --color-shop-cream: #FDFBF7;
+  --color-shop-charcoal: #2D2D2D;
   --font-serif-store: Georgia, 'Times New Roman', serif;
+}
+
+/* Shop: gold-accented range slider */
+.store-layout input[type="range"].range-gold {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-cream-200);
+}
+.store-layout input[type="range"].range-gold::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #D4AF37;
+  cursor: pointer;
+  box-shadow: 0 0 0 2px var(--color-shop-cream);
+}
+.store-layout input[type="range"].range-gold::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #D4AF37;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 0 2px var(--color-shop-cream);
 }
 
 /* Storefront: elegant serif headings and subtle hover */

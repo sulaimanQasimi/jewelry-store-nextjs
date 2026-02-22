@@ -22,7 +22,7 @@ export default function StoreLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className={`store-layout min-h-screen bg-cream-50 text-[#2C2C2C] ${vazirmatn.className}`} dir="rtl">
+    <div className={`store-layout min-h-screen text-[#2D2D2D] ${vazirmatn.className}`} style={{ backgroundColor: '#FDFBF7' }} dir="rtl">
       <StoreNavbar />
       <main className="relative">{children}</main>
     </div>
