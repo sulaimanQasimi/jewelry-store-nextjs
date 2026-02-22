@@ -1,9 +1,10 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import Button from '@/components/store/Button'
 import { query } from '@/lib/db'
+import { formatPriceAfn } from '@/lib/persian-format'
 
 async function getProduct(id: number) {
   try {
@@ -31,16 +32,6 @@ async function getProduct(id: number) {
   }
 }
 
-function formatPrice(value: number | null | undefined): string {
-  if (value == null || isNaN(Number(value))) return '—'
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(Number(value))
-}
-
 export default async function ProductDetailPage({
   params,
 }: {
@@ -62,8 +53,8 @@ export default async function ProductDetailPage({
           href="/shop"
           className="inline-flex items-center gap-2 text-[#2C2C2C]/80 hover:text-[#D4AF37] transition-colors mb-8"
         >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Collection
+          <ArrowRight className="w-4 h-4" />
+          بازگشت به مجموعه
         </Link>
 
         <div className="grid md:grid-cols-2 gap-10 md:gap-14">
@@ -94,24 +85,24 @@ export default async function ProductDetailPage({
               {product.productName}
             </h1>
             <p className="text-2xl font-medium text-[#D4AF37] mb-6">
-              {formatPrice(product.purchasePriceToAfn)}
+              {formatPriceAfn(product.purchasePriceToAfn)}
             </p>
             <dl className="space-y-2 text-[#2C2C2C]/80">
               {product.type && (
                 <>
-                  <dt className="font-medium text-[#2C2C2C]">Material / Type</dt>
+                  <dt className="font-medium text-[#2C2C2C]">جنس / نوع</dt>
                   <dd>{product.type}</dd>
                 </>
               )}
               {product.karat != null && (
                 <>
-                  <dt className="font-medium text-[#2C2C2C]">Karat</dt>
+                  <dt className="font-medium text-[#2C2C2C]">عیار</dt>
                   <dd>{product.karat}</dd>
                 </>
               )}
               {product.gram != null && (
                 <>
-                  <dt className="font-medium text-[#2C2C2C]">Weight (g)</dt>
+                  <dt className="font-medium text-[#2C2C2C]">وزن (گرم)</dt>
                   <dd>{product.gram}</dd>
                 </>
               )}
@@ -119,7 +110,7 @@ export default async function ProductDetailPage({
             <div className="mt-8 pt-8 border-t border-cream-200">
               <Link href="/contact">
                 <Button variant="gold" size="lg">
-                  Inquire
+                  استعلام
                 </Button>
               </Link>
             </div>

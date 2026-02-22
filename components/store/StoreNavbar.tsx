@@ -7,10 +7,10 @@ import { Menu, X, Gem } from 'lucide-react'
 import Button from './Button'
 
 const NAV_LINKS = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
-  { href: '/shop', label: 'Collection' },
+  { href: '/', label: 'خانه' },
+  { href: '/about', label: 'درباره‌ما' },
+  { href: '/contact', label: 'تماس' },
+  { href: '/shop', label: 'مجموعه' },
 ]
 
 export default function StoreNavbar() {
@@ -24,10 +24,10 @@ export default function StoreNavbar() {
           <Link
             href="/"
             className="flex items-center gap-2 text-[#2C2C2C] hover:text-[#D4AF37] transition-colors"
-            aria-label="Home"
+            aria-label="خانه"
           >
             <Gem className="w-8 h-8 text-[#D4AF37]" aria-hidden />
-            <span className="font-serif text-xl font-semibold tracking-tight">Maison</span>
+            <span className="font-serif text-xl font-semibold tracking-tight">مایسون</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
@@ -48,7 +48,7 @@ export default function StoreNavbar() {
             ))}
             <Link href="/login">
               <Button variant="outline" size="sm">
-                Login
+                ورود / ثبت‌نام
               </Button>
             </Link>
           </div>
@@ -56,14 +56,14 @@ export default function StoreNavbar() {
           <div className="flex items-center gap-2 md:hidden">
             <Link href="/login">
               <Button variant="ghost" size="sm">
-                Login
+                ورود / ثبت‌نام
               </Button>
             </Link>
             <button
               type="button"
               onClick={() => setMobileOpen(!mobileOpen)}
               className="p-2 rounded-sm text-[#2C2C2C] hover:bg-cream-200 transition-colors"
-              aria-label="Toggle menu"
+              aria-label="منو"
             >
               {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>

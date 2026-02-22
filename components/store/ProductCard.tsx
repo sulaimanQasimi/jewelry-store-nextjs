@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Eye } from 'lucide-react'
+import { formatPriceAfn } from '@/lib/persian-format'
 
 export interface StoreProduct {
   id: number
@@ -18,16 +19,6 @@ export interface StoreProduct {
 interface ProductCardProps {
   product: StoreProduct
   className?: string
-}
-
-function formatPrice(value: number | null | undefined): string {
-  if (value == null || isNaN(Number(value))) return '—'
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(Number(value))
 }
 
 export default function ProductCard({ product, className = '' }: ProductCardProps) {
@@ -73,7 +64,7 @@ export default function ProductCard({ product, className = '' }: ProductCardProp
             </p>
           ) : null}
           <p className="font-medium text-[#D4AF37] mb-4">
-            {formatPrice(Number(price))}
+            {formatPriceAfn(Number(price))}
           </p>
           <span
             className="
@@ -83,7 +74,7 @@ export default function ProductCard({ product, className = '' }: ProductCardProp
               transition-all duration-300
             "
           >
-            View Details
+            مشاهدهٔ جزئیات
             <Eye className="w-4 h-4 shrink-0" aria-hidden />
           </span>
         </div>

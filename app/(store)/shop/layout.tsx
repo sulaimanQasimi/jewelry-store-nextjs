@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Collection | Maison Jewelry',
-  description: 'Explore our collection of fine jewelry. Rings, necklaces, bracelets and more.',
+  title: 'مجموعه | جواهرات مایسون',
+  description: 'مجموعهٔ جواهرات ناب. انگشتر، گردنبند، دست‌بند و بیشتر.',
 }
 
 export default function ShopLayout({

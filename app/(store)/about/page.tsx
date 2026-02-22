@@ -1,8 +1,8 @@
 import { Gem, Award, Heart } from 'lucide-react'
 
 export const metadata = {
-  title: 'About Us | Maison Jewelry',
-  description: 'Our heritage of craftsmanship and dedication to timeless elegance.',
+  title: 'دربارهٔ ما | جواهرات مایسون',
+  description: 'اصالت هنر و تعهد به ظرافت ماندگار.',
 }
 
 export default function AboutPage() {
@@ -11,15 +11,14 @@ export default function AboutPage() {
       {/* Hero */}
       <section className="relative py-20 md:py-28 px-4 bg-cream-100">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="font-serif text-[#D4AF37] tracking-[0.3em] uppercase text-sm mb-4">
-            Since the beginning
+          <p className="font-serif text-[#D4AF37] tracking-[0.3em] text-sm mb-4">
+            از همان آغاز
           </p>
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light text-[#2C2C2C] tracking-tight mb-6">
-            Craftsmanship & Heritage
+            هنر و اصالت
           </h1>
           <p className="text-[#2C2C2C]/80 text-lg leading-relaxed max-w-2xl mx-auto">
-            Every piece we create is a testament to generations of skill, passion, and an unwavering
-            commitment to excellence.
+            هر قطعه‌ای که می‌سازیم گواه نسل‌ها مهارت، عشق و پایبندی به برتری است.
           </p>
         </div>
       </section>
@@ -30,15 +29,15 @@ export default function AboutPage() {
           <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
             <div>
               <h2 className="font-serif text-2xl md:text-3xl font-light text-[#2C2C2C] mb-6">
-                Our Story
+                داستان ما
               </h2>
               <p className="text-[#2C2C2C]/80 leading-relaxed mb-4">
-                From a small atelier to a house recognized for elegance, we have stayed true to one
-                principle: jewelry should be made to last, in style and in spirit.
+                از یک کارگاه کوچک تا خانه‌ای شناخته‌شده برای ظرافت، به یک اصل وفادار مانده‌ایم:
+                جواهر باید برای ماندن ساخته شود، در سبک و در روح.
               </p>
               <p className="text-[#2C2C2C]/80 leading-relaxed">
-                Our master artisans combine traditional techniques with contemporary design, ensuring
-                each piece is both timeless and distinctly ours.
+                استادکاران ما سنت و طراحی امروز را با هم می‌آمیزند تا هر قطعه هم ماندگار و هم
+                به‌راستی از آنِ ما باشد.
               </p>
             </div>
             <div className="aspect-[4/3] rounded-sm bg-cream-200 border border-cream-300 flex items-center justify-center">
@@ -56,15 +55,15 @@ export default function AboutPage() {
             </div>
             <div className="order-1 md:order-2">
               <h2 className="font-serif text-2xl md:text-3xl font-light text-[#2C2C2C] mb-6">
-                The Art of Making
+                هنر ساخت
               </h2>
               <p className="text-[#2C2C2C]/80 leading-relaxed mb-4">
-                We source only the finest materials and work them by hand—from setting to polish—so
-                that every detail meets our exacting standards.
+                تنها بهترین مواد را برمی‌گزینیم و با دست از مرصع تا صیقل کار می‌کنیم تا هر
+                جزئیات به استانداردهایمان برسد.
               </p>
               <p className="text-[#2C2C2C]/80 leading-relaxed">
-                Our craftspeople train for years in traditional and modern methods, blending heritage
-                with innovation to create pieces that will be treasured for generations.
+                هنرمندان ما سال‌ها در روش‌های سنتی و امروزی آموزش دیده‌اند و اصالت و نوآوری را
+                با هم می‌آمیزند تا قطعاتی بیافرینند که نسل‌ها حفظشان می‌کنند.
               </p>
             </div>
           </div>
@@ -75,11 +74,11 @@ export default function AboutPage() {
         <div className="max-w-3xl mx-auto text-center">
           <Heart className="w-12 h-12 text-[#D4AF37]/60 mx-auto mb-6" aria-hidden />
           <h2 className="font-serif text-2xl md:text-3xl font-light text-[#2C2C2C] mb-6">
-            Our Promise
+            وعدهٔ ما
           </h2>
           <p className="text-[#2C2C2C]/80 leading-relaxed">
-            We believe in creating jewelry that becomes part of your story—elegant, enduring, and
-            made with care. Thank you for being part of ours.
+            باور داریم جواهری بسازیم که بخشی از داستان شما شود—ظریف، ماندگار و با دقت ساخته‌شده.
+            از اینکه بخشی از داستان ما هستید سپاسگزاریم.
           </p>
         </div>
       </section>

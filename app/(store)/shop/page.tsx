@@ -109,11 +109,11 @@ export default function ShopPage() {
     <div className="store-products min-h-screen bg-cream-50">
       <section className="py-10 px-4 border-b border-cream-200">
         <div className="max-w-7xl mx-auto">
-          <p className="font-serif text-[#D4AF37] tracking-[0.2em] uppercase text-sm mb-1">Collection</p>
+          <p className="font-serif text-[#D4AF37] tracking-[0.2em] text-sm mb-1">مجموعه</p>
           <h1 className="font-serif text-3xl md:text-4xl font-light text-[#2C2C2C]">
-            Our Jewelry
+            جواهرات ما
           </h1>
-          <p className="text-[#2C2C2C]/70 mt-2">Showing only pieces currently available.</p>
+          <p className="text-[#2C2C2C]/70 mt-2">فقط قطعات موجود نمایش داده می‌شوند.</p>
         </div>
       </section>
 
@@ -138,8 +138,8 @@ export default function ShopPage() {
               </div>
             ) : products.length === 0 ? (
               <div className="text-center py-16 text-[#2C2C2C]/70">
-                <p className="font-serif text-xl text-[#2C2C2C] mb-2">No pieces found</p>
-                <p>Try adjusting filters or check back later.</p>
+                <p className="font-serif text-xl text-[#2C2C2C] mb-2">قطعه‌ای یافت نشد</p>
+                <p>فیلترها را تغییر دهید یا بعداً مراجعه کنید.</p>
               </div>
             ) : (
               <>
@@ -156,10 +156,10 @@ export default function ShopPage() {
                       disabled={page <= 1}
                       className="px-4 py-2 rounded-sm border border-cream-300 text-[#2C2C2C] disabled:opacity-50 hover:bg-cream-200 transition-colors"
                     >
-                      Previous
+                      قبلی
                     </button>
                     <span className="px-4 py-2 text-[#2C2C2C]/80">
-                      Page {page} of {totalPages}
+                      صفحهٔ {page} از {totalPages}
                     </span>
                     <button
                       type="button"
@@ -167,7 +167,7 @@ export default function ShopPage() {
                       disabled={page >= totalPages}
                       className="px-4 py-2 rounded-sm border border-cream-300 text-[#2C2C2C] disabled:opacity-50 hover:bg-cream-200 transition-colors"
                     >
-                      Next
+                      بعدی
                     </button>
                   </div>
                 )}

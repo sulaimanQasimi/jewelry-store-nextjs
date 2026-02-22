@@ -18,10 +18,10 @@ export interface FilterState {
 }
 
 const MATERIAL_OPTIONS = [
-  { value: '', label: 'All Materials' },
-  { value: 'Gold', label: 'Gold' },
-  { value: 'Silver', label: 'Silver' },
-  { value: 'Platinum', label: 'Platinum' },
+  { value: '', label: 'همهٔ جنس‌ها' },
+  { value: 'Gold', label: 'طلا' },
+  { value: 'Silver', label: 'نقره' },
+  { value: 'Platinum', label: 'پلاتین' },
 ]
 
 interface FilterSidebarProps {
@@ -77,14 +77,14 @@ export default function FilterSidebar({
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-serif text-[#2C2C2C] font-semibold text-lg flex items-center gap-2">
           <SlidersHorizontal className="w-5 h-5 text-[#D4AF37]" />
-          Filters
+          فیلترها
         </h2>
         <button
           type="button"
           onClick={onClearFilters}
           className="text-sm text-[#D4AF37] hover:underline font-medium"
         >
-          Clear all
+          پاک کردن همه
         </button>
       </div>
 
@@ -93,9 +93,9 @@ export default function FilterSidebar({
         <button
           type="button"
           onClick={() => setCategoryOpen(!categoryOpen)}
-          className="flex items-center justify-between w-full text-left font-medium text-[#2C2C2C] py-1"
+          className="flex items-center justify-between w-full text-start font-medium text-[#2C2C2C] py-1"
         >
-          <span>Category</span>
+          <span>دسته‌بندی</span>
           <ChevronDown
             className={`w-4 h-4 transition-transform ${categoryOpen ? 'rotate-180' : ''}`}
           />
@@ -111,7 +111,7 @@ export default function FilterSidebar({
                   onChange={() => onFilterChange({ categoryId: '' })}
                   className="w-4 h-4 text-[#D4AF37] border-cream-300 focus:ring-[#D4AF37]"
                 />
-                <span className="text-[#2C2C2C]/80 group-hover:text-[#2C2C2C]">All</span>
+                <span className="text-[#2C2C2C]/80 group-hover:text-[#2C2C2C]">همه</span>
               </label>
             </li>
             {categories.map((cat) => (
@@ -137,9 +137,9 @@ export default function FilterSidebar({
         <button
           type="button"
           onClick={() => setPriceOpen(!priceOpen)}
-          className="flex items-center justify-between w-full text-left font-medium text-[#2C2C2C] py-1"
+          className="flex items-center justify-between w-full text-start font-medium text-[#2C2C2C] py-1"
         >
-          <span>Price Range</span>
+          <span>محدودهٔ قیمت</span>
           <ChevronDown
             className={`w-4 h-4 transition-transform ${priceOpen ? 'rotate-180' : ''}`}
           />
@@ -151,7 +151,7 @@ export default function FilterSidebar({
                 type="number"
                 min={priceRange.min}
                 max={priceRange.max}
-                placeholder={`Min ${priceRange.min}`}
+                placeholder={`کم‌ترین ${priceRange.min}`}
                 value={filter.priceMin}
                 onChange={handlePriceMin}
                 className="w-full px-3 py-2 border border-cream-300 rounded-sm text-sm text-[#2C2C2C] bg-white focus:ring-2 focus:ring-[#D4AF37]/30 focus:border-[#D4AF37]"
@@ -161,7 +161,7 @@ export default function FilterSidebar({
                 type="number"
                 min={priceRange.min}
                 max={priceRange.max}
-                placeholder={`Max ${priceRange.max}`}
+                placeholder={`بیش‌ترین ${priceRange.max}`}
                 value={filter.priceMax}
                 onChange={handlePriceMax}
                 className="w-full px-3 py-2 border border-cream-300 rounded-sm text-sm text-[#2C2C2C] bg-white focus:ring-2 focus:ring-[#D4AF37]/30 focus:border-[#D4AF37]"
@@ -185,9 +185,9 @@ export default function FilterSidebar({
         <button
           type="button"
           onClick={() => setMaterialOpen(!materialOpen)}
-          className="flex items-center justify-between w-full text-left font-medium text-[#2C2C2C] py-1"
+          className="flex items-center justify-between w-full text-start font-medium text-[#2C2C2C] py-1"
         >
-          <span>Material</span>
+          <span>جنس</span>
           <ChevronDown
             className={`w-4 h-4 transition-transform ${materialOpen ? 'rotate-180' : ''}`}
           />
@@ -217,9 +217,9 @@ export default function FilterSidebar({
         <button
           type="button"
           onClick={() => setAvailabilityOpen(!availabilityOpen)}
-          className="flex items-center justify-between w-full text-left font-medium text-[#2C2C2C] py-1"
+          className="flex items-center justify-between w-full text-start font-medium text-[#2C2C2C] py-1"
         >
-          <span>Availability</span>
+          <span>موجودی</span>
           <ChevronDown
             className={`w-4 h-4 transition-transform ${availabilityOpen ? 'rotate-180' : ''}`}
           />
@@ -232,7 +232,7 @@ export default function FilterSidebar({
               onChange={(e) => onFilterChange({ availability: e.target.checked })}
               className="w-4 h-4 rounded text-[#D4AF37] border-cream-300 focus:ring-[#D4AF37]"
             />
-            <span className="text-[#2C2C2C]/80 group-hover:text-[#2C2C2C]">In stock only</span>
+            <span className="text-[#2C2C2C]/80 group-hover:text-[#2C2C2C]">فقط موجود</span>
           </label>
         )}
       </div>
