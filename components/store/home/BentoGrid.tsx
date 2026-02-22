@@ -9,25 +9,25 @@ const BENTO_ITEMS = [
     title: 'انگشتر',
     href: '/shop?category=rings',
     size: 'large',
-    image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800&q=80',
+    image: '/images/home/bento-rings.jpg',
   },
   {
     title: 'گردنبند',
     href: '/shop?category=necklaces',
     size: 'tall',
-    image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80',
+    image: '/images/home/bento-necklace.jpg',
   },
   {
     title: 'دست‌بند',
     href: '/shop?category=bracelets',
     size: 'small',
-    image: 'https://images.unsplash.com/photo-1611652022419-a9419f74343a?w=800&q=80',
+    image: '/images/home/bento-bracelet.jpg',
   },
   {
     title: 'گوشواره',
     href: '/shop?category=earrings',
     size: 'small',
-    image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=500&q=80',
+    image: '/images/home/bento-earrings.jpg',
   },
 ]
 

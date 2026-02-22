@@ -3,9 +3,9 @@
 import { motion } from 'framer-motion'
 
 const MACRO_IMAGES = [
-  'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80',
-  'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?w=600&q=80',
-  'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=600&q=80',
+  '/images/home/craftsmanship-1.jpg',
+  '/images/home/craftsmanship-2.jpg',
+  '/images/home/craftsmanship-3.jpg',
 ]
 
 const PERSIAN_TEXT = [
@@ -21,7 +21,7 @@ export default function CraftsmanshipSection() {
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1920&q=60')`,
+            backgroundImage: "url('/images/home/craftsmanship-bg.jpg')",
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#2C2C2C]/95 via-[#2C2C2C] to-[#2C2C2C]/95" />

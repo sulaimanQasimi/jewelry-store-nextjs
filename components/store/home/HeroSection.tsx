@@ -14,7 +14,7 @@ export default function HeroSection() {
         <motion.div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1920&q=80')`,
+            backgroundImage: "url('/images/home/hero.jpg')",
             y: backgroundY,
           }}
         />
