@@ -6,7 +6,19 @@ import Button from '@/components/store/Button'
 import { query } from '@/lib/db'
 import { formatPriceAfn } from '@/lib/persian-format'
 
-async function getProduct(id: number) {
+interface ProductDetail {
+  id: number
+  productName: string
+  type: string | null
+  gram: number | null
+  karat: number | null
+  purchasePriceToAfn: number | null
+  image: string | null
+  barcode: string | null
+  categories: { id: number; name: string }[]
+}
+
+async function getProduct(id: number): Promise<ProductDetail | null> {
   try {
     const rows = (await query('SELECT * FROM products WHERE id = ? AND isSold = 0', [id])) as Record<string, unknown>[]
     const row = rows?.[0]
@@ -17,14 +29,14 @@ async function getProduct(id: number) {
     )) as { id: number; name: string }[]
     const categories = catRows ?? []
     return {
-      id: row.id,
-      productName: row.productName ?? row.productname ?? '',
-      type: row.type ?? null,
-      gram: row.gram ?? null,
-      karat: row.karat ?? null,
-      purchasePriceToAfn: row.purchasePriceToAfn ?? row.purchasepricetoafn ?? null,
-      image: row.image ?? null,
-      barcode: row.barcode ?? null,
+      id: Number(row.id),
+      productName: String(row.productName ?? row.productname ?? ''),
+      type: row.type != null ? String(row.type) : null,
+      gram: row.gram != null ? Number(row.gram) : null,
+      karat: row.karat != null ? Number(row.karat) : null,
+      purchasePriceToAfn: row.purchasePriceToAfn != null ? Number(row.purchasePriceToAfn) : (row.purchasepricetoafn != null ? Number(row.purchasepricetoafn) : null),
+      image: row.image != null ? String(row.image) : null,
+      barcode: row.barcode != null ? String(row.barcode) : null,
       categories,
     }
   } catch {
@@ -78,7 +90,7 @@ export default async function ProductDetailPage({
           <div>
             {product.categories?.length ? (
               <p className="text-sm text-[#D4AF37] tracking-wide uppercase mb-2">
-                {product.categories.map((c: { name: string }) => c.name).join(', ')}
+                {product.categories.map((c) => c.name).join(', ')}
               </p>
             ) : null}
             <h1 className="font-serif text-3xl md:text-4xl font-light text-[#2C2C2C] mb-4">

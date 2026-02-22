@@ -30,7 +30,7 @@ function toImgSrc(path: string | null | undefined): string | null {
 
 export default function ProductCard({ product, className = '' }: ProductCardProps) {
   const [isHover, setIsHover] = useState(false)
-  const price = product.purchasePriceToAfn ?? (product as Record<string, unknown>).purchasePriceToAfn
+  const price = product.purchasePriceToAfn ?? (product as unknown as Record<string, unknown>).purchasePriceToAfn
   const imgSrc = toImgSrc(product.image)
   const imgSecondary = toImgSrc(product.imageSecondary)
 
