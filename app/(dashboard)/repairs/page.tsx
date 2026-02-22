@@ -1,14 +1,15 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import axios from 'axios'
 import FormField from '@/components/ui/FormField'
 import FilterBar from '@/components/ui/FilterBar'
 import DataTable from '@/components/ui/DataTable'
 import type { ColumnDef } from '@/components/ui/DataTable'
+// Keep import so runtime has RepairFormModal (create/edit use /repairs/new and /repairs/[id]/edit)
 import RepairFormModal from '@/components/repair/RepairFormModal'
-import type { RepairFormData } from '@/components/repair/RepairFormModal'
 
 interface RepairRow {
   id: number
@@ -62,8 +63,6 @@ export default function RepairsPage() {
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
   const [loading, setLoading] = useState(false)
-  const [modalOpen, setModalOpen] = useState(false)
-  const [editing, setEditing] = useState<RepairRow | null>(null)
 
   useEffect(() => {
     const status = searchParams?.get('status') ?? ''
@@ -97,15 +96,6 @@ export default function RepairsPage() {
     fetchData()
   }, [fetchData])
 
-  const openCreate = () => {
-    setEditing(null)
-    setModalOpen(true)
-  }
-
-  const openEdit = (row: RepairRow) => {
-    setEditing(row)
-    setModalOpen(true)
-  }
 
   const columns: ColumnDef<RepairRow>[] = [
     { key: 'id', label: '#', className: 'w-14' },
@@ -137,13 +127,18 @@ export default function RepairsPage() {
       label: 'عملیات',
       render: (r) => (
         <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => openEdit(r)}
+          <Link
+            href={`/repairs/${r.id}`}
             className="px-3 py-1.5 rounded-lg border border-amber-300 dark:border-amber-600 text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20 text-sm font-medium"
           >
+            مشاهده
+          </Link>
+          <Link
+            href={`/repairs/${r.id}/edit`}
+            className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium"
+          >
             ویرایش
-          </button>
+          </Link>
         </div>
       )
     }
@@ -189,13 +184,12 @@ export default function RepairsPage() {
             درخواست‌های تعمیر و کارهای در دست انجام
           </p>
         </div>
-        <button
-          type="button"
-          onClick={openCreate}
-          className="min-w-[140px] py-2.5 px-5 rounded-xl font-semibold text-white bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-600 hover:via-amber-700 hover:to-amber-800 font-stat transition-all duration-200"
+        <Link
+          href="/repairs/new"
+          className="min-w-[140px] py-2.5 px-5 rounded-xl font-semibold text-white bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-600 hover:via-amber-700 hover:to-amber-800 font-stat transition-all duration-200 inline-flex items-center justify-center"
         >
           ثبت تعمیر جدید
-        </button>
+        </Link>
       </header>
 
       <FilterBar extraFilters={extraFilters} onReset={resetFilters} />
@@ -216,32 +210,6 @@ export default function RepairsPage() {
           minWidth="900px"
         />
       </div>
-
-      <RepairFormModal
-        open={modalOpen}
-        onClose={() => {
-          setModalOpen(false)
-          setEditing(null)
-        }}
-        mode={editing ? 'edit' : 'create'}
-        initialData={
-          editing
-            ? {
-                id: editing.id,
-                customer_id: editing.customer_id,
-                customer_name: editing.customer_name,
-                customer_phone: editing.customer_phone,
-                product_description: editing.product_description ?? '',
-                incoming_notes: editing.incoming_notes ?? '',
-                estimated_cost: editing.estimated_cost,
-                currency: editing.currency,
-                status: editing.status,
-                due_date: editing.due_date
-              }
-            : null
-        }
-        onSuccess={fetchData}
-      />
     </div>
   )
 }
