@@ -20,7 +20,7 @@ const BENTO_ITEMS = [
   {
     title: 'دست‌بند',
     href: '/shop?category=bracelets',
-    size: 'wide',
+    size: 'small',
     image: 'https://images.unsplash.com/photo-1611652022419-a9419f74343a?w=800&q=80',
   },
   {
@@ -29,18 +29,11 @@ const BENTO_ITEMS = [
     size: 'small',
     image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=500&q=80',
   },
-  {
-    title: 'ساعت و اکسسوری',
-    href: '/shop',
-    size: 'small',
-    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80',
-  },
 ]
 
 const sizeClasses: Record<string, string> = {
   large: 'md:col-span-2 md:row-span-2',
   tall: 'md:row-span-2',
-  wide: 'md:col-span-2',
   small: '',
 }
 

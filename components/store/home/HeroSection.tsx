@@ -9,7 +9,7 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex flex-col justify-center items-center text-center overflow-hidden bg-[#1a1a1a]">
-      {/* Background with parallax */}
+      {/* Cinematic background: add <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src="/hero-loop.mp4" /> for video; image + parallax below */}
       <div className="absolute inset-0">
         <motion.div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
