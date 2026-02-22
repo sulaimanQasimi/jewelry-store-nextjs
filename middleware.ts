@@ -21,7 +21,9 @@ function isRootPath(pathname: string): boolean {
     // ignore
   }
   if (s === '' || s === '/') return true
-  if (s.replace(/\//g, '').trim() === '') return true
+  // Any path that has no "content" segments is root (handles "//", "///", trailing slashes, proxy oddities)
+  const segments = s.split('/').filter(Boolean)
+  if (segments.length === 0) return true
   const lower = s.toLowerCase()
   if (lower === '/index' || lower === '/index.html' || lower === '/index.htm') return true
   return false
@@ -51,6 +53,19 @@ function getPathname(request: NextRequest): string {
   }
 }
 
+/** Normalize path for comparison: strip query/fragment, collapse slashes, lowercase index variants. */
+function toNormalPath(p: string): string {
+  let s = (p ?? '').trim()
+  try {
+    if (s.includes('%')) s = decodeURIComponent(s)
+  } catch {
+    // ignore
+  }
+  s = s.replace(/\?.*$/, '').replace(/#.*$/, '').trim() || '/'
+  s = '/' + s.replace(/^\/+|\/+$/g, '').replace(/\/+/g, '/') || '/'
+  return s === '' ? '/' : s
+}
+
 export default async function middleware(request: NextRequest) {
   // CORS preflight: return 204 immediately so Flutter web cross-origin requests succeed
   if (request.method === 'OPTIONS') {
@@ -68,6 +83,12 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
   const publicAccess = isPublicPath(pathname) || isPublicPath(urlPathname)
+  // Final safety: never send root to auth (handles server/proxy path quirks)
+  const normalPath = toNormalPath(pathname)
+  const normalUrl = toNormalPath(urlPathname)
+  if (isRootPath(normalPath) || isRootPath(normalUrl)) {
+    return NextResponse.next()
+  }
   if (process.env.DEBUG_AUTH_PATH === '1') {
     console.log('[middleware] pathname:', JSON.stringify(pathname), 'urlPathname:', JSON.stringify(urlPathname), 'public:', publicAccess)
   }
