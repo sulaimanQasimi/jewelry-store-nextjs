@@ -40,6 +40,9 @@ AUTH_SECRET="your-long-random-secret"
 JWT_SECRET="your-long-random-secret"
 
 NEXT_PUBLIC_UPLOAD_DIR="/uploads"
+
+# Public site URL for SEO (sitemap, Open Graph, canonical). Set in production to your public URL (e.g. https://yourdomain.com)
+# NEXT_PUBLIC_SITE_URL="https://yourdomain.com"
 ```
 
 Use a strong random value for AUTH_SECRET in production (e.g. `openssl rand -base64 32`).

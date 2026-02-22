@@ -2,9 +2,14 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
+import type { Metadata } from 'next'
 import Button from '@/components/store/Button'
 import { query } from '@/lib/db'
 import { formatPriceAfn } from '@/lib/persian-format'
+
+const baseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 
 interface ProductDetail {
   id: number
@@ -44,6 +49,46 @@ async function getProduct(id: number): Promise<ProductDetail | null> {
   }
 }
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+  const productId = parseInt(id, 10)
+  if (isNaN(productId)) return {}
+  const product = await getProduct(productId)
+  if (!product) return {}
+
+  const title = product.productName
+  const categoryNames = product.categories?.length
+    ? product.categories.map((c) => c.name).join('، ')
+    : ''
+  const priceStr = product.purchasePriceToAfn != null ? formatPriceAfn(product.purchasePriceToAfn) : ''
+  const description = [product.productName, categoryNames, priceStr].filter(Boolean).join(' | ') + ' | مایسون'
+
+  const imagePath = product.image?.startsWith('/') ? product.image : product.image ? `/${product.image}` : null
+  const imageUrl = imagePath ? `${baseUrl}${imagePath}` : undefined
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `/shop/${id}` },
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: product.productName }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : undefined,
+    },
+  }
+}
+
 export default async function ProductDetailPage({
   params,
 }: {
@@ -57,9 +102,32 @@ export default async function ProductDetailPage({
   if (!product) notFound()
 
   const imgSrc = product.image?.startsWith('/') ? product.image : product.image ? `/${product.image}` : null
+  const imageUrl = imgSrc ? `${baseUrl}${imgSrc}` : undefined
+
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.productName,
+    ...(imageUrl && { image: imageUrl }),
+    ...(product.purchasePriceToAfn != null && {
+      offers: {
+        '@type': 'Offer',
+        price: product.purchasePriceToAfn,
+        priceCurrency: 'AFN',
+        availability: 'https://schema.org/InStock',
+      },
+    }),
+    ...(product.categories?.length && {
+      category: product.categories.map((c) => c.name).join(', '),
+    }),
+  }
 
   return (
     <div className="store-product-detail min-h-screen bg-cream-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <div className="max-w-6xl mx-auto py-8 md:py-12 px-4">
         <Link
           href="/shop"

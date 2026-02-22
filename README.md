@@ -100,6 +100,9 @@ ADMIN_PASSWORD="admin"
 
 # Upload Directory
 NEXT_PUBLIC_UPLOAD_DIR="/uploads"
+
+# Public site URL (for SEO: sitemap, Open Graph, canonical URLs). Optional; defaults to Vercel URL or http://localhost:3000
+# NEXT_PUBLIC_SITE_URL="https://yoursite.com"
 ```
 
 ### 4. Run Development Server
