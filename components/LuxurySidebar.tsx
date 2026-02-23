@@ -77,6 +77,7 @@ const groups = [
     label: 'مالی و مصارف',
     icon: Receipt,
     items: [
+      { href: '/accounts', icon: Wallet, label: 'حسابات' },
       { href: '/expenses', icon: Receipt, label: 'مصارف' },
       { href: '/currency-rates', icon: DollarSign, label: 'نرخ ارز' },
       { href: '/gold-rate', icon: Coins, label: 'نرخ طلا' }
