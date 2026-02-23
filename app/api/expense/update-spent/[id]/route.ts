@@ -13,7 +13,7 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const { type, detail, price, currency, date } = body
+    const { type, detail, price, currency, date, account_id: accountId } = body
 
     if (!type?.trim() || !detail?.trim() || price == null || !currency?.trim()) {
       return NextResponse.json(
@@ -23,8 +23,8 @@ export async function PUT(
     }
 
     await query(
-      'UPDATE expenses SET type = ?, detail = ?, price = ?, currency = ?, date = ? WHERE id = ?',
-      [type.trim(), detail.trim(), Number(price), currency.trim(), date ? new Date(date) : new Date(), id]
+      'UPDATE expenses SET type = ?, detail = ?, price = ?, currency = ?, date = ?, account_id = ? WHERE id = ?',
+      [type.trim(), detail.trim(), Number(price), currency.trim(), date ? new Date(date) : new Date(), accountId ?? null, id]
     )
 
     return NextResponse.json({

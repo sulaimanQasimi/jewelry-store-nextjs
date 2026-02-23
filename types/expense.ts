@@ -8,6 +8,7 @@ export interface Expense {
   price: number
   currency: string
   date: string
+  account_id?: string | null
 }
 
 /** Form payload for create/edit. */
@@ -18,4 +19,5 @@ export interface ExpenseFormData {
   price: number
   currency: string
   date?: string
+  account_id?: string | null
 }

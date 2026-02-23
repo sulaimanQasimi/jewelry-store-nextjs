@@ -211,10 +211,12 @@ CREATE TABLE IF NOT EXISTS expenses (
     price FLOAT NOT NULL,
     currency VARCHAR(50) NOT NULL,
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    account_id CHAR(36) NULL,
     INDEX idx_date (date),
     INDEX idx_type (type),
     INDEX idx_currency (currency),
-    INDEX idx_date_type (date, type)
+    INDEX idx_date_type (date, type),
+    INDEX idx_expenses_account_id (account_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Currency Rates Table
@@ -713,3 +715,7 @@ CREATE TABLE IF NOT EXISTS account_transactions (
     INDEX idx_account_transactions_account_id (account_id),
     INDEX idx_account_transactions_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Link expenses to accounts (run after accounts table exists; for existing DBs add column first)
+-- ALTER TABLE expenses ADD COLUMN account_id CHAR(36) NULL;
+-- ALTER TABLE expenses ADD CONSTRAINT fk_expenses_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE SET NULL;
