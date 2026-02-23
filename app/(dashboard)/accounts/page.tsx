@@ -1,10 +1,9 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { getAccounts } from '@/lib/actions/accounts'
 import type { Account } from '@/lib/actions/accounts'
-import CreateAccountModal from '@/components/accounts/CreateAccountModal'
 import { Wallet, Plus, ArrowLeft } from 'lucide-react'
 
 function formatBalance(value: string | number, currency: string) {
@@ -16,17 +15,8 @@ function formatBalance(value: string | number, currency: string) {
 export default function AccountsPage() {
   const [accounts, setAccounts] = useState<Account[]>([])
   const [loading, setLoading] = useState(true)
-  const [createModalOpen, setCreateModalOpen] = useState(false)
-
-  const refresh = useCallback(() => {
-    getAccounts()
-      .then(setAccounts)
-      .catch(() => setAccounts([]))
-      .finally(() => setLoading(false))
-  }, [])
 
   useEffect(() => {
-    setLoading(true)
     getAccounts()
       .then(setAccounts)
       .catch(() => setAccounts([]))
@@ -40,14 +30,10 @@ export default function AccountsPage() {
           <Wallet className="w-7 h-7 text-amber-600" />
           حسابات
         </h1>
-        <button
-          type="button"
-          onClick={() => setCreateModalOpen(true)}
-          className="btn-luxury btn-luxury-primary inline-flex items-center gap-2"
-        >
+        <Link href="/accounts/new" className="btn-luxury btn-luxury-primary inline-flex items-center gap-2">
           <Plus className="w-5 h-5" />
           ثبت حساب جدید
-        </button>
+        </Link>
       </div>
 
       <div className="card-luxury rounded-2xl border border-gold-200/50 dark:border-slate-600/50 overflow-hidden">
@@ -60,14 +46,10 @@ export default function AccountsPage() {
             <p className="text-charcoal-soft dark:text-slate-400 mb-4">
               هنوز حسابی ثبت نشده است. با کلیک روی دکمه زیر اولین حساب را ایجاد کنید.
             </p>
-            <button
-              type="button"
-              onClick={() => setCreateModalOpen(true)}
-              className="btn-luxury btn-luxury-primary inline-flex items-center gap-2"
-            >
+            <Link href="/accounts/new" className="btn-luxury btn-luxury-primary inline-flex items-center gap-2">
               <Plus className="w-5 h-5" />
               ثبت حساب جدید
-            </button>
+            </Link>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -121,12 +103,6 @@ export default function AccountsPage() {
           </div>
         )}
       </div>
-
-      <CreateAccountModal
-        open={createModalOpen}
-        onClose={() => setCreateModalOpen(false)}
-        onSuccess={refresh}
-      />
     </div>
   )
 }
