@@ -45,7 +45,8 @@ export async function processTransaction(
 
   const conn = await getConnection()
   try {
-    await conn.execute('START TRANSACTION')
+    // Transaction control must use .query(), not .execute() (not supported in prepared statement protocol)
+    await conn.query('START TRANSACTION')
 
     // Lock the account row so no other process can modify balance until we commit
     const [rows] = await conn.execute<RowDataPacket[]>(
@@ -54,11 +55,11 @@ export async function processTransaction(
     )
     const account = rows?.[0]
     if (!account) {
-      await conn.execute('ROLLBACK')
+      await conn.query('ROLLBACK')
       return { success: false, error: 'Account not found' }
     }
     if (account.status !== 'active') {
-      await conn.execute('ROLLBACK')
+      await conn.query('ROLLBACK')
       return { success: false, error: 'Account is not active' }
     }
 
@@ -68,7 +69,7 @@ export async function processTransaction(
       balanceAfter = balanceBefore + amount
     } else {
       if (balanceBefore < amount) {
-        await conn.execute('ROLLBACK')
+        await conn.query('ROLLBACK')
         return { success: false, error: 'Insufficient funds' }
       }
       balanceAfter = balanceBefore - amount
@@ -95,10 +96,10 @@ export async function processTransaction(
       ]
     )
 
-    await conn.execute('COMMIT')
+    await conn.query('COMMIT')
     return { success: true }
   } catch (err) {
-    await conn.execute('ROLLBACK').catch(() => {})
+    await conn.query('ROLLBACK').catch(() => {})
     console.error('processTransaction error:', err)
     return {
       success: false,
@@ -125,10 +126,12 @@ export async function getAccountTransactions(
   limit = 50
 ): Promise<AccountTransaction[]> {
   const { query } = await import('@/lib/db')
+  // MySQL prepared statements often reject LIMIT as a placeholder; use sanitized integer
+  const safeLimit = Math.min(Math.max(1, Number(limit) || 50), 500)
   const rows = (await query(
     `SELECT id, account_id, type, amount, balance_before, balance_after, description, created_at
-     FROM account_transactions WHERE account_id = ? ORDER BY created_at DESC LIMIT ?`,
-    [accountId, limit]
+     FROM account_transactions WHERE account_id = ? ORDER BY created_at DESC LIMIT ${safeLimit}`,
+    [accountId]
   )) as AccountTransaction[]
   return Array.isArray(rows) ? rows : []
 }

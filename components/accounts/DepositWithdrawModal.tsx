@@ -1,10 +1,9 @@
 'use client'
 
-import React, { useEffect } from 'react'
-import { useFormStatus, useActionState } from 'react-dom'
+import React, { useState } from 'react'
 import Modal from '@/components/ui/Modal'
-import { submitAccountTransactionForm } from '@/lib/actions/accounts'
-import type { TransactionType, TransactionFormState } from '@/lib/actions/accounts'
+import { submitAccountTransaction } from '@/lib/actions/accounts'
+import type { TransactionType } from '@/lib/actions/accounts'
 
 interface DepositWithdrawModalProps {
   open: boolean
@@ -16,20 +15,6 @@ interface DepositWithdrawModalProps {
   onSuccess?: () => void
 }
 
-function SubmitButton({ type }: { type: TransactionType }) {
-  const { pending } = useFormStatus()
-  const label = type === 'credit' ? 'Deposit' : 'Withdraw'
-  return (
-    <button
-      type="submit"
-      disabled={pending}
-      className="px-4 py-2 rounded-lg font-medium bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-    >
-      {pending ? 'Processing...' : label}
-    </button>
-  )
-}
-
 export default function DepositWithdrawModal({
   open,
   onClose,
@@ -39,27 +24,43 @@ export default function DepositWithdrawModal({
   type,
   onSuccess
 }: DepositWithdrawModalProps) {
-  const initialState: TransactionFormState = { success: false }
-  const [state, formAction] = useActionState(submitAccountTransactionForm, initialState)
-  const error = state?.error ?? null
+  const [error, setError] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
 
   const title = type === 'credit' ? 'Deposit' : 'Withdraw'
+  const buttonLabel = type === 'credit' ? 'واریز' : 'برداشت'
 
-  useEffect(() => {
-    if (state?.success) {
-      onSuccess?.()
-      onClose()
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setError(null)
+    const form = e.currentTarget
+    const formData = new FormData(form)
+    const amount = parseFloat((formData.get('amount') as string) || '0')
+    const description = (formData.get('description') as string)?.trim() || null
+    if (!Number.isFinite(amount) || amount <= 0) {
+      setError('مبلغ معتبر وارد کنید.')
+      return
     }
-  }, [state?.success, onSuccess, onClose])
+    setSubmitting(true)
+    try {
+      const result = await submitAccountTransaction(accountId, amount, type, description)
+      if (result.success) {
+        onSuccess?.()
+        onClose()
+      } else {
+        setError(result.error ?? 'عملیات ناموفق.')
+      }
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   return (
     <Modal open={open} onClose={onClose} title={`${title} — ${accountName}`} size="default">
-      <form action={formAction} className="p-6 space-y-4">
-        <input type="hidden" name="accountId" value={accountId} />
-        <input type="hidden" name="type" value={type} />
+      <form onSubmit={handleSubmit} className="p-6 space-y-4">
         <div>
           <label htmlFor="amount" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-            Amount ({currency})
+            مبلغ ({currency})
           </label>
           <input
             id="amount"
@@ -74,13 +75,13 @@ export default function DepositWithdrawModal({
         </div>
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-            Description (optional)
+            توضیح (اختیاری)
           </label>
           <input
             id="description"
             name="description"
             type="text"
-            placeholder="e.g. Cash deposit"
+            placeholder="مثال: واریز نقدی"
             className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
           />
         </div>
@@ -95,9 +96,15 @@ export default function DepositWithdrawModal({
             onClick={onClose}
             className="px-4 py-2 rounded-lg font-medium border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
           >
-            Cancel
+            لغو
           </button>
-          <SubmitButton type={type} />
+          <button
+            type="submit"
+            disabled={submitting}
+            className="px-4 py-2 rounded-lg font-medium bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+          >
+            {submitting ? 'در حال پردازش...' : buttonLabel}
+          </button>
         </div>
       </form>
     </Modal>
