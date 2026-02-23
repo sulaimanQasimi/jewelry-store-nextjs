@@ -35,7 +35,7 @@ export default function ContactPage() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-[#2C2C2C] mb-2">
-                    نام
+                    نام <span className="text-red-500" aria-hidden>*</span>
                   </label>
                   <input
                     id="name"
@@ -48,7 +48,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-[#2C2C2C] mb-2">
-                    ایمیل
+                    ایمیل <span className="text-red-500" aria-hidden>*</span>
                   </label>
                   <input
                     id="email"
@@ -61,7 +61,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-[#2C2C2C] mb-2">
-                    پیام
+                    پیام <span className="text-red-500" aria-hidden>*</span>
                   </label>
                   <textarea
                     id="message"

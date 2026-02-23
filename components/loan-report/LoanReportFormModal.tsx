@@ -159,7 +159,7 @@ export default function LoanReportFormModal({
     <Modal open={open} onClose={onClose} title={title} size="xl">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <FormField label="مشتری">
+          <FormField label="مشتری" required>
             <select
               name="cId"
               className="input-luxury w-full"
@@ -217,7 +217,7 @@ export default function LoanReportFormModal({
             />
           </FormField>
           <div className="sm:col-span-2">
-            <FormField label="جزئیات">
+            <FormField label="جزئیات" required>
               <textarea
                 name="detail"
                 className="input-luxury w-full min-h-[80px]"

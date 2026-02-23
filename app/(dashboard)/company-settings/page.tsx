@@ -13,16 +13,19 @@ const inputBase =
 function FieldWithIcon({
   label,
   icon: Icon,
+  required,
   children
 }: {
   label: string
   icon: React.ComponentType<{ className?: string; strokeWidth?: number }>
+  required?: boolean
   children: React.ReactNode
 }) {
   return (
     <div className="flex flex-col gap-1.5" dir="rtl">
       <label className="text-sm font-medium text-slate-600 dark:text-slate-400 font-stat">
         {label}
+        {required && <span className="text-red-500 ms-0.5" aria-hidden>*</span>}
       </label>
       <div className="relative">
         {children}
@@ -217,7 +220,7 @@ export default function CompanySettingsPage() {
                 </h2>
               </div>
               <div className="p-6 space-y-5">
-                <FieldWithIcon label="نام شرکت" icon={Building2}>
+                <FieldWithIcon label="نام شرکت" icon={Building2} required>
                   <input
                     name="companyName"
                     type="text"
@@ -301,7 +304,7 @@ export default function CompanySettingsPage() {
                 </h2>
               </div>
               <div className="p-6 space-y-5">
-                <FieldWithIcon label="آدرس" icon={MapPin}>
+                <FieldWithIcon label="آدرس" icon={MapPin} required>
                   <input
                     name="address"
                     type="text"
@@ -311,7 +314,7 @@ export default function CompanySettingsPage() {
                     placeholder="آدرس کامل"
                   />
                 </FieldWithIcon>
-                <FieldWithIcon label="تلفن" icon={Phone}>
+                <FieldWithIcon label="تلفن" icon={Phone} required>
                   <input
                     name="phone"
                     type="tel"

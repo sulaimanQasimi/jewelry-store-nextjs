@@ -276,7 +276,7 @@ export default function PurchaseDetailPage() {
             >
               <h2 className="font-luxury-serif text-xl font-semibold text-slate-800 mb-6">ویرایش خرید</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <FormField label="تمویل‌کننده">
+                <FormField label="تمویل‌کننده" required>
                   <select
                     className="input-luxury w-full"
                     value={form.supplierId}
@@ -293,7 +293,7 @@ export default function PurchaseDetailPage() {
                     ))}
                   </select>
                 </FormField>
-                <FormField label="نام تمویل‌کننده">
+                <FormField label="نام تمویل‌کننده" required>
                   <input
                     className="input-luxury w-full"
                     value={form.supplierName}
@@ -301,7 +301,7 @@ export default function PurchaseDetailPage() {
                     required
                   />
                 </FormField>
-                <FormField label="شماره بل">
+                <FormField label="شماره بل" required>
                   <input
                     type="number"
                     className="input-luxury w-full"
@@ -320,7 +320,7 @@ export default function PurchaseDetailPage() {
                     <option value="USD">دلار</option>
                   </select>
                 </FormField>
-                <FormField label="مبلغ پرداختی">
+                <FormField label="مبلغ پرداختی" required>
                   <input
                     type="number"
                     step="0.01"

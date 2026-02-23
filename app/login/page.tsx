@@ -195,7 +195,7 @@ export default function LoginPage() {
             <form onSubmit={onSubmitHandler} className="space-y-5">
               <motion.div variants={itemVariants} className="space-y-2">
                 <label className="block text-right text-[#1a1a1a] text-sm font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  ایمیل یا نام کاربری
+                  ایمیل یا نام کاربری <span className="text-red-500" aria-hidden>*</span>
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none">
@@ -216,7 +216,7 @@ export default function LoginPage() {
 
               <motion.div variants={itemVariants} className="space-y-2">
                 <label className="block text-right text-[#1a1a1a] text-sm font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  رمز عبور
+                  رمز عبور <span className="text-red-500" aria-hidden>*</span>
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none">

@@ -191,10 +191,10 @@ export default function CustomerFormModal({
             </FormField>
           </div>
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <FormField label="نام مشتری">
+            <FormField label="نام مشتری" required>
               <input name="customerName" className="input-luxury w-full" value={form.customerName} onChange={handleChange} required />
             </FormField>
-            <FormField label="شماره تماس">
+            <FormField label="شماره تماس" required>
               <input name="phone" className="input-luxury w-full phone-ltr" dir="ltr" value={form.phone} onChange={handleChange} required />
             </FormField>
             <FormField label="ایمیل">

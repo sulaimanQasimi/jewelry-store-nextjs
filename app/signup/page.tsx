@@ -185,7 +185,7 @@ export default function SignupPage() {
             <form onSubmit={onSubmitHandler} className="space-y-4">
               <motion.div variants={itemVariants} className="space-y-2">
                 <label className="block text-right text-[#1a1a1a] text-sm font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  نام کاربری
+                  نام کاربری <span className="text-red-500" aria-hidden>*</span>
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none">
@@ -206,7 +206,7 @@ export default function SignupPage() {
 
               <motion.div variants={itemVariants} className="space-y-2">
                 <label className="block text-right text-[#1a1a1a] text-sm font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  ایمیل
+                  ایمیل <span className="text-red-500" aria-hidden>*</span>
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none">
@@ -227,7 +227,7 @@ export default function SignupPage() {
 
               <motion.div variants={itemVariants} className="space-y-2">
                 <label className="block text-right text-[#1a1a1a] text-sm font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  رمز عبور (حداقل ۸ کاراکتر)
+                  رمز عبور (حداقل ۸ کاراکتر) <span className="text-red-500" aria-hidden>*</span>
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none">
@@ -257,7 +257,7 @@ export default function SignupPage() {
 
               <motion.div variants={itemVariants} className="space-y-2">
                 <label className="block text-right text-[#1a1a1a] text-sm font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  تکرار رمز عبور
+                  تکرار رمز عبور <span className="text-red-500" aria-hidden>*</span>
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none">
