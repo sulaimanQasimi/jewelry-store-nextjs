@@ -12,7 +12,7 @@ import { AppContext } from '@/lib/context/AppContext'
 import type { TransactionForPrint } from '@/components/sale/SaleBillPrint'
 import type { CompanyInfo } from '@/components/sale/SaleInvoice'
 import Link from 'next/link'
-import { Printer, RotateCcw, ShoppingCart, Hash, X, FileText } from 'lucide-react'
+import { Printer, RotateCcw, ShoppingCart, Hash, X, FileText, Plus } from 'lucide-react'
 import PersianDatePicker from '@/components/ui/PersianDatePicker'
 
 const SALE_INVOICE_PRINT_KEY = 'saleInvoicePrint'
@@ -318,17 +318,24 @@ export default function SalesPage() {
         <div>
           <h1 className="font-heading text-2xl font-semibold text-charcoal dark:text-white flex items-center gap-2">
             <ShoppingCart className="w-6 h-6 text-gold-500" />
-            لیست فروشات
+            فروشات
           </h1>
           <p className="mt-1 text-sm text-charcoal-soft dark:text-slate-400">
             تمام فروشات را با فیلتر و صفحه‌بندی مشاهده کنید.
           </p>
         </div>
+        <Link
+          href="/sale-product"
+          className="btn-luxury btn-luxury-primary px-6 py-2.5 shrink-0 inline-flex items-center gap-2"
+        >
+          <Plus className="w-5 h-5" />
+          ایجاد فروش
+        </Link>
       </header>
 
       <section>
         <h2 className="font-heading text-lg font-semibold text-charcoal dark:text-white mb-4">
-          لیست فروشات
+          فروشات
         </h2>
         <FilterBar
           search={search}

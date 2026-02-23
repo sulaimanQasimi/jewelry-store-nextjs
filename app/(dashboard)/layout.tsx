@@ -26,7 +26,7 @@ export default function DashboardLayout({
           </div>
         </main>
         
-        <aside className="order-1 shrink-0 m-4 ml-0 rounded-2xl overflow-hidden hidden md:block no-print">
+        <aside className="order-1 shrink-0 m-4 ml-0 rounded-2xl overflow-hidden hidden md:block no-print right-0" dir="rtl">
           <LuxurySidebar />
         </aside>
       </div>

@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import {
-  Gem,
   ShoppingBag,
   Puzzle,
   Warehouse,
@@ -16,7 +15,6 @@ import {
   Package,
   Users,
   UserPlus,
-  Handshake,
   CalendarCheck,
   BarChart3,
   Info,
@@ -24,7 +22,6 @@ import {
   ChevronDown,
   ChevronUp,
   LayoutDashboard,
-  Layers,
   UserCircle,
   Wallet,
   DollarSign,
@@ -40,22 +37,25 @@ import {
   Heart
 } from 'lucide-react'
 
-const groups = [
+/** Single source of truth for sidebar navigation. Persian labels, RTL-friendly. */
+const NAV_GROUPS: Array<{
+  id: string
+  label: string
+  icon: React.ElementType
+  items: Array<{ href: string; icon: React.ElementType; label: string }>
+}> = [
   {
     id: 'dashboard',
     label: 'داشبورد',
     icon: LayoutDashboard,
-    items: [
-      { href: '/dashboard', icon: LayoutDashboard, label: 'خلاصه' }
-    ]
+    items: [{ href: '/dashboard', icon: LayoutDashboard, label: 'داشبورد' }]
   },
   {
     id: 'sales',
-    label: 'فروش و خرید',
-    icon: Gem,
+    label: 'فروشات',
+    icon: FileText,
     items: [
-      { href: '/sale-product', icon: Gem, label: 'فروش جنس' },
-      { href: '/sales', icon: FileText, label: 'لیست فروشات' },
+      { href: '/sales', icon: FileText, label: 'فروشات' },
       { href: '/product-from-supplier', icon: ShoppingBag, label: 'خرید جنس از تمویل کننده' },
       { href: '/purchases', icon: ShoppingCart, label: 'خریدها' },
       { href: '/add-fragment', icon: Puzzle, label: 'خرید شکسته' }
@@ -98,17 +98,13 @@ const groups = [
     id: 'parties',
     label: 'اشخاص و طرف‌ها',
     icon: Users,
-    items: [
-      { href: '/suppliers', icon: Users, label: 'لیست تمویل کنندگان' }
-    ]
+    items: [{ href: '/suppliers', icon: Users, label: 'لیست تمویل کنندگان' }]
   },
   {
     id: 'repairs',
     label: 'تعمیرات',
     icon: Wrench,
-    items: [
-      { href: '/repairs', icon: Wrench, label: 'لیست تعمیرات' }
-    ]
+    items: [{ href: '/repairs', icon: Wrench, label: 'لیست تعمیرات' }]
   },
   {
     id: 'reports',
@@ -123,7 +119,7 @@ const groups = [
   {
     id: 'settings',
     label: 'تنظیمات',
-    icon: Info,
+    icon: Settings,
     items: [
       { href: '/company-settings', icon: Settings, label: 'تنظیمات شرکت' },
       { href: '/company-information', icon: Info, label: 'درباره ما' },
@@ -132,7 +128,7 @@ const groups = [
   }
 ]
 
-// Luxury Menu Item Component with Shine Animation
+// Menu item: RTL layout with icon to the right of Persian label, hover/active soft background
 const LuxuryMenuItem: React.FC<{
   href: string
   icon: React.ElementType
@@ -146,46 +142,35 @@ const LuxuryMenuItem: React.FC<{
     <Link
       href={href}
       className={`
-        relative group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-500
+        relative group flex flex-row-reverse items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-300
         ${isCollapsed ? 'justify-center px-2' : ''}
         ${isActive
-          ? 'text-[#d4af37] bg-gradient-to-r from-[#d4af37]/10 to-[#d4af37]/5'
-          : 'text-[#fefaf0]/70 hover:text-[#fefaf0] hover:bg-[#d4af37]/5'
+          ? 'text-[#d4af37] bg-[#d4af37]/15'
+          : 'text-[#fefaf0]/70 hover:text-[#fefaf0] hover:bg-[#d4af37]/10'
         }
       `}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-          {/* Shine Animation for Active Item */}
       {isActive && (
         <div className="absolute inset-0 rounded-lg overflow-hidden luxury-shine" />
       )}
 
-      {/* Gold Glow on Hover */}
       <div
         className={`
-          absolute inset-0 rounded-lg transition-all duration-500
-          ${isHovered || isActive
-            ? 'shadow-[0_0_20px_rgba(212,175,55,0.3)] bg-gradient-to-r from-[#d4af37]/10 to-transparent'
-            : ''
-          }
+          absolute inset-0 rounded-lg transition-all duration-300
+          ${isHovered || isActive ? 'bg-[#d4af37]/10' : ''}
         `}
       />
 
-      {/* Icon Container */}
+      {/* Icon to the right of Persian text (RTL) */}
       <div
         className={`
-          relative flex items-center justify-center rounded-md transition-all duration-300
+          relative flex items-center justify-center rounded-md shrink-0 transition-all duration-300
           ${isActive ? 'scale-110' : 'group-hover:scale-110'}
           ${isCollapsed ? 'w-8 h-8' : 'w-7 h-7'}
         `}
       >
-        <div
-          className={`
-            absolute inset-0 rounded-md transition-opacity duration-300
-            ${isActive || isHovered ? 'bg-[#d4af37]/20 blur-sm' : 'bg-transparent'}
-          `}
-        />
         <Icon
           className={`
             relative z-10 transition-colors duration-300
@@ -195,12 +180,10 @@ const LuxuryMenuItem: React.FC<{
         />
       </div>
 
-      {/* Label */}
       {!isCollapsed && (
-        <span className="relative z-10 truncate flex-1 font-medium tracking-wide">{label}</span>
+        <span className="relative z-10 truncate flex-1 text-right font-medium tracking-wide">{label}</span>
       )}
 
-      {/* Active Indicator */}
       {isActive && !isCollapsed && (
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-full bg-[#d4af37] shadow-[0_0_8px_rgba(212,175,55,0.6)]" />
       )}
@@ -212,10 +195,10 @@ const LuxuryMenuItem: React.FC<{
 const LuxurySidebar: React.FC = () => {
   const pathname = usePathname()
   const { data: session } = useSession()
-  // Start with all groups collapsed; open the one containing the current route
+  // Sub-menus collapsed by default; expand the group containing the current route
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(() => {
-    const allIds = new Set(groups.map((g) => g.id))
-    const activeGroup = groups.find((g) =>
+    const allIds = new Set(NAV_GROUPS.map((g) => g.id))
+    const activeGroup = NAV_GROUPS.find((g) =>
       g.items.some((item) => pathname === item.href || pathname.startsWith(item.href + '/'))
     )
     if (activeGroup) allIds.delete(activeGroup.id)
@@ -233,7 +216,7 @@ const LuxurySidebar: React.FC = () => {
     })
   }
 
-  const isGroupActive = (items: typeof groups[0]['items']) =>
+  const isGroupActive = (items: typeof NAV_GROUPS[0]['items']) =>
     items.some((item) => pathname === item.href || pathname.startsWith(item.href + '/'))
 
   // Collection items (can be customized)
@@ -246,8 +229,9 @@ const LuxurySidebar: React.FC = () => {
 
   return (
     <aside
+        dir="rtl"
         className={`
-          relative h-full flex flex-col transition-all duration-500 ease-in-out
+          relative h-full flex flex-col transition-all duration-500 ease-in-out right-0
           ${isCollapsed ? 'w-20' : 'w-64 lg:w-72'}
         `}
         style={{
@@ -305,7 +289,7 @@ const LuxurySidebar: React.FC = () => {
 
             {/* Menu Groups */}
             <div className="flex-1 space-y-1">
-              {groups.map((group) => {
+              {NAV_GROUPS.map((group) => {
                 const isCollapsedGroup = collapsedGroups.has(group.id)
                 const hasActive = isGroupActive(group.items)
 
@@ -316,15 +300,15 @@ const LuxurySidebar: React.FC = () => {
                       type="button"
                       onClick={() => toggleGroup(group.id)}
                       className={`
-                        w-full flex items-center justify-between gap-2 rounded-lg px-3 py-2.5 transition-all duration-300
+                        w-full flex flex-row-reverse items-center justify-between gap-2 rounded-lg px-3 py-2.5 transition-all duration-300
                         ${isCollapsed ? 'justify-center px-2' : ''}
                         ${hasActive
-                          ? 'text-[#d4af37] bg-[#d4af37]/10 shadow-[0_0_15px_rgba(212,175,55,0.2)]'
-                          : 'text-[#fefaf0]/70 hover:text-[#d4af37] hover:bg-[#d4af37]/5'
+                          ? 'text-[#d4af37] bg-[#d4af37]/15'
+                          : 'text-[#fefaf0]/70 hover:text-[#d4af37] hover:bg-[#d4af37]/10'
                         }
                       `}
                     >
-                      <div className={`flex items-center gap-2 min-w-0 ${isCollapsed ? 'justify-center' : ''}`}>
+                      <div className={`flex flex-row-reverse items-center gap-2 min-w-0 ${isCollapsed ? 'justify-center' : ''}`}>
                         <group.icon
                           className={`
                             shrink-0 transition-colors duration-300
