@@ -8,6 +8,7 @@ import FormField from '@/components/ui/FormField'
 import PersianDatePicker from '@/components/ui/PersianDatePicker'
 import { getAccounts } from '@/lib/actions/accounts'
 import type { ExpenseFormData } from '@/types/expense'
+import { EXPENSE_TYPES, EXPENSE_TYPE_OTHER } from '@/types/expense'
 import type { Account } from '@/lib/actions/accounts'
 
 const emptyForm = {
@@ -157,13 +158,27 @@ export default function ExpenseFormModal({
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <FormField label="نوع">
-            <input
+            <select
               name="type"
-              className="input-luxury w-full"
-              value={form.type}
+              value={EXPENSE_TYPES.some((t) => t.value === form.type) ? form.type : EXPENSE_TYPE_OTHER}
               onChange={handleChange}
-              placeholder="نوع مصارف"
-            />
+              className="input-luxury w-full"
+            >
+              {EXPENSE_TYPES.map((t) => (
+                <option key={t.value} value={t.value}>
+                  {t.label}
+                </option>
+              ))}
+            </select>
+            {(form.type === EXPENSE_TYPE_OTHER || !EXPENSE_TYPES.some((t) => t.value === form.type)) && (
+              <input
+                name="type_other"
+                className="input-luxury w-full mt-2"
+                value={EXPENSE_TYPES.some((t) => t.value === form.type) ? '' : form.type}
+                onChange={(e) => setForm((f) => ({ ...f, type: e.target.value || EXPENSE_TYPE_OTHER }))}
+                placeholder="نوع مصارف (سایر)"
+              />
+            )}
           </FormField>
           <FormField label="واحد پول">
             <select name="currency" value={form.currency} onChange={handleChange} className="input-luxury w-full">

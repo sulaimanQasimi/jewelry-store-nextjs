@@ -11,6 +11,7 @@ import type { ColumnDef } from '@/components/ui/DataTable'
 import ExpenseFormModal from '@/components/expense/ExpenseFormModal'
 import type { Expense } from '@/types/expense'
 import type { ExpenseFormData } from '@/types/expense'
+import { EXPENSE_TYPES } from '@/types/expense'
 
 function formatDate(d: string) {
   try {
@@ -104,13 +105,18 @@ export default function ExpensesPage() {
   const extraFilters = (
     <>
       <FormField label="نوع">
-        <input
-          type="text"
+        <select
           value={typeFilter}
           onChange={(e) => setTypeFilter(e.target.value)}
-          placeholder="نوع مصارف"
-          className="input-luxury min-w-[120px]"
-        />
+          className="input-luxury min-w-[140px]"
+        >
+          <option value="">همه</option>
+          {EXPENSE_TYPES.map((t) => (
+            <option key={t.value} value={t.value}>
+              {t.label}
+            </option>
+          ))}
+        </select>
       </FormField>
       <FormField label="از تاریخ">
         <PersianDatePicker value={dateFrom || null} onChange={(v) => setDateFrom(v ?? '')} className="input-luxury" />
