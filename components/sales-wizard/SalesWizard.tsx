@@ -48,7 +48,8 @@ function getDefaultPayment(): PaymentFormData {
       bellNumber: '',
       receiptDate: '',
       paidAmount: '',
-      note: ''
+      note: '',
+      depositAccountId: ''
     }
   }
   const today = new Date().toISOString().split('T')[0]
@@ -56,7 +57,8 @@ function getDefaultPayment(): PaymentFormData {
     bellNumber: '',
     receiptDate: today,
     paidAmount: '',
-    note: ''
+    note: '',
+    depositAccountId: ''
   }
 }
 
@@ -229,7 +231,8 @@ export default function SalesWizard() {
           product: productPayload,
           receipt,
           bellNumber: bell,
-          note: data.note || null
+          note: data.note || null,
+          depositAccountId: data.depositAccountId?.trim() || null
         }
       )
       if (res.success && res.data) {

@@ -3,9 +3,11 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { motion } from 'framer-motion'
-import { CreditCard, Calendar, FileText, Banknote, Sparkles } from 'lucide-react'
+import { CreditCard, Calendar, FileText, Banknote, Sparkles, Wallet } from 'lucide-react'
 import type { PaymentFormData } from '../types'
 import PersianDatePicker from '@/components/ui/PersianDatePicker'
+import { getAccounts } from '@/lib/actions/accounts'
+import type { Account } from '@/lib/actions/accounts'
 
 interface StepPaymentProps {
   totalAmount: number
@@ -24,7 +26,18 @@ export default function StepPayment({
   const [receiptDate, setReceiptDate] = useState(initialPayment.receiptDate)
   const [paidAmount, setPaidAmount] = useState(initialPayment.paidAmount)
   const [note, setNote] = useState(initialPayment.note)
+  const [depositAccountId, setDepositAccountId] = useState(initialPayment.depositAccountId ?? '')
   const [loadingNextBell, setLoadingNextBell] = useState(false)
+  const [accounts, setAccounts] = useState<Account[]>([])
+  const [accountsLoading, setAccountsLoading] = useState(false)
+
+  useEffect(() => {
+    setAccountsLoading(true)
+    getAccounts()
+      .then((list) => setAccounts(list.filter((a) => a.status === 'active')))
+      .catch(() => setAccounts([]))
+      .finally(() => setAccountsLoading(false))
+  }, [])
 
   // Sync from parent when initialPayment or totalAmount changes (e.g. returning to step 3 or cart updated)
   useEffect(() => {
@@ -32,7 +45,8 @@ export default function StepPayment({
     setReceiptDate(initialPayment.receiptDate)
     setPaidAmount(initialPayment.paidAmount)
     setNote(initialPayment.note)
-  }, [initialPayment.bellNumber, initialPayment.receiptDate, initialPayment.paidAmount, initialPayment.note])
+    setDepositAccountId(initialPayment.depositAccountId ?? '')
+  }, [initialPayment.bellNumber, initialPayment.receiptDate, initialPayment.paidAmount, initialPayment.note, initialPayment.depositAccountId])
 
   const fetchNextBellNumber = async () => {
     setLoadingNextBell(true)
@@ -67,7 +81,8 @@ export default function StepPayment({
       bellNumber,
       receiptDate,
       paidAmount,
-      note
+      note,
+      depositAccountId: depositAccountId || ''
     })
   }
 
@@ -161,6 +176,28 @@ export default function StepPayment({
               whileFocus={{ scale: 1.01 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             />
+          </div>
+
+          <div>
+            <label htmlFor="payment-deposit-account" className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5 flex items-center gap-1">
+              <Wallet className="w-3.5 h-3.5" aria-hidden />
+              حساب واریز (واریز مبلغ به)
+            </label>
+            <select
+              id="payment-deposit-account"
+              value={depositAccountId}
+              onChange={(e) => setDepositAccountId(e.target.value)}
+              disabled={accountsLoading}
+              className="w-full rounded-xl bg-white dark:bg-white/10 border border-slate-200 dark:border-white/20 px-4 py-3 text-charcoal dark:text-white focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all disabled:opacity-60"
+              aria-label="حساب واریز"
+            >
+              <option value="">— انتخاب نکنید —</option>
+              {accounts.map((acc) => (
+                <option key={acc.id} value={acc.id}>
+                  {acc.name} — {acc.currency} (موجودی: {acc.balance})
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>

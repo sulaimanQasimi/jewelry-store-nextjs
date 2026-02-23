@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 import { spCreateTransaction, fnGetCurrencyRate, parseJson } from '@/lib/db-sp'
+import { processTransaction } from '@/lib/actions/accounts'
 
 export async function POST(request: NextRequest) {
   try {
-    const { customerId, product, receipt, bellNumber, note } = await request.json()
+    const { customerId, product, receipt, bellNumber, note, depositAccountId } = await request.json()
 
     if (!customerId) {
       return NextResponse.json({ success: false, message: 'مشتری وجود ندارد' })
@@ -66,6 +67,23 @@ export async function POST(request: NextRequest) {
 
     if (!transactionId) {
       return NextResponse.json({ success: false, message: 'خطا در ثبت ترانسکشن' })
+    }
+
+    // If deposit account provided and there is a paid amount, credit the account
+    const paidAmount = Number(processedReceipt?.paidAmount) || 0
+    if (depositAccountId && paidAmount > 0) {
+      const creditResult = await processTransaction(
+        depositAccountId,
+        paidAmount,
+        'credit',
+        `فروش — بل ${bellNumber}`
+      )
+      if (!creditResult.success) {
+        return NextResponse.json({
+          success: false,
+          message: creditResult.error || 'خطا در واریز به حساب'
+        })
+      }
     }
 
     const inserted = (await query(

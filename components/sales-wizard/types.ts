@@ -18,6 +18,8 @@ export interface PaymentFormData {
   receiptDate: string
   paidAmount: string
   note: string
+  /** Account to deposit the sale payment into (optional). */
+  depositAccountId: string
 }
 
 export interface TransactionResult {
