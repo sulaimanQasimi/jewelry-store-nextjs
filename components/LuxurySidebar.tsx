@@ -141,8 +141,9 @@ const LuxuryMenuItem: React.FC<{
   return (
     <Link
       href={href}
+      dir="rtl"
       className={`
-        relative group flex flex-row-reverse items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-300
+        relative group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-300 text-right
         ${isCollapsed ? 'justify-center px-2' : ''}
         ${isActive
           ? 'text-[#d4af37] bg-[#d4af37]/15'
@@ -163,7 +164,7 @@ const LuxuryMenuItem: React.FC<{
         `}
       />
 
-      {/* Icon to the right of Persian text (RTL) */}
+      {/* Icon on the right of text in RTL (first in DOM = right side) */}
       <div
         className={`
           relative flex items-center justify-center rounded-md shrink-0 transition-all duration-300
@@ -181,9 +182,10 @@ const LuxuryMenuItem: React.FC<{
       </div>
 
       {!isCollapsed && (
-        <span className="relative z-10 truncate flex-1 text-right font-medium tracking-wide">{label}</span>
+        <span className="relative z-10 truncate flex-1 font-medium tracking-wide text-right">{label}</span>
       )}
 
+      {/* Active bar on the right edge in RTL */}
       {isActive && !isCollapsed && (
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-full bg-[#d4af37] shadow-[0_0_8px_rgba(212,175,55,0.6)]" />
       )}
@@ -260,10 +262,10 @@ const LuxurySidebar: React.FC = () => {
           </button>
 
           {/* Scrollable Content */}
-          <nav className="flex flex-col h-full overflow-y-auto luxury-scrollbar p-4">
+          <nav dir="rtl" className="flex flex-col h-full overflow-y-auto luxury-scrollbar p-4 text-right">
             {/* Header */}
             <div className={`mb-6 transition-all duration-300 ${isCollapsed ? 'px-2' : 'px-2'}`}>
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex flex-row-reverse items-center gap-3 mb-4">
                 <div className="relative">
                   <div className="absolute inset-0 bg-[#d4af37]/30 blur-md rounded-lg" />
                   <div className="relative bg-gradient-to-br from-[#d4af37] to-[#b8941f] p-2 rounded-lg">
@@ -295,12 +297,13 @@ const LuxurySidebar: React.FC = () => {
 
                 return (
                   <div key={group.id} className="mb-2">
-                    {/* Group Header */}
+                    {/* Group Header – same RTL layout as sub-items: icon right, label left */}
                     <button
                       type="button"
                       onClick={() => toggleGroup(group.id)}
+                      dir="rtl"
                       className={`
-                        w-full flex flex-row-reverse items-center justify-between gap-2 rounded-lg px-3 py-2.5 transition-all duration-300
+                        w-full flex items-center justify-between gap-2 rounded-lg px-3 py-2.5 transition-all duration-300 text-right
                         ${isCollapsed ? 'justify-center px-2' : ''}
                         ${hasActive
                           ? 'text-[#d4af37] bg-[#d4af37]/15'
@@ -308,7 +311,7 @@ const LuxurySidebar: React.FC = () => {
                         }
                       `}
                     >
-                      <div className={`flex flex-row-reverse items-center gap-2 min-w-0 ${isCollapsed ? 'justify-center' : ''}`}>
+                      <div className={`flex items-center gap-2 min-w-0 ${isCollapsed ? 'justify-center' : ''}`} dir="rtl">
                         <group.icon
                           className={`
                             shrink-0 transition-colors duration-300
@@ -318,7 +321,7 @@ const LuxurySidebar: React.FC = () => {
                         />
                         {!isCollapsed && (
                           <span
-                            className="truncate font-semibold tracking-wide"
+                            className="truncate font-semibold tracking-wide text-right"
                             style={{
                               fontFamily: "'Playfair Display', 'Cinzel', serif",
                             }}
@@ -338,9 +341,9 @@ const LuxurySidebar: React.FC = () => {
                       )}
                     </button>
 
-                    {/* Group Items */}
+                    {/* Group Items (indent + border on start side for RTL) */}
                     {!isCollapsedGroup && (
-                      <div className={`mt-1 space-y-0.5 ${isCollapsed ? '' : 'mr-2 border-r border-[#d4af37]/20'}`}>
+                      <div className={`mt-1 space-y-0.5 ${isCollapsed ? '' : 'ms-2 border-s border-[#d4af37]/20'}`}>
                         {group.items.map((item) => {
                           const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
                           return (
@@ -365,11 +368,12 @@ const LuxurySidebar: React.FC = () => {
             {!isCollapsed && (
               <div className="mt-4 border-t border-[#d4af37]/20 pt-4">
                 <button
+                  type="button"
                   onClick={() => setIsCollectionOpen(!isCollectionOpen)}
-                  className="w-full flex items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold text-[#fefaf0]/70 hover:text-[#d4af37] hover:bg-[#d4af37]/5 transition-all duration-300"
+                  className="w-full flex flex-row-reverse items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold text-[#fefaf0]/70 hover:text-[#d4af37] hover:bg-[#d4af37]/5 transition-all duration-300 text-right"
                 >
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-[#d4af37]" />
+                  <div className="flex flex-row-reverse items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-[#d4af37] shrink-0" />
                     <span
                       style={{
                         fontFamily: "'Playfair Display', 'Cinzel', serif",
@@ -379,9 +383,9 @@ const LuxurySidebar: React.FC = () => {
                     </span>
                   </div>
                   {isCollectionOpen ? (
-                    <ChevronUp className="h-4 w-4 text-[#d4af37]/60" />
+                    <ChevronUp className="h-4 w-4 shrink-0 text-[#d4af37]/60" />
                   ) : (
-                    <ChevronDown className="h-4 w-4 text-[#d4af37]/60" />
+                    <ChevronDown className="h-4 w-4 shrink-0 text-[#d4af37]/60" />
                   )}
                 </button>
 
@@ -390,12 +394,12 @@ const LuxurySidebar: React.FC = () => {
                     {collectionItems.map((item, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-[#d4af37]/5 transition-all duration-300 group"
+                        className="flex flex-row-reverse items-center justify-between gap-2 px-3 py-2 rounded-lg hover:bg-[#d4af37]/5 transition-all duration-300 group text-right"
                       >
                         <span className="text-sm text-[#fefaf0]/60 group-hover:text-[#d4af37] transition-colors">
                           {item.label}
                         </span>
-                        <span className="text-xs text-[#d4af37]/60 font-medium px-2 py-0.5 rounded-full bg-[#d4af37]/10">
+                        <span className="text-xs text-[#d4af37]/60 font-medium px-2 py-0.5 rounded-full bg-[#d4af37]/10 shrink-0">
                           {item.count}
                         </span>
                       </div>
@@ -408,8 +412,8 @@ const LuxurySidebar: React.FC = () => {
             {/* User Profile Section */}
             <div className={`mt-4 pt-4 border-t border-[#d4af37]/20 ${isCollapsed ? 'px-2' : ''}`}>
               {session?.user && (
-                <div className={`flex items-center gap-3 ${isCollapsed ? 'justify-center' : ''}`}>
-                  <div className="relative">
+                <div className={`flex flex-row-reverse items-center gap-3 text-right ${isCollapsed ? 'justify-center' : ''}`}>
+                  <div className="relative shrink-0">
                     <div className="absolute inset-0 bg-[#d4af37]/30 blur-md rounded-full" />
                     <div
                       className="relative w-12 h-12 rounded-full border-2 border-[#d4af37] bg-gradient-to-br from-[#d4af37]/20 to-[#b8941f]/10 flex items-center justify-center overflow-hidden"
@@ -429,7 +433,7 @@ const LuxurySidebar: React.FC = () => {
                     </div>
                   </div>
                   {!isCollapsed && (
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 text-right">
                       <p
                         className="text-sm font-semibold text-[#fefaf0] truncate"
                         style={{
