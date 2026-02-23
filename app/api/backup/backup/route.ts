@@ -10,21 +10,16 @@ const BACKUP_TABLES = [
   'currency_rates',
   'storages',
   'users',
-  'product_masters',
-  'persons',
   'suppliers',
   'customers',
-  'traders',
   'products',
   'fragments',
   'purchases',
   'purchase_items',
   'expenses',
-  'personal_expenses',
   'loan_reports',
   'transactions',
-  'supplier_products',
-  'trades'
+  'supplier_products'
 ] as const
 
 export async function POST() {

@@ -56,7 +56,7 @@ export async function PUT(
            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             idNum,
-            parseInt(it.productMasterId) || 0,
+            null,
             it.name?.trim() || '',
             it.type?.trim() || '',
             parseFloat(it.gram) || 0,

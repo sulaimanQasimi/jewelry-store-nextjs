@@ -33,11 +33,9 @@ import cancel_icon from './cancel.png'
 import drop_down_icon from './down.png'
 import supplier_icon from './supplier.png'
 import daily_report from './daily.png'
-import trader_icon from './trader.png'
 import broken_icon from './broken.png'
 import sent_icon from './sent.png'
 import fragment_icon from './fragment.png'
-import person_icon from './person.png'
 
 
 export const assets = {
@@ -76,7 +74,6 @@ export const assets = {
     drop_down_icon,
     supplier_icon,
     daily_report,
-    trader_icon,
     broken_icon,
     sent_icon,
     fragment_icon

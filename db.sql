@@ -139,17 +139,6 @@ CREATE TABLE IF NOT EXISTS suppliers (
     INDEX idx_name (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Product Masters Table
-CREATE TABLE IF NOT EXISTS product_masters (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    type VARCHAR(100) NOT NULL,
-    gram FLOAT NOT NULL,
-    karat FLOAT NOT NULL,
-    isActive BOOLEAN DEFAULT TRUE,
-    INDEX idx_name (name)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 -- P Masters Table
 CREATE TABLE IF NOT EXISTS p_masters (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -179,7 +168,7 @@ CREATE TABLE IF NOT EXISTS purchases (
     FOREIGN KEY (supplierId) REFERENCES suppliers(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Purchase Items Table (productMasterId nullable for manual wizard entries without a product master)
+-- Purchase Items Table (productMasterId deprecated; kept nullable for legacy data)
 CREATE TABLE IF NOT EXISTS purchase_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     purchaseId INT NOT NULL,
@@ -195,36 +184,7 @@ CREATE TABLE IF NOT EXISTS purchase_items (
     isCompleted BOOLEAN DEFAULT FALSE,
     INDEX idx_purchaseId (purchaseId),
     INDEX idx_productMasterId (productMasterId),
-    FOREIGN KEY (purchaseId) REFERENCES purchases(id) ON DELETE CASCADE,
-    FOREIGN KEY (productMasterId) REFERENCES product_masters(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Traders Table
-CREATE TABLE IF NOT EXISTS traders (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    phone VARCHAR(50) NOT NULL,
-    address VARCHAR(500),
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_phone (phone),
-    INDEX idx_name (name)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Trades Table
-CREATE TABLE IF NOT EXISTS trades (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    traderId INT NOT NULL,
-    traderName VARCHAR(255) NOT NULL,
-    amount FLOAT NOT NULL,
-    type VARCHAR(100) NOT NULL,
-    detail TEXT,
-    currency VARCHAR(50) NOT NULL,
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_traderId (traderId),
-    INDEX idx_date (createdAt),
-    FOREIGN KEY (traderId) REFERENCES traders(id) ON DELETE CASCADE
+    FOREIGN KEY (purchaseId) REFERENCES purchases(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Fragments Table
@@ -315,30 +275,6 @@ CREATE TABLE IF NOT EXISTS repairs (
     INDEX idx_due_date (due_date),
     INDEX idx_created_at (created_at),
     FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Persons Table
-CREATE TABLE IF NOT EXISTS persons (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    phone VARCHAR(50) NOT NULL,
-    INDEX idx_phone (phone),
-    INDEX idx_name (name)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Personal Expenses Table
-CREATE TABLE IF NOT EXISTS personal_expenses (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    personId INT NOT NULL,
-    amount FLOAT NOT NULL,
-    currency VARCHAR(50) NOT NULL,
-    detail TEXT,
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_personId (personId),
-    INDEX idx_date (createdAt),
-    FOREIGN KEY (personId) REFERENCES persons(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Storage Table

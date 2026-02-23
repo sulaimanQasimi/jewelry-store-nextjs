@@ -67,7 +67,6 @@ const groups = [
     icon: Package,
     items: [
       { href: '/products', icon: Package, label: 'اجناس' },
-      { href: '/product-masters', icon: Layers, label: 'محصولات اصلی' },
       { href: '/register-product', icon: Hammer, label: 'ثبت اجناس شکسته' },
       { href: '/register-supplier-product', icon: PackagePlus, label: 'ثبت اجناس' },
       { href: '/ware-house', icon: Warehouse, label: 'انبار' }
@@ -79,7 +78,6 @@ const groups = [
     icon: Receipt,
     items: [
       { href: '/expenses', icon: Receipt, label: 'مصارف' },
-      { href: '/personal-expenses', icon: Wallet, label: 'مصارف شخصی' },
       { href: '/currency-rates', icon: DollarSign, label: 'نرخ ارز' },
       { href: '/gold-rate', icon: Coins, label: 'نرخ طلا' }
     ]
@@ -100,9 +98,7 @@ const groups = [
     label: 'اشخاص و طرف‌ها',
     icon: Users,
     items: [
-      { href: '/suppliers', icon: Users, label: 'لیست تمویل کنندگان' },
-      { href: '/persons', icon: UserCircle, label: 'اشخاص' },
-      { href: '/new-trade', icon: Handshake, label: 'معامله داران' }
+      { href: '/suppliers', icon: Users, label: 'لیست تمویل کنندگان' }
     ]
   },
   {

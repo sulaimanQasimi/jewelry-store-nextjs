@@ -38,14 +38,6 @@ interface Supplier {
   name: string
 }
 
-interface ProductMaster {
-  id: number
-  name: string
-  type: string
-  gram: number
-  karat: number
-}
-
 const formatDate = (d: string) => {
   if (!d) return '—'
   try {
@@ -82,7 +74,6 @@ export default function PurchaseDetailPage() {
   const id = params?.id as string
   const [purchase, setPurchase] = useState<Purchase | null>(null)
   const [suppliers, setSuppliers] = useState<Supplier[]>([])
-  const [productMasters, setProductMasters] = useState<ProductMaster[]>([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -130,9 +121,6 @@ export default function PurchaseDetailPage() {
     axios.get<{ success?: boolean; data?: Supplier[] }>('/api/supplier/get-all', { params: { limit: 500 } })
       .then(({ data: res }) => setSuppliers(Array.isArray(res?.data) ? res.data : []))
       .catch(() => setSuppliers([]))
-    axios.get<{ success?: boolean; data?: ProductMaster[] }>('/api/product-master/list', { params: { limit: 500 } })
-      .then(({ data: res }) => setProductMasters(Array.isArray(res?.data) ? res.data : []))
-      .catch(() => setProductMasters([]))
   }, [id])
 
   const addItem = () => setForm((f) => ({
@@ -149,15 +137,6 @@ export default function PurchaseDetailPage() {
     setForm((f) => {
       const next = [...f.items]
       next[idx] = { ...next[idx], [field]: value }
-      if (field === 'productMasterId') {
-        const pm = productMasters.find((p) => String(p.id) === value)
-        if (pm) {
-          next[idx].name = pm.name
-          next[idx].type = pm.type
-          next[idx].gram = String(pm.gram)
-          next[idx].karat = String(pm.karat)
-        }
-      }
       return { ...f, items: next }
     })
   }
@@ -195,9 +174,9 @@ export default function PurchaseDetailPage() {
         paidAmount: paid,
         date: form.date || new Date().toISOString().slice(0, 10),
         items: form.items
-          .filter((it) => (it.name?.trim() || it.productMasterId) && (parseInt(it.quantity) || 0) > 0)
+          .filter((it) => it.name?.trim() && (parseInt(it.quantity) || 0) > 0)
           .map((it) => ({
-            productMasterId: it.productMasterId ? parseInt(it.productMasterId) : 0,
+            productMasterId: null,
             name: it.name?.trim() || '',
             type: it.type?.trim() || '',
             gram: parseFloat(it.gram) || 0,
@@ -378,7 +357,6 @@ export default function PurchaseDetailPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-[#D4AF37]/30">
-                      <th className="text-right py-2 px-2">محصول</th>
                       <th className="text-right py-2 px-2">نام</th>
                       <th className="text-right py-2 px-2">نوع</th>
                       <th className="text-right py-2 px-2">گرم</th>
@@ -391,18 +369,6 @@ export default function PurchaseDetailPage() {
                   <tbody>
                     {form.items.map((it, idx) => (
                       <tr key={idx} className="border-b border-slate-100">
-                        <td className="py-2 px-2">
-                          <select
-                            className="input-luxury w-full min-w-[120px]"
-                            value={it.productMasterId}
-                            onChange={(e) => updateItem(idx, 'productMasterId', e.target.value)}
-                          >
-                            <option value="">دستی</option>
-                            {productMasters.map((p) => (
-                              <option key={p.id} value={String(p.id)}>{p.name}</option>
-                            ))}
-                          </select>
-                        </td>
                         <td className="py-2 px-2">
                           <input
                             className="input-luxury w-full min-w-[100px]"

@@ -14,9 +14,10 @@ const ProductInfo = ({ setIsProductOn, onSelect }) => {
 
   console.log('product is ', products)
 
-  const fetchProductMaster = async () => {
+  const fetchProducts = async () => {
     const { data } = await axios.get(
-      `${backendUrl}/api/product-master/get?search=${search}`
+      `${backendUrl}/api/product/list`,
+      { params: { search, limit: 20, isSold: false } }
     );
     return data;
   };
@@ -31,9 +32,18 @@ const ProductInfo = ({ setIsProductOn, onSelect }) => {
     const delay = setTimeout(async () => {
       try {
         setLoading(true);
-        const data = await fetchProductMaster();
-        if (data.success) {
-          setProducts(data.productMaster || []);
+        const data = await fetchProducts();
+        if (data.success && Array.isArray(data.data)) {
+          setProducts(data.data.map((p) => ({
+            id: p.id,
+            _id: p.id,
+            name: p.productName,
+            type: p.type,
+            gram: p.gram,
+            karat: p.karat
+          })));
+        } else {
+          setProducts([]);
         }
       } catch (error) {
         console.log(error);
