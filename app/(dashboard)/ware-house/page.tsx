@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
 import DataTable from '@/components/ui/DataTable'
 import type { ColumnDef } from '@/components/ui/DataTable'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 import FragmentFormModal from '@/components/fragment/FragmentFormModal'
 import type { FragmentFormData } from '@/components/fragment/FragmentFormModal'
 import StorageFormModal from '@/components/storage/StorageFormModal'
@@ -194,20 +195,18 @@ export default function WareHousePage() {
           <div className="flex flex-wrap gap-4 items-end mb-4">
             <div>
               <label className="block text-sm font-medium text-charcoal mb-1">از تاریخ</label>
-              <input
-                type="date"
+              <PersianDatePicker
+                value={dateFrom || null}
+                onChange={(v) => { setDateFrom(v ?? ''); setStoragePage(1) }}
                 className="input-luxury"
-                value={dateFrom}
-                onChange={(e) => { setDateFrom(e.target.value); setStoragePage(1) }}
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-charcoal mb-1">تا تاریخ</label>
-              <input
-                type="date"
+              <PersianDatePicker
+                value={dateTo || null}
+                onChange={(v) => { setDateTo(v ?? ''); setStoragePage(1) }}
                 className="input-luxury"
-                value={dateTo}
-                onChange={(e) => { setDateTo(e.target.value); setStoragePage(1) }}
               />
             </div>
             <button

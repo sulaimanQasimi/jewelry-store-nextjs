@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import FormField from '@/components/ui/FormField'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 import { FacebookIcon, InstagramIcon, WhatsAppIcon, TelegramIcon } from '@/components/icons/SocialIcons'
 
 export interface CustomerFormData {
@@ -256,21 +257,17 @@ export default function CustomerForm({
           />
         </FormField>
         <FormField label="تاریخ تولد">
-          <input
-            type="date"
-            name="birthDate"
+          <PersianDatePicker
+            value={form.birthDate ?? null}
+            onChange={(v) => setForm((f) => ({ ...f, birthDate: v ?? '' }))}
             className="input-luxury w-full"
-            value={form.birthDate ?? ''}
-            onChange={handleChange}
           />
         </FormField>
         <FormField label="سالگرد (تاریخ)">
-          <input
-            type="date"
-            name="anniversary_date"
+          <PersianDatePicker
+            value={form.anniversary_date ?? null}
+            onChange={(v) => setForm((f) => ({ ...f, anniversary_date: v ?? '' }))}
             className="input-luxury w-full"
-            value={form.anniversary_date ?? ''}
-            onChange={handleChange}
           />
         </FormField>
         <FormField label="شناسه ملی">

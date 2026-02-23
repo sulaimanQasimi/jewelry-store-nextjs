@@ -18,6 +18,7 @@ import {
 import { Bar, Line } from 'react-chartjs-2'
 import StatCard from '@/components/dashboard/StatCard'
 import Loader from '@/components/ui/Loader'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 import { BarChart3, TrendingUp, Gem } from 'lucide-react'
 
 ChartJS.register(
@@ -148,19 +149,17 @@ export default function AnalyticsPage() {
         </div>
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-slate-600 dark:text-slate-400">از</label>
-          <input
-            type="date"
-            value={dateFrom}
-            onChange={(e) => setDateFrom(e.target.value)}
+          <PersianDatePicker
+            value={dateFrom || null}
+            onChange={(v) => setDateFrom(v ?? '')}
             className="input-luxury w-auto"
           />
         </div>
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-slate-600 dark:text-slate-400">تا</label>
-          <input
-            type="date"
-            value={dateTo}
-            onChange={(e) => setDateTo(e.target.value)}
+          <PersianDatePicker
+            value={dateTo || null}
+            onChange={(v) => setDateTo(v ?? '')}
             className="input-luxury w-auto"
           />
         </div>

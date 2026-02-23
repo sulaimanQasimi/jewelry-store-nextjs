@@ -5,6 +5,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import CustomerCombobox from '@/components/ui/CustomerCombobox'
 import type { CustomerOption } from '@/components/ui/CustomerCombobox'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 import { Wrench, Calendar, FileText, Coins } from 'lucide-react'
 
 export interface RepairFormData {
@@ -248,12 +249,10 @@ export default function RepairFormContent({
           <label className="text-sm font-medium text-slate-600 dark:text-slate-400 font-stat flex items-center gap-2">
             <Calendar className="w-4 h-4" /> تاریخ تحویل پیش‌بینیشده
           </label>
-          <input
-            name="due_date"
-            type="date"
+          <PersianDatePicker
+            value={form.due_date}
+            onChange={(v) => setForm((f) => ({ ...f, due_date: v }))}
             className={inputBase}
-            value={form.due_date ?? ''}
-            onChange={handleChange}
           />
         </div>
         <div className="flex flex-col gap-1.5">

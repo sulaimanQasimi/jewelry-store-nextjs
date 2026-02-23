@@ -5,6 +5,7 @@ import axios from 'axios'
 import { motion } from 'framer-motion'
 import { CreditCard, Calendar, FileText, Banknote, Sparkles } from 'lucide-react'
 import type { PaymentFormData } from '../types'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 
 interface StepPaymentProps {
   totalAmount: number
@@ -134,14 +135,10 @@ export default function StepPayment({
                 <Calendar className="w-3.5 h-3.5" aria-hidden />
                 تاریخ
               </label>
-              <input
-                id="payment-date"
-                type="date"
-                value={receiptDate}
-                onChange={(e) => setReceiptDate(e.target.value)}
-                required
+              <PersianDatePicker
+                value={receiptDate || null}
+                onChange={(v) => setReceiptDate(v ?? '')}
                 className="w-full rounded-xl bg-white dark:bg-white/10 border border-slate-200 dark:border-white/20 px-4 py-3 text-charcoal dark:text-white focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all [color-scheme:light] dark:[color-scheme:dark]"
-                aria-required="true"
               />
             </div>
           </div>

@@ -10,6 +10,7 @@ import type { ColumnDef } from '@/components/ui/DataTable'
 import LabelPrintModal from '@/components/product/LabelPrintModal'
 import type { LabelPrintProduct } from '@/components/product/LabelPrintModal'
 import { ChevronDown, ChevronUp, Filter } from 'lucide-react'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 
 interface Product {
   id: number
@@ -466,19 +467,17 @@ export default function ProductsPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-charcoal mb-1">از تاریخ</label>
-                  <input
-                    type="date"
-                    value={filters.dateFrom}
-                    onChange={(e) => updateFilter('dateFrom', e.target.value)}
+                  <PersianDatePicker
+                    value={filters.dateFrom || null}
+                    onChange={(v) => updateFilter('dateFrom', v ?? '')}
                     className="input-luxury w-full"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-charcoal mb-1">تا تاریخ</label>
-                  <input
-                    type="date"
-                    value={filters.dateTo}
-                    onChange={(e) => updateFilter('dateTo', e.target.value)}
+                  <PersianDatePicker
+                    value={filters.dateTo || null}
+                    onChange={(v) => updateFilter('dateTo', v ?? '')}
                     className="input-luxury w-full"
                   />
                 </div>

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
 import { BarChart3, Calendar, TrendingUp, Package, ChevronDown, ChevronUp } from 'lucide-react'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 
 interface SaleReportData {
   totalProducts: number
@@ -97,21 +98,11 @@ export default function ReportPage() {
         <div className="flex flex-wrap gap-4 items-end">
           <div>
             <label className="block text-sm font-medium text-charcoal dark:text-slate-300 mb-1">از تاریخ</label>
-            <input
-              type="date"
-              className="input-luxury"
-              value={dateFrom}
-              onChange={(e) => setDateFrom(e.target.value)}
-            />
+            <PersianDatePicker value={dateFrom || null} onChange={(v) => setDateFrom(v ?? '')} className="input-luxury" />
           </div>
           <div>
             <label className="block text-sm font-medium text-charcoal dark:text-slate-300 mb-1">تا تاریخ</label>
-            <input
-              type="date"
-              className="input-luxury"
-              value={dateTo}
-              onChange={(e) => setDateTo(e.target.value)}
-            />
+            <PersianDatePicker value={dateTo || null} onChange={(v) => setDateTo(v ?? '')} className="input-luxury" />
           </div>
           <button
             type="button"

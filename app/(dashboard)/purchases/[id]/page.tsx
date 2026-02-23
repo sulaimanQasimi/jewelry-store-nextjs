@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 import { motion } from 'framer-motion'
 import { ArrowRight, Edit, Building2, Calendar, FileText, Package, Sparkles, Gem } from 'lucide-react'
 import FormField from '@/components/ui/FormField'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 
 interface PurchaseItem {
   id?: number
@@ -331,11 +332,10 @@ export default function PurchaseDetailPage() {
                   />
                 </FormField>
                 <FormField label="تاریخ">
-                  <input
-                    type="date"
+                  <PersianDatePicker
+                    value={form.date || null}
+                    onChange={(v) => setForm((f) => ({ ...f, date: v ?? '' }))}
                     className="input-luxury w-full"
-                    value={form.date}
-                    onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))}
                   />
                 </FormField>
               </div>

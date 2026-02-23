@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
 import FormField from '@/components/ui/FormField'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 import FilterBar from '@/components/ui/FilterBar'
 import DataTable from '@/components/ui/DataTable'
 import type { ColumnDef } from '@/components/ui/DataTable'
@@ -129,20 +130,10 @@ export default function GoldRatePage() {
   const extraFilters = (
     <>
       <FormField label="از تاریخ">
-        <input
-          type="date"
-          value={dateFrom}
-          onChange={(e) => setDateFrom(e.target.value)}
-          className="input-luxury w-full"
-        />
+        <PersianDatePicker value={dateFrom || null} onChange={(v) => setDateFrom(v ?? '')} className="input-luxury w-full" />
       </FormField>
       <FormField label="تا تاریخ">
-        <input
-          type="date"
-          value={dateTo}
-          onChange={(e) => setDateTo(e.target.value)}
-          className="input-luxury w-full"
-        />
+        <PersianDatePicker value={dateTo || null} onChange={(v) => setDateTo(v ?? '')} className="input-luxury w-full" />
       </FormField>
     </>
   )

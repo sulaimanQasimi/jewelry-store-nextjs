@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Modal from '@/components/ui/Modal'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 import { Coins, Calendar } from 'lucide-react'
 
 export interface GoldRateFormData {
@@ -121,12 +122,10 @@ export default function GoldRateFormModal({
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-slate-600 dark:text-slate-400 font-stat">تاریخ</label>
             <div className="relative">
-              <input
-                name="date"
-                type="date"
+              <PersianDatePicker
+                value={form.date || null}
+                onChange={(v) => setForm((f) => ({ ...f, date: v ?? '' }))}
                 className={inputBase}
-                value={form.date}
-                onChange={handleChange}
               />
               <span className="absolute top-1/2 -translate-y-1/2 end-3 pointer-events-none text-amber-600/70 dark:text-amber-400/80">
                 <Calendar className="w-5 h-5" strokeWidth={1.75} />

@@ -5,6 +5,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import Modal from '@/components/ui/Modal'
 import FormField from '@/components/ui/FormField'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 
 export interface StorageFormData {
   date: string
@@ -90,13 +91,10 @@ export default function StorageFormModal({
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           <FormField label="تاریخ">
-            <input
-              type="date"
-              name="date"
+            <PersianDatePicker
+              value={form.date || null}
+              onChange={(v) => setForm((f) => ({ ...f, date: v ?? '' }))}
               className="input-luxury w-full"
-              value={form.date}
-              onChange={handleChange}
-              required
             />
           </FormField>
           <FormField label="دلار (USD)">

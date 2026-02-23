@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 
 interface DailyProduct {
   productId: number
@@ -99,12 +100,7 @@ export default function DailyReportPage() {
         </div>
         <div className="flex items-center gap-3">
           <label className="text-sm font-medium text-charcoal">تاریخ:</label>
-          <input
-            type="date"
-            className="input-luxury"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
+          <PersianDatePicker value={date || null} onChange={(v) => setDate(v ?? '')} className="input-luxury" />
           <button
             type="button"
             onClick={fetchReport}

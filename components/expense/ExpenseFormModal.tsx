@@ -5,6 +5,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import Modal from '@/components/ui/Modal'
 import FormField from '@/components/ui/FormField'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 import type { ExpenseFormData } from '@/types/expense'
 
 const emptyForm = {
@@ -135,12 +136,10 @@ export default function ExpenseFormModal({
             />
           </FormField>
           <FormField label="تاریخ">
-            <input
-              name="date"
-              type="date"
+            <PersianDatePicker
+              value={form.date || null}
+              onChange={(v) => setForm((f) => ({ ...f, date: v ?? '' }))}
               className="input-luxury w-full"
-              value={form.date}
-              onChange={handleChange}
             />
           </FormField>
           <div className="sm:col-span-2">

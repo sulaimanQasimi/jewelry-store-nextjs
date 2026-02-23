@@ -5,6 +5,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import Modal from '@/components/ui/Modal'
 import FormField from '@/components/ui/FormField'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 import { FacebookIcon, InstagramIcon, WhatsAppIcon, TelegramIcon } from '@/components/icons/SocialIcons'
 
 export interface CustomerFormData {
@@ -215,7 +216,11 @@ export default function CustomerFormModal({
             <input name="companyName" className="input-luxury w-full" value={form.companyName ?? ''} onChange={handleChange} />
           </FormField>
           <FormField label="تاریخ تولد">
-            <input type="date" name="birthDate" className="input-luxury w-full" value={form.birthDate ?? ''} onChange={handleChange} />
+            <PersianDatePicker
+              value={form.birthDate ?? null}
+              onChange={(v) => setForm((f) => ({ ...f, birthDate: v ?? '' }))}
+              className="input-luxury w-full"
+            />
           </FormField>
           <FormField label="شناسه ملی">
             <input name="nationalId" className="input-luxury w-full" value={form.nationalId ?? ''} onChange={handleChange} />

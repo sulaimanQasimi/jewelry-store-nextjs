@@ -5,6 +5,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import Modal from '@/components/ui/Modal'
 import FormField from '@/components/ui/FormField'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 
 export interface CurrencyRateFormData {
   id?: number
@@ -111,12 +112,10 @@ export default function CurrencyRateFormModal({
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <FormField label="تاریخ">
-            <input
-              name="date"
-              type="date"
+            <PersianDatePicker
+              value={form.date || null}
+              onChange={(v) => setForm((f) => ({ ...f, date: v ?? '' }))}
               className="input-luxury w-full"
-              value={form.date}
-              onChange={handleChange}
             />
           </FormField>
           <FormField label="نرخ دالر به افغانی">

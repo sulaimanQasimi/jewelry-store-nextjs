@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Building2, FileText, Calendar, Upload } from 'lucide-react'
 import SupplierCombobox from '@/components/ui/SupplierCombobox'
 import type { SupplierOption } from '@/components/ui/SupplierCombobox'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 import type { PurchaseWizardState } from '../types'
 
 interface Step1SupplierBillProps {
@@ -87,10 +88,9 @@ export default function Step1SupplierBill({
           </label>
           <div className="relative">
             <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-            <input
-              type="date"
-              value={state.purchaseDate}
-              onChange={(e) => onBillChange(state.billNumber, e.target.value)}
+            <PersianDatePicker
+              value={state.purchaseDate || null}
+              onChange={(v) => onBillChange(state.billNumber, v ?? '')}
               className="input-luxury w-full pl-10 rounded-xl border-slate-300 dark:border-slate-600 focus:border-amber-500 focus:ring-amber-500/20"
             />
           </div>
