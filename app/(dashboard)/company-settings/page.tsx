@@ -8,7 +8,7 @@ import { useContext } from 'react'
 import { AppContext } from '@/lib/context/AppContext'
 
 const inputBase =
-  'w-full pe-10 py-3 rounded-xl border border-amber-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-500/40 focus:border-amber-300 dark:focus:border-amber-500/60 outline-none transition-all duration-200 font-stat'
+  'w-full ps-3 pe-10 py-3 rounded-xl border border-amber-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 [&::placeholder]:text-slate-400 [&::placeholder]:opacity-100 dark:[&::placeholder]:text-slate-500 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-500/40 focus:border-amber-300 dark:focus:border-amber-500/60 outline-none transition-all duration-200 font-stat'
 
 function FieldWithIcon({
   label,
