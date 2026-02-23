@@ -66,7 +66,7 @@ export default {
       // Root: allow '' or '/' (proxies/servers may send empty pathname for root)
       const isRoot = pathname === '/' || pathname === ''
       // Storefront and auth pages are public
-      if (isRoot || pathname === '/login' || pathname === '/about' || pathname === '/contact') return true
+      if (isRoot || pathname === '/login' || pathname === '/signup' || pathname === '/about' || pathname === '/contact') return true
       if (pathname === '/shop' || pathname.startsWith('/shop/')) return true
       if (pathname.startsWith('/api/auth')) return true
       if (pathname.startsWith('/_next')) return true

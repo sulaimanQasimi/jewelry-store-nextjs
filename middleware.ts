@@ -36,7 +36,7 @@ function isPublicPath(pathname: string): boolean {
   if (isRootPath(normalized) || isRootPath(path)) return true
   const basePath = (process.env.BASE_PATH || process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/\/+$/, '')
   if (basePath && (normalized === basePath || normalized === `${basePath}/`)) return true
-  if (normalized === '/login' || normalized === '/about' || normalized === '/contact') return true
+  if (normalized === '/login' || normalized === '/signup' || normalized === '/about' || normalized === '/contact') return true
   if (normalized === '/shop' || normalized.startsWith('/shop/')) return true
   if (normalized.startsWith('/api/auth') || normalized.startsWith('/_next')) return true
   return false
