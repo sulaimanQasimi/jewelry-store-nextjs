@@ -33,19 +33,27 @@ export default function NewAccountPage() {
   }
 
   return (
-    <div className="space-y-6" dir="rtl">
-      <div className="flex items-center gap-3">
-        <Link
-          href="/accounts"
-          className="p-2 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-charcoal dark:text-slate-200"
-        >
-          <ArrowRight className="w-5 h-5" />
-        </Link>
-        <h1 className="text-2xl font-heading font-semibold text-charcoal dark:text-white flex items-center gap-2">
-          <Wallet className="w-7 h-7 text-amber-600" />
-          ثبت حساب جدید
-        </h1>
-      </div>
+    <div className="space-y-8" dir="rtl">
+      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <Link
+              href="/accounts"
+              className="text-amber-600 dark:text-amber-400 hover:underline text-sm inline-flex items-center gap-1"
+            >
+              <ArrowRight className="w-4 h-4" />
+              بازگشت به لیست حساب‌ها
+            </Link>
+          </div>
+          <h1 className="font-heading text-2xl font-semibold text-charcoal dark:text-white flex items-center gap-2">
+            <Wallet className="w-7 h-7 text-amber-600 dark:text-amber-400" />
+            ثبت حساب جدید
+          </h1>
+          <p className="mt-1 text-sm text-charcoal-soft dark:text-slate-400">
+            اطلاعات حساب را وارد کنید.
+          </p>
+        </div>
+      </header>
 
       <div className="card-luxury rounded-2xl border border-gold-200/50 dark:border-slate-600/50 p-6 max-w-lg">
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -100,13 +108,13 @@ export default function NewAccountPage() {
             </p>
           )}
           <div className="flex gap-3 justify-end pt-2 border-t border-slate-200 dark:border-slate-600">
-            <Link href="/accounts" className="btn-luxury btn-luxury-outline px-4 py-2">
+            <Link href="/accounts" className="btn-luxury btn-luxury-outline px-4 py-2.5">
               لغو
             </Link>
             <button
               type="submit"
               disabled={submitting}
-              className="btn-luxury btn-luxury-primary px-4 py-2 disabled:opacity-60"
+              className="min-w-[120px] py-2.5 px-5 rounded-xl font-semibold text-white bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-600 hover:via-amber-700 hover:to-amber-800 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
             >
               {submitting ? 'در حال ثبت...' : 'ثبت حساب'}
             </button>
