@@ -13,6 +13,7 @@ import type { TransactionForPrint } from '@/components/sale/SaleBillPrint'
 import type { CompanyInfo } from '@/components/sale/SaleInvoice'
 import Link from 'next/link'
 import { Printer, RotateCcw, ShoppingCart, Hash, X, FileText } from 'lucide-react'
+import PersianDatePicker from '@/components/ui/PersianDatePicker'
 
 const SALE_INVOICE_PRINT_KEY = 'saleInvoicePrint'
 const BILL_NUMBER_DEBOUNCE_MS = 320
@@ -375,10 +376,9 @@ export default function SalesPage() {
                 <label className="block text-sm font-medium text-charcoal dark:text-slate-300 mb-1">
                   از تاریخ
                 </label>
-                <input
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => { setUrlParams({ dateFrom: e.target.value, page: '1' }) }}
+                <PersianDatePicker
+                  value={dateFrom || null}
+                  onChange={(v) => setUrlParams({ dateFrom: v ?? '', page: '1' })}
                   className="input-luxury w-full"
                 />
               </div>
@@ -386,10 +386,9 @@ export default function SalesPage() {
                 <label className="block text-sm font-medium text-charcoal dark:text-slate-300 mb-1">
                   تا تاریخ
                 </label>
-                <input
-                  type="date"
-                  value={dateTo}
-                  onChange={(e) => { setUrlParams({ dateTo: e.target.value, page: '1' }) }}
+                <PersianDatePicker
+                  value={dateTo || null}
+                  onChange={(v) => setUrlParams({ dateTo: v ?? '', page: '1' })}
                   className="input-luxury w-full"
                 />
               </div>
