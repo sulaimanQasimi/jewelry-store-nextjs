@@ -683,3 +683,33 @@ DELIMITER ;
 -- ALTER TABLE transactions ADD INDEX idx_customer_created (customerId, createdAt);
 -- ALTER TABLE products ADD INDEX idx_sold_created (isSold, createdAt);
 -- ALTER TABLE expenses ADD INDEX idx_date_type (date, type);
+
+-- =============================================================================
+-- Banking: Accounts and Ledger (advanced account system)
+-- =============================================================================
+
+CREATE TABLE IF NOT EXISTS accounts (
+    id CHAR(36) PRIMARY KEY,
+    account_number VARCHAR(64) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    currency VARCHAR(10) NOT NULL DEFAULT 'USD',
+    balance DECIMAL(20, 4) NOT NULL DEFAULT 0,
+    status ENUM('active', 'frozen') NOT NULL DEFAULT 'active',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT chk_accounts_balance_non_negative CHECK (balance >= 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS account_transactions (
+    id CHAR(36) PRIMARY KEY,
+    account_id CHAR(36) NOT NULL,
+    type ENUM('credit', 'debit') NOT NULL,
+    amount DECIMAL(20, 4) NOT NULL,
+    balance_before DECIMAL(20, 4) NOT NULL,
+    balance_after DECIMAL(20, 4) NOT NULL,
+    description VARCHAR(500) DEFAULT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT chk_account_transactions_balance_after CHECK (balance_after >= 0),
+    CONSTRAINT fk_account_transactions_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE RESTRICT,
+    INDEX idx_account_transactions_account_id (account_id),
+    INDEX idx_account_transactions_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -142,12 +142,6 @@ export async function getAccounts(): Promise<Account[]> {
   return Array.isArray(rows) ? rows : []
 }
 
-/** Revalidate account-related paths after a transaction (for cache). */
-export function revalidateAccountPaths(accountId: string) {
-  revalidatePath('/accounts')
-  revalidatePath(`/accounts/${accountId}`)
-}
-
 /**
  * Server action for the Deposit/Withdraw form: process transaction then revalidate cache.
  * Call this directly with args when not using a form.
@@ -160,7 +154,8 @@ export async function submitAccountTransaction(
 ): Promise<{ success: boolean; error?: string }> {
   const result = await processTransaction(accountId, amount, type, description)
   if (result.success) {
-    revalidateAccountPaths(accountId)
+    revalidatePath('/accounts')
+    revalidatePath(`/accounts/${accountId}`)
   }
   return result
 }
