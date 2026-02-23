@@ -61,11 +61,6 @@ export default function ExpensesPage() {
     fetchExpenses()
   }, [fetchExpenses])
 
-  const openCreate = () => {
-    setEditingExpense(null)
-    setModalOpen(true)
-  }
-
   const openEdit = (row: Expense) => {
     setEditingExpense(row)
     setModalOpen(true)
@@ -142,7 +137,7 @@ export default function ExpensesPage() {
         </div>
         <button
           type="button"
-          onClick={openCreate}
+          onClick={() => router.push('/expenses/new')}
           className="btn-luxury btn-luxury-primary px-6 py-2 shrink-0"
         >
           افزودن مصرف
@@ -177,7 +172,7 @@ export default function ExpensesPage() {
           setModalOpen(false)
           setEditingExpense(null)
         }}
-        mode={editingExpense ? 'edit' : 'create'}
+        mode="edit"
         initialData={editingExpense ? (editingExpense as ExpenseFormData) : null}
         onSuccess={fetchExpenses}
       />
