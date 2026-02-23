@@ -32,7 +32,7 @@ export default function NewExpensePage() {
         </div>
       </header>
 
-      <section className="max-w-2xl">
+      <div className="card-luxury rounded-2xl border border-gold-200/50 dark:border-slate-600/50 p-6 w-full">
         <ExpenseForm
           mode="create"
           initialData={null}
@@ -40,7 +40,7 @@ export default function NewExpensePage() {
           onCancel={() => router.push('/expenses')}
           cancelLabel="لغو و بازگشت"
         />
-      </section>
+      </div>
     </div>
   )
 }
