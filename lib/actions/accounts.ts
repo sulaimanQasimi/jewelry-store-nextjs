@@ -142,6 +142,45 @@ export async function getAccounts(): Promise<Account[]> {
   return Array.isArray(rows) ? rows : []
 }
 
+/** Create a new account. All params are passed as prepared statement values. */
+export async function createAccount(
+  accountNumber: string,
+  name: string,
+  currency: string
+): Promise<{ success: boolean; error?: string; account?: Account }> {
+  const trimmedNumber = accountNumber?.trim()
+  const trimmedName = name?.trim()
+  const trimmedCurrency = currency?.trim() || 'USD'
+  if (!trimmedNumber || !trimmedName) {
+    return { success: false, error: 'شماره حساب و نام الزامی است.' }
+  }
+  const id = randomUUID()
+  const { query } = await import('@/lib/db')
+  try {
+    await query(
+      `INSERT INTO accounts (id, account_number, name, currency, balance, status)
+       VALUES (?, ?, ?, ?, 0, 'active')`,
+      [id, trimmedNumber, trimmedName, trimmedCurrency]
+    )
+    revalidatePath('/accounts')
+    const rows = (await query(
+      'SELECT id, account_number, name, currency, balance, status, created_at FROM accounts WHERE id = ?',
+      [id]
+    )) as Account[]
+    return { success: true, account: rows?.[0] ?? undefined }
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    if (msg.includes('Duplicate') || msg.includes('UNIQUE')) {
+      return { success: false, error: 'این شماره حساب قبلاً ثبت شده است.' }
+    }
+    if (msg.includes("doesn't exist") || msg.includes('Unknown table')) {
+      return { success: false, error: 'جدول accounts در دیتابیس وجود ندارد. از فایل db.sql بخش «Banking: Accounts and Ledger» را در MySQL اجرا کنید.' }
+    }
+    console.error('createAccount error:', err)
+    return { success: false, error: msg }
+  }
+}
+
 /**
  * Server action for the Deposit/Withdraw form: process transaction then revalidate cache.
  * Call this directly with args when not using a form.
