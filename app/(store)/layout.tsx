@@ -1,12 +1,6 @@
-import { Vazirmatn, Playfair_Display } from 'next/font/google'
+import { Playfair_Display } from 'next/font/google'
 import StoreNavbar from '@/components/store/StoreNavbar'
 import type { Metadata } from 'next'
-
-const vazirmatn = Vazirmatn({
-  subsets: ['arabic', 'latin'],
-  display: 'swap',
-  variable: '--font-vazirmatn',
-})
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -73,7 +67,7 @@ export default function StoreLayout({
 }) {
   return (
     <div
-      className={`store-layout min-h-screen ${vazirmatn.className} ${vazirmatn.variable} ${playfair.variable}`}
+      className={`store-layout min-h-screen ${playfair.variable}`}
       style={{
         backgroundColor: 'var(--store-bg, #FAFAFA)',
         color: 'var(--store-text, #0C0C0C)',

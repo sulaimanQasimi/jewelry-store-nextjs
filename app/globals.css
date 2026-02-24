@@ -61,6 +61,9 @@
   --color-shop-cream: #FDFBF7;
   --color-shop-charcoal: #2D2D2D;
   --font-serif-store: var(--font-playfair, 'Playfair Display'), Georgia, serif;
+  /* Default system font: IranSans (Persian) */
+  --font-sans: 'iransans', 'IranSans', Tahoma, Arial, sans-serif;
+  --font-iransans: 'iransans', 'IranSans', Tahoma, sans-serif;
 }
 
 /* Shop: gold-accented range slider */
@@ -369,12 +372,12 @@ body {
 }
 
 .font-luxury-sans {
-  font-family: 'Inter', 'iransans', 'vazirmatn', sans-serif;
+  font-family: var(--font-iransans), 'iransans', Tahoma, sans-serif;
 }
 
-/* Dashboard stat cards: clean elegant sans (Vazirmatn preferred) */
+/* Dashboard stat cards: IranSans as default */
 .font-stat {
-  font-family: 'vazirmatn', 'iransans', sans-serif;
+  font-family: var(--font-iransans), 'iransans', Tahoma, sans-serif;
 }
 
 /* Luxury button base - Upgraded with gradients */

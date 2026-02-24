@@ -123,7 +123,7 @@ export default function FilterSidebar({
       <div className="flex items-center justify-between mb-6">
         <h2
           className="text-[#2D2D2D] font-semibold text-base tracking-[0.2em]"
-          style={{ fontFamily: 'var(--font-vazirmatn), Vazirmatn, sans-serif' }}
+          style={{ fontFamily: 'var(--font-iransans), iransans, Tahoma, sans-serif' }}
         >
           فیلترها
         </h2>
@@ -159,7 +159,7 @@ export default function FilterSidebar({
         >
           <span
             className="text-[#2D2D2D] font-medium tracking-[0.15em] text-sm"
-            style={{ fontFamily: 'var(--font-vazirmatn), Vazirmatn, sans-serif' }}
+            style={{ fontFamily: 'var(--font-iransans), iransans, Tahoma, sans-serif' }}
           >
             دسته‌بندی
           </span>
@@ -241,7 +241,7 @@ export default function FilterSidebar({
         >
           <span
             className="text-[#2D2D2D] font-medium tracking-[0.15em] text-sm"
-            style={{ fontFamily: 'var(--font-vazirmatn), Vazirmatn, sans-serif' }}
+            style={{ fontFamily: 'var(--font-iransans), iransans, Tahoma, sans-serif' }}
           >
             محدودهٔ قیمت
           </span>
@@ -365,7 +365,7 @@ export default function FilterSidebar({
         >
           <span
             className="text-[#2D2D2D] font-medium tracking-[0.15em] text-sm"
-            style={{ fontFamily: 'var(--font-vazirmatn), Vazirmatn, sans-serif' }}
+            style={{ fontFamily: 'var(--font-iransans), iransans, Tahoma, sans-serif' }}
           >
             جنس
           </span>
@@ -438,7 +438,7 @@ export default function FilterSidebar({
         >
           <span
             className="text-[#2D2D2D] font-medium tracking-[0.15em] text-sm"
-            style={{ fontFamily: 'var(--font-vazirmatn), Vazirmatn, sans-serif' }}
+            style={{ fontFamily: 'var(--font-iransans), iransans, Tahoma, sans-serif' }}
           >
             موجودی
           </span>

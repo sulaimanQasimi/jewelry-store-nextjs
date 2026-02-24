@@ -45,7 +45,7 @@ export default function AccountDetailPage() {
 
   if (!accountId) {
     return (
-      <div className="p-8 text-center text-charcoal-soft dark:text-slate-400 font-[family-name:var(--font-vazirmatn),'Vazirmatn',Tahoma,sans-serif]">
+      <div className="p-8 text-center text-charcoal-soft dark:text-slate-400 font-[family-name:var(--font-iransans),'iransans',Tahoma,sans-serif]">
         شناسه حساب نامعتبر است.
       </div>
     )
@@ -53,7 +53,7 @@ export default function AccountDetailPage() {
 
   if (!loading && !account) {
     return (
-      <div className="space-y-4 font-[family-name:var(--font-vazirmatn),'Vazirmatn',Tahoma,sans-serif]" dir="rtl">
+      <div className="space-y-4 font-[family-name:var(--font-iransans),'iransans',Tahoma,sans-serif]" dir="rtl">
         <Link href="/accounts" className="text-amber-600 dark:text-amber-400 hover:underline inline-flex items-center gap-1">
           بازگشت به لیست حساب‌ها
         </Link>
@@ -64,7 +64,7 @@ export default function AccountDetailPage() {
 
   return (
     <div
-      className="space-y-6 min-h-0 font-[family-name:var(--font-vazirmatn),'Vazirmatn',Tahoma,sans-serif]"
+      className="space-y-6 min-h-0 font-[family-name:var(--font-iransans),'iransans',Tahoma,sans-serif]"
       dir="rtl"
     >
       {/* Header: back + title + action buttons (واریز / برداشت) at start (right in RTL) */}
