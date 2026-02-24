@@ -18,6 +18,8 @@ import { toast } from 'react-toastify'
 import { AppContext } from '@/lib/context/AppContext'
 import type { TransactionForPrint } from '@/components/sale/SaleBillPrint'
 import type { CompanyInfo } from '@/components/sale/SaleInvoice'
+import ReturnPaymentModal from '@/components/sale/ReturnPaymentModal'
+import type { ReturnProductInfo } from '@/components/sale/ReturnPaymentModal'
 
 const SALE_INVOICE_PRINT_KEY = 'saleInvoicePrint'
 
@@ -100,7 +102,7 @@ export default function SaleDetailPage() {
   const [sale, setSale] = useState<SaleDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [returningProductId, setReturningProductId] = useState<number | null>(null)
+  const [returnModalProduct, setReturnModalProduct] = useState<ReturnProductInfo | null>(null)
 
   const openPrintInvoice = (row: SaleDetail) => {
     const product = Array.isArray(row.product)
@@ -161,29 +163,27 @@ export default function SaleDetailPage() {
     )
   }
 
-  const handleReturnProduct = async (productId: number) => {
-    if (!sale || !confirm('آیا از برگشت این محصول اطمینان دارید؟ محصول دوباره به انبار اضافه می‌شود.')) return
-    setReturningProductId(productId)
-    try {
-      const { data: res } = await axios.post<{
-        success?: boolean
-        message?: string
-        transaction?: SaleDetail
-      }>(`/api/transaction/return?transactionId=${sale.id}&productId=${productId}`, { note: null })
-      if (res?.success && res.transaction) {
-        setSale(res.transaction)
-        toast.success(res.message ?? 'محصول با موفقیت برگشت داده شد')
-      } else if (res?.success) {
-        toast.success(res.message ?? 'مرجوعی ثبت شد')
-        window.location.href = '/sales'
-      } else {
-        toast.error(res?.message ?? 'خطا در برگشت محصول')
-      }
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message ?? 'خطا در برگشت محصول')
-    } finally {
-      setReturningProductId(null)
+  const openReturnModal = (item: ProductItem) => {
+    const pid = item.productId ?? 0
+    if (pid <= 0) return
+    const qty = item.quantity ?? 1
+    const unitPrice = item.salePrice?.price ?? 0
+    setReturnModalProduct({
+      productId: pid,
+      productName: item.productName ?? '—',
+      lineTotal: unitPrice * qty
+    })
+  }
+
+  const handleReturnPaymentSuccess = (updatedSale: unknown | null) => {
+    if (updatedSale && typeof updatedSale === 'object' && 'id' in updatedSale) {
+      setSale(updatedSale as SaleDetail)
+      toast.success('مبلغ از حساب برداشت شد و محصول برگشت داده شد.')
+    } else {
+      toast.success('مرجوعی ثبت شد.')
+      window.location.href = '/sales'
     }
+    setReturnModalProduct(null)
   }
 
   if (loading) {
@@ -351,7 +351,6 @@ export default function SaleDetailPage() {
                     .join(' · ')
                   const img = item.image
                   const pid = item.productId ?? 0
-                  const isReturning = returningProductId === pid
                   return (
                     <tr
                       key={i}
@@ -381,13 +380,12 @@ export default function SaleDetailPage() {
                         {pid > 0 && (
                           <button
                             type="button"
-                            onClick={() => handleReturnProduct(pid)}
-                            disabled={isReturning}
-                            className="btn-luxury btn-luxury-outline p-2 inline-flex items-center justify-center text-amber-600 hover:text-amber-700 disabled:opacity-50"
+                            onClick={() => openReturnModal(item)}
+                            className="btn-luxury btn-luxury-outline p-2 inline-flex items-center justify-center text-amber-600 hover:text-amber-700"
                             title="برگشت محصول"
                             aria-label="برگشت محصول"
                           >
-                            <RotateCcw className={`w-4 h-4 ${isReturning ? 'animate-spin' : ''}`} />
+                            <RotateCcw className="w-4 h-4" />
                           </button>
                         )}
                       </td>
@@ -409,7 +407,6 @@ export default function SaleDetailPage() {
                 .join(' · ')
               const img = item.image
               const pid = item.productId ?? 0
-              const isReturning = returningProductId === pid
               return (
                 <div
                   key={i}
@@ -437,12 +434,11 @@ export default function SaleDetailPage() {
                     {pid > 0 && (
                       <button
                         type="button"
-                        onClick={() => handleReturnProduct(pid)}
-                        disabled={isReturning}
+                        onClick={() => openReturnModal(item)}
                         className="mt-2 btn-luxury btn-luxury-outline py-1.5 px-3 inline-flex items-center gap-1.5 text-amber-600 text-sm"
                         title="برگشت محصول"
                       >
-                        <RotateCcw className={`w-4 h-4 ${isReturning ? 'animate-spin' : ''}`} />
+                        <RotateCcw className="w-4 h-4" />
                         برگشت محصول
                       </button>
                     )}
@@ -514,6 +510,17 @@ export default function SaleDetailPage() {
 
         <div className="h-1 bg-gradient-to-l from-gold-300 via-gold-500 to-gold-700" />
       </div>
+
+      {sale && returnModalProduct && (
+        <ReturnPaymentModal
+          open={!!returnModalProduct}
+          onClose={() => setReturnModalProduct(null)}
+          saleId={sale.id}
+          bellNumber={sale.bellNumber}
+          product={returnModalProduct}
+          onSuccess={handleReturnPaymentSuccess}
+        />
+      )}
     </div>
   )
 }

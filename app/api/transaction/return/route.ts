@@ -43,15 +43,8 @@ export async function POST(request: NextRequest) {
     const customerPhone = tx?.customerPhone ?? ''
     const bellNumber = Number(tx?.bellNumber) ?? 0
 
-    const { success, errorMsg } = await spReturnProduct(transactionId, productId)
-
-    if (!success) {
-      return NextResponse.json({
-        success: false,
-        message: errorMsg || 'خطا در برگشت محصول'
-      })
-    }
-
+    // Insert return log BEFORE calling sp_return_product, so the transaction row still exists (FK).
+    // If the SP deletes the transaction (full return), ON DELETE SET NULL will set transactionId to NULL.
     await query(
       `INSERT INTO returns (transactionId, productId, customerName, customerPhone, bellNumber, productSnapshot, note)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
@@ -65,6 +58,19 @@ export async function POST(request: NextRequest) {
         note
       ]
     )
+
+    const { success, errorMsg } = await spReturnProduct(transactionId, productId)
+
+    if (!success) {
+      await query('DELETE FROM returns WHERE transactionId = ? AND productId = ? ORDER BY id DESC LIMIT 1', [
+        transactionId,
+        productId
+      ])
+      return NextResponse.json({
+        success: false,
+        message: errorMsg || 'خطا در برگشت محصول'
+      })
+    }
 
     await query(
       'UPDATE transactions SET returned_count = returned_count + 1, return_status = ? WHERE id = ?',
