@@ -129,6 +129,20 @@ const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {})
+    } else {
+      document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {})
+    }
+  }
+
+  useEffect(() => {
+    const handleFullscreenChange = () => setIsFullscreen(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange)
+  }, [])
+
   return (
     <nav
       ref={navRef}
@@ -204,6 +218,21 @@ const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
 
               {/* Theme Toggle */}
               <ThemeToggle />
+
+              {/* Fullscreen Toggle */}
+              <button
+                type="button"
+                onClick={toggleFullscreen}
+                className="group relative flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 transition-all hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-slate-300 border border-slate-100/50 dark:border-slate-700/50"
+                title={isFullscreen ? 'خروج از تمام‌صفحه' : 'تمام‌صفحه'}
+                aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+              >
+                {isFullscreen ? (
+                  <Minimize className="h-5 w-5 transition-transform group-hover:scale-110" />
+                ) : (
+                  <Maximize className="h-5 w-5 transition-transform group-hover:scale-110" />
+                )}
+              </button>
 
               {/* Backup Button */}
               <button
