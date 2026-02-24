@@ -19,7 +19,7 @@ export default function DemoNavbarPage() {
         J
       </div>
       <span className="hidden md:block text-sm font-bold text-slate-800 dark:text-slate-200">
-        Jewelry Store
+        Gemify
       </span>
     </div>
   )

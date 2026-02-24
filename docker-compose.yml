@@ -1,4 +1,4 @@
-# Jewelry Store - Docker Compose (MySQL + Next.js with PM2)
+# Gemify - Docker Compose (MySQL + Next.js with PM2)
 # Clone: git clone https://github.com/sulaimanQasimi/jewelry-store-nextjs.git
 # Run:   docker compose up -d
 

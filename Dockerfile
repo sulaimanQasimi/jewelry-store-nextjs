@@ -1,4 +1,4 @@
-# Jewelry Store - Next.js with PM2
+# Gemify - Next.js with PM2
 # Clone: git clone https://github.com/sulaimanQasimi/jewelry-store-nextjs.git
 FROM node:20-alpine AS base
 

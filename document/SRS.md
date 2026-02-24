@@ -1,6 +1,6 @@
 # Software Requirements Specification (SRS)
 
-**Project:** Jewelry Store Management System  
+**Project:** Gemify  
 **Version:** 1.0  
 **Last Updated:** 2025  
 
@@ -10,7 +10,7 @@
 
 ### 1.1 Purpose
 
-This document specifies the software requirements for the **Jewelry Store Management System**, a web application for managing jewelry store operations including sales, purchases, inventory, customers, suppliers, expenses, and reporting.
+This document specifies the software requirements for **Gemify**, a web application for managing jewelry store operations including sales, purchases, inventory, customers, suppliers, expenses, and reporting.
 
 ### 1.2 Scope
 

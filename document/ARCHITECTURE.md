@@ -1,6 +1,6 @@
 # System Architecture
 
-**Project:** Jewelry Store Management System  
+**Project:** Gemify  
 
 ---
 

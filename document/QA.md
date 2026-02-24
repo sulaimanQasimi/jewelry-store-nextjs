@@ -1,6 +1,6 @@
 # Quality Assurance (QA) — Test Plan and Documentation
 
-**Project:** Jewelry Store Management System  
+**Project:** Gemify  
 **Version:** 1.0  
 
 ---
@@ -9,7 +9,7 @@
 
 ### 1.1 Purpose
 
-This document describes the quality assurance strategy, test levels, test cases, and acceptance criteria for the Jewelry Store Management System.
+This document describes the quality assurance strategy, test levels, test cases, and acceptance criteria for Gemify.
 
 ### 1.2 Scope
 

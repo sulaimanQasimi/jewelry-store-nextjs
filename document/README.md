@@ -1,6 +1,6 @@
-# Jewelry Store Management System — Documentation Index
+# Gemify — Documentation Index
 
-This folder contains full project documentation for the Jewelry Store Management System (Next.js + MySQL).
+This folder contains full project documentation for Gemify (Next.js + MySQL).
 
 ## Documents
 
@@ -24,7 +24,7 @@ This folder contains full project documentation for the Jewelry Store Management
 
 ## Project Overview
 
-The system is a **jewelry store management** web application built with:
+The system is **Gemify**, a jewelry store management web application built with:
 
 - **Frontend:** Next.js 16 (App Router), React 19, Tailwind CSS 4  
 - **Backend:** Next.js API Routes (same repo)  

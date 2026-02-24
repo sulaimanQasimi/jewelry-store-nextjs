@@ -1,6 +1,6 @@
 # User Guide
 
-**Jewelry Store Management System** — راهنمای استفاده  
+**Gemify** — راهنمای استفاده  
 
 ---
 

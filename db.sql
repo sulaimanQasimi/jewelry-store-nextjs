@@ -1,4 +1,4 @@
--- Jewelry Store Management System Database Schema
+-- Gemify Database Schema
 -- MySQL Database Schema
 --
 -- This schema is used by the Next.js API with raw SQL (mysql2).

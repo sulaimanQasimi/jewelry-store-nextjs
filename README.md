@@ -1,4 +1,4 @@
-# Jewelry Store Management System - Next.js Migration
+# Gemify - Next.js Migration
 
 This is the migrated Next.js application combining the Express.js backend and React Vite frontend into a unified Next.js application with MySQL database.
 

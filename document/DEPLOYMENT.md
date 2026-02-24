@@ -1,6 +1,6 @@
 # Deployment Guide
 
-**Project:** Jewelry Store Management System  
+**Project:** Gemify  
 
 ---
 

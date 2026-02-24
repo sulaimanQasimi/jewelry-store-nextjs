@@ -9,8 +9,8 @@ const baseUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
-  title: "Jewelry Store Management System",
-  description: "Jewelry Store Management System",
+  title: "Gemify",
+  description: "Gemify",
 };
 
 export default function RootLayout({

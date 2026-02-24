@@ -1,5 +1,5 @@
 /**
- * Stored procedure and function helpers for Jewelry Store DB.
+ * Stored procedure and function helpers for Gemify DB.
  * Use these for atomic operations and centralized business logic.
  */
 
