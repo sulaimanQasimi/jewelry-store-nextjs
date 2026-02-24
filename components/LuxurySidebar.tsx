@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
@@ -35,7 +35,8 @@ import {
   Wrench,
   TrendingUp,
   Heart,
-  RotateCcw
+  RotateCcw,
+  X
 } from 'lucide-react'
 
 /** Single source of truth for sidebar navigation. Persian labels, RTL-friendly. */
@@ -209,9 +210,16 @@ const LuxuryMenuItem: React.FC<{
 }
 
 // Luxury Sidebar Component
-const LuxurySidebar: React.FC = () => {
+const LuxurySidebar: React.FC<{ onMobileClose?: () => void }> = ({ onMobileClose }) => {
   const pathname = usePathname()
   const { data: session } = useSession()
+  const prevPathname = useRef(pathname)
+  useEffect(() => {
+    if (prevPathname.current !== pathname) {
+      onMobileClose?.()
+      prevPathname.current = pathname
+    }
+  }, [pathname, onMobileClose])
   // Sub-menus collapsed by default; expand the group containing the current route
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(() => {
     const allIds = new Set(NAV_GROUPS.map((g) => g.id))
@@ -263,10 +271,21 @@ const LuxurySidebar: React.FC = () => {
             boxShadow: 'inset -1px 0 0 rgba(212, 175, 55, 0.1), 4px 0 20px rgba(0, 0, 0, 0.3)',
           }}
         >
-          {/* Collapse Toggle Button */}
+          {/* Mobile close button */}
+          {onMobileClose && (
+            <button
+              type="button"
+              onClick={onMobileClose}
+              className="md:hidden absolute left-3 top-6 z-50 flex items-center justify-center w-10 h-10 rounded-xl bg-[#064e3b] border border-[#d4af37]/50 text-[#fefaf0] hover:bg-[#d4af37]/20 transition-all"
+              aria-label="بستن منو"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
+          {/* Collapse Toggle Button (desktop) */}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="absolute -right-3 top-6 z-50 flex items-center justify-center w-6 h-6 rounded-full bg-[#064e3b] border-2 border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37] hover:text-[#064e3b] transition-all duration-300 shadow-lg hover:shadow-[0_0_15px_rgba(212,175,55,0.5)]"
+            className="hidden md:flex absolute -right-3 top-6 z-50 items-center justify-center w-6 h-6 rounded-full bg-[#064e3b] border-2 border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37] hover:text-[#064e3b] transition-all duration-300 shadow-lg hover:shadow-[0_0_15px_rgba(212,175,55,0.5)]"
             aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {isCollapsed ? (

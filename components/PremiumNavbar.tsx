@@ -24,6 +24,8 @@ interface PremiumNavbarProps {
     label: string
     onClick: () => void
   }
+  /** When provided, show a menu button on mobile that opens the dashboard sidebar */
+  onOpenSidebar?: () => void
 }
 
 // NavLink Component with Spring Animation and Expanding Underline
@@ -95,6 +97,7 @@ const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
   logo,
   className = '',
   primaryCTA,
+  onOpenSidebar,
 }) => {
   const { companyData } = useContext(AppContext)
   const { data: session } = useSession()
@@ -207,6 +210,18 @@ const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
 
             {/* Right Section: Actions */}
             <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+              {/* Mobile sidebar menu button */}
+              {onOpenSidebar && (
+                <button
+                  type="button"
+                  onClick={onOpenSidebar}
+                  className="md:hidden flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100/50 dark:border-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700"
+                  aria-label="منوی اصلی"
+                  title="منوی اصلی"
+                >
+                  <Menu className="h-5 w-5" />
+                </button>
+              )}
               {/* Storage Rate */}
               <div className="hidden md:block">
                 <StorageRate />
