@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useContext, useRef } from 'react'
-import { Menu, X, DatabaseBackup, LogOut } from 'lucide-react'
+import { Menu, X, DatabaseBackup, LogOut, Maximize, Minimize } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import axios from 'axios'
@@ -102,6 +102,7 @@ const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
   const router = useRouter()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
   const navRef = useRef<HTMLElement>(null)
 
   const handleBackup = async () => {

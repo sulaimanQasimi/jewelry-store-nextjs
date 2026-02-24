@@ -9,18 +9,17 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // API configuration
+  // API and uploads: CORS so Flutter web can call API and load images from another origin
   async headers() {
+    const corsHeaders = [
+      { key: 'Access-Control-Allow-Origin', value: '*' },
+      { key: 'Access-Control-Allow-Methods', value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT' },
+      { key: 'Access-Control-Allow-Headers', value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Authorization, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, token' },
+    ];
     return [
-      {
-        source: '/api/:path*',
-        headers: [
-          // Don't use credentials with * - required for cross-origin Flutter web (Bearer token auth)
-          { key: 'Access-Control-Allow-Origin', value: '*' },
-          { key: 'Access-Control-Allow-Methods', value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT' },
-          { key: 'Access-Control-Allow-Headers', value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Authorization, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, token' },
-        ],
-      },
+      { source: '/api/:path*', headers: corsHeaders },
+      // Allow cross-origin loading of uploaded images (e.g. Flutter web on different port)
+      { source: '/uploads/:path*', headers: corsHeaders },
     ];
   },
 };

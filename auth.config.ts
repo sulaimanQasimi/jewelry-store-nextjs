@@ -73,11 +73,14 @@ export default {
       if (pathname.startsWith('/api/')) {
         const bearerValid = await verifyBearerToken(request)
         if (bearerValid) return true
-        // Storefront: allow unauthenticated GET for product list, categories, and single product
+        // Storefront: allow unauthenticated GET for product list, categories, single product, and accounts list
         if (request.method === 'GET') {
           if (pathname === '/api/product/list' || pathname === '/api/categories/list') return true
           if (/^\/api\/product\/[^/]+$/.test(pathname)) return true
+          if (pathname === '/api/accounts/list' || pathname.startsWith('/api/accounts/')) return true
         }
+        // Allow POST /api/accounts/transaction without auth so app can deposit/withdraw
+        if (request.method === 'POST' && pathname === '/api/accounts/transaction') return true
         if (!session?.user) {
           return NextResponse.json(
             { success: false, message: 'Not Authorized Login Again' },
