@@ -14,7 +14,10 @@ export async function GET(
     }
 
     const rows = (await query(
-      `SELECT id, customerId, customerName, customerPhone, product, receipt, bellNumber, note, createdAt
+      `SELECT id, customerId, customerName, customerPhone, product, receipt, bellNumber, note,
+              COALESCE(returned_count, 0) AS returned_count,
+              COALESCE(return_status, 'normal') AS return_status,
+              createdAt
        FROM transactions WHERE id = ? LIMIT 1`,
       [transactionId]
     )) as any[]
@@ -33,6 +36,8 @@ export async function GET(
       receipt: parseJson(r.receipt),
       bellNumber: r.bellNumber,
       note: r.note ?? null,
+      returned_count: Number(r.returned_count) || 0,
+      return_status: r.return_status ?? 'normal',
       createdAt: r.createdAt
     }
 

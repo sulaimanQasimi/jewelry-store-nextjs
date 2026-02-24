@@ -27,6 +27,8 @@ interface SaleRow {
   receipt: { totalAmount: number; paidAmount: number; remainingAmount: number }
   bellNumber: number
   note: string | null
+  returned_count?: number
+  return_status?: string
   createdAt: string
 }
 
@@ -253,6 +255,15 @@ export default function SalesPage() {
       key: 'remainingAmount',
       label: 'باقی',
       render: (r) => formatMoney(r.receipt?.remainingAmount ?? 0)
+    },
+    {
+      key: 'return_status',
+      label: 'مرجوع',
+      render: (r) => {
+        const n = r.returned_count ?? 0
+        if (n === 0) return '—'
+        return <span className="text-amber-600 dark:text-amber-400">مرجوع جزئی ({n})</span>
+      }
     },
     {
       key: 'createdAt',

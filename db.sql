@@ -119,14 +119,22 @@ CREATE TABLE IF NOT EXISTS transactions (
     receipt JSON NOT NULL,
     bellNumber INT NOT NULL UNIQUE,
     note TEXT,
+    returned_count INT DEFAULT 0 COMMENT 'Number of products returned from this sale',
+    return_status VARCHAR(20) DEFAULT 'normal' COMMENT 'normal | partial_return (full_return = row deleted)',
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_bellNumber (bellNumber),
     INDEX idx_customerId (customerId),
     INDEX idx_createdAt (createdAt),
     INDEX idx_customer_created (customerId, createdAt),
+    INDEX idx_return_status (return_status),
     FOREIGN KEY (customerId) REFERENCES customers(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Migration: add return columns if table already exists
+-- ALTER TABLE transactions ADD COLUMN returned_count INT DEFAULT 0 AFTER note;
+-- ALTER TABLE transactions ADD COLUMN return_status VARCHAR(20) DEFAULT 'normal' AFTER returned_count;
+-- ALTER TABLE transactions ADD INDEX idx_return_status (return_status);
 
 -- Returns (returnee) log: one row per returned product from a sale
 CREATE TABLE IF NOT EXISTS returns (

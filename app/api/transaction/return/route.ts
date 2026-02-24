@@ -66,6 +66,11 @@ export async function POST(request: NextRequest) {
       ]
     )
 
+    await query(
+      'UPDATE transactions SET returned_count = returned_count + 1, return_status = ? WHERE id = ?',
+      ['partial_return', transactionId]
+    )
+
     const updatedRows = (await query(
       'SELECT * FROM transactions WHERE id = ? LIMIT 1',
       [transactionId]

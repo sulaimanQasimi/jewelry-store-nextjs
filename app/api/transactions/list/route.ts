@@ -59,7 +59,10 @@ export async function GET(request: NextRequest) {
     const total = Number(countResult?.[0]?.total ?? 0)
 
     const rows = (await query(
-      `SELECT id, customerId, customerName, customerPhone, product, receipt, bellNumber, note, createdAt
+      `SELECT id, customerId, customerName, customerPhone, product, receipt, bellNumber, note,
+              COALESCE(returned_count, 0) AS returned_count,
+              COALESCE(return_status, 'normal') AS return_status,
+              createdAt
        FROM transactions ${whereSql}
        ORDER BY createdAt DESC
        LIMIT ${limit} OFFSET ${offset}`,
@@ -75,6 +78,8 @@ export async function GET(request: NextRequest) {
       receipt: parseJson(r.receipt),
       bellNumber: r.bellNumber,
       note: r.note ?? null,
+      returned_count: Number(r.returned_count) || 0,
+      return_status: r.return_status ?? 'normal',
       createdAt: r.createdAt
     }))
 

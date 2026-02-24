@@ -11,7 +11,8 @@ import {
   User,
   Copy,
   Check,
-  ShoppingBag
+  ShoppingBag,
+  RotateCcw
 } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { AppContext } from '@/lib/context/AppContext'
@@ -48,6 +49,8 @@ interface SaleDetail {
   receipt: ReceiptData
   bellNumber: number
   note: string | null
+  returned_count?: number
+  return_status?: string
   createdAt: string
 }
 
@@ -97,6 +100,7 @@ export default function SaleDetailPage() {
   const [sale, setSale] = useState<SaleDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [returningProductId, setReturningProductId] = useState<number | null>(null)
 
   const openPrintInvoice = (row: SaleDetail) => {
     const product = Array.isArray(row.product)
@@ -155,6 +159,31 @@ export default function SaleDetailPage() {
       () => toast.success('لینک کپی شد'),
       () => toast.error('کپی نشد')
     )
+  }
+
+  const handleReturnProduct = async (productId: number) => {
+    if (!sale || !confirm('آیا از برگشت این محصول اطمینان دارید؟ محصول دوباره به انبار اضافه می‌شود.')) return
+    setReturningProductId(productId)
+    try {
+      const { data: res } = await axios.post<{
+        success?: boolean
+        message?: string
+        transaction?: SaleDetail
+      }>(`/api/transaction/return?transactionId=${sale.id}&productId=${productId}`, { note: null })
+      if (res?.success && res.transaction) {
+        setSale(res.transaction)
+        toast.success(res.message ?? 'محصول با موفقیت برگشت داده شد')
+      } else if (res?.success) {
+        toast.success(res.message ?? 'مرجوعی ثبت شد')
+        window.location.href = '/sales'
+      } else {
+        toast.error(res?.message ?? 'خطا در برگشت محصول')
+      }
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message ?? 'خطا در برگشت محصول')
+    } finally {
+      setReturningProductId(null)
+    }
   }
 
   if (loading) {
@@ -264,6 +293,12 @@ export default function SaleDetailPage() {
                 )}
                 {statusLabel}
               </span>
+              {(sale.returned_count ?? 0) > 0 && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                  <RotateCcw className="w-4 h-4" />
+                  مرجوع جزئی ({sale.returned_count} قلم)
+                </span>
+              )}
             </div>
           </header>
 
@@ -303,6 +338,7 @@ export default function SaleDetailPage() {
                   <th className="text-right py-3 px-4 font-medium w-24">تعداد</th>
                   <th className="text-right py-3 px-4 font-medium w-32">قیمت واحد</th>
                   <th className="text-right py-3 px-4 font-medium w-32">جمع</th>
+                  <th className="text-right py-3 px-4 font-medium w-24">عملیات</th>
                 </tr>
               </thead>
               <tbody>
@@ -314,6 +350,8 @@ export default function SaleDetailPage() {
                     .filter(Boolean)
                     .join(' · ')
                   const img = item.image
+                  const pid = item.productId ?? 0
+                  const isReturning = returningProductId === pid
                   return (
                     <tr
                       key={i}
@@ -339,6 +377,20 @@ export default function SaleDetailPage() {
                       <td className="py-3 px-4">{qty}</td>
                       <td className="py-3 px-4" dir="ltr">{formatMoney(unitPrice)}</td>
                       <td className="py-3 px-4 font-medium" dir="ltr">{formatMoney(lineTotal)}</td>
+                      <td className="py-3 px-4">
+                        {pid > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => handleReturnProduct(pid)}
+                            disabled={isReturning}
+                            className="btn-luxury btn-luxury-outline p-2 inline-flex items-center justify-center text-amber-600 hover:text-amber-700 disabled:opacity-50"
+                            title="برگشت محصول"
+                            aria-label="برگشت محصول"
+                          >
+                            <RotateCcw className={`w-4 h-4 ${isReturning ? 'animate-spin' : ''}`} />
+                          </button>
+                        )}
+                      </td>
                     </tr>
                   )
                 })}
@@ -356,6 +408,8 @@ export default function SaleDetailPage() {
                 .filter(Boolean)
                 .join(' · ')
               const img = item.image
+              const pid = item.productId ?? 0
+              const isReturning = returningProductId === pid
               return (
                 <div
                   key={i}
@@ -380,6 +434,18 @@ export default function SaleDetailPage() {
                       <span className="mx-2">·</span>
                       <span className="font-medium">جمع: {formatMoney(lineTotal)} افغانی</span>
                     </p>
+                    {pid > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => handleReturnProduct(pid)}
+                        disabled={isReturning}
+                        className="mt-2 btn-luxury btn-luxury-outline py-1.5 px-3 inline-flex items-center gap-1.5 text-amber-600 text-sm"
+                        title="برگشت محصول"
+                      >
+                        <RotateCcw className={`w-4 h-4 ${isReturning ? 'animate-spin' : ''}`} />
+                        برگشت محصول
+                      </button>
+                    )}
                   </div>
                 </div>
               )
