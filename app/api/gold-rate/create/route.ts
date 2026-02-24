@@ -20,13 +20,10 @@ export async function POST(request: NextRequest) {
     if (typeof price_per_gram_afn === 'number' && !isNaN(price_per_gram_afn)) {
       priceGramAfn = price_per_gram_afn
     } else {
-      const rates = (await query(
-        'SELECT usdToAfn FROM currency_rates WHERE date = ? LIMIT 1',
-        [date.trim()]
-      )) as { usdToAfn?: number }[]
-      const usdToAfn = rates?.[0]?.usdToAfn
-      if (usdToAfn != null && usdToAfn > 0) {
-        priceGramAfn = (priceOz / GRAMS_PER_OUNCE) * usdToAfn
+      const rateRows = (await query("SELECT rate FROM currencies WHERE code = 'USD' AND active = 1 LIMIT 1", [])) as { rate?: number }[]
+      const usdRate = rateRows?.[0]?.rate
+      if (usdRate != null && Number(usdRate) > 0) {
+        priceGramAfn = (priceOz / GRAMS_PER_OUNCE) * Number(usdRate)
       }
     }
 

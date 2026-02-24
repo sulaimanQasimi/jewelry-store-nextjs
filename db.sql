@@ -219,15 +219,31 @@ CREATE TABLE IF NOT EXISTS expenses (
     INDEX idx_expenses_account_id (account_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Currency Rates Table
-CREATE TABLE IF NOT EXISTS currency_rates (
+-- Currencies (supported currency definitions; rate = units of default currency per 1 of this currency, e.g. 1 USD = rate AFN)
+CREATE TABLE IF NOT EXISTS currencies (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    date VARCHAR(50) NOT NULL UNIQUE,
-    usdToAfn FLOAT NOT NULL,
+    code VARCHAR(20) NOT NULL UNIQUE,
+    name_fa VARCHAR(100) NOT NULL,
+    symbol VARCHAR(10) NULL,
+    rate FLOAT NULL DEFAULT NULL,
+    is_default TINYINT(1) NOT NULL DEFAULT 0,
+    active TINYINT(1) NOT NULL DEFAULT 1,
+    sort_order INT NOT NULL DEFAULT 0,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_date (date)
+    INDEX idx_code (code),
+    INDEX idx_active (active)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT IGNORE INTO currencies (code, name_fa, symbol, rate, is_default, active, sort_order) VALUES
+('AFN', 'افغانی', '؋', 1, 1, 1, 0),
+('USD', 'دالر', '$', 72, 0, 1, 1);
+
+-- Migration (if upgrading from schema with currency_rates): run once:
+-- ALTER TABLE currencies ADD COLUMN rate FLOAT NULL DEFAULT NULL AFTER symbol;
+-- UPDATE currencies SET rate = 1 WHERE code = 'AFN';
+-- UPDATE currencies SET rate = (SELECT usdToAfn FROM currency_rates ORDER BY date DESC LIMIT 1) WHERE code = 'USD';
+-- DROP TABLE IF EXISTS currency_rates;
 
 -- Gold Rates Table (for dynamic gold-based pricing)
 CREATE TABLE IF NOT EXISTS gold_rates (
@@ -413,14 +429,14 @@ DROP FUNCTION IF EXISTS fn_next_bell_number//
 
 DELIMITER //
 
--- Get currency rate for a date (returns usdToAfn or NULL). COLLATE avoids mix of collations (utf8mb4_unicode_ci vs utf8mb4_0900_ai_ci).
+-- Get USD rate (units of default currency per 1 USD). Reads from currencies.rate where code = 'USD'.
 CREATE FUNCTION fn_get_currency_rate(p_date VARCHAR(50))
 RETURNS FLOAT
 DETERMINISTIC
 READS SQL DATA
 BEGIN
     DECLARE v_rate FLOAT DEFAULT NULL;
-    SELECT usdToAfn INTO v_rate FROM currency_rates WHERE date = CONVERT(p_date USING utf8mb4) COLLATE utf8mb4_unicode_ci LIMIT 1;
+    SELECT rate INTO v_rate FROM currencies WHERE code = 'USD' AND active = 1 LIMIT 1;
     RETURN v_rate;
 END//
 

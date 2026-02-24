@@ -7,7 +7,7 @@ import { query } from '@/lib/db'
 /** Tables to export, in restore-safe order (no FKs violated if restored in this order) */
 const BACKUP_TABLES = [
   'companies',
-  'currency_rates',
+  'currencies',
   'storages',
   'users',
   'suppliers',

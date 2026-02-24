@@ -24,7 +24,7 @@ import {
   LayoutDashboard,
   UserCircle,
   Wallet,
-  DollarSign,
+  Banknote,
   FileText,
   ShoppingCart,
   UserCog,
@@ -79,7 +79,7 @@ const NAV_GROUPS: Array<{
     items: [
       { href: '/accounts', icon: Wallet, label: 'حسابات' },
       { href: '/expenses', icon: Receipt, label: 'مصارف' },
-      { href: '/currency-rates', icon: DollarSign, label: 'نرخ ارز' },
+      { href: '/currencies', icon: Banknote, label: 'مدیریت ارزها' },
       { href: '/gold-rate', icon: Coins, label: 'نرخ طلا' }
     ]
   },

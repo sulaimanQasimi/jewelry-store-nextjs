@@ -40,12 +40,8 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    const today = new Date().toISOString().split('T')[0]
-    const rates = (await query(
-      'SELECT * FROM currency_rates WHERE date = ? LIMIT 1',
-      [today]
-    )) as any[]
-    const rate = rates?.[0]
+    const rateRows = (await query("SELECT rate FROM currencies WHERE code = 'USD' AND active = 1 LIMIT 1", [])) as { rate?: number }[]
+    const usdRate = rateRows?.[0]?.rate != null ? Number(rateRows[0].rate) : null
 
     let allProducts: any[] = []
     let totalGram = 0
@@ -60,15 +56,15 @@ export async function GET(request: NextRequest) {
       const isDollarSale = products.some((p: any) => p.salePrice?.currency === 'دالر')
 
       if (isDollarSale) {
-        if (!rate) {
+        if (usdRate == null) {
           return NextResponse.json({
             success: false,
-            message: 'نرخ امروز دالر ثبت نشده'
+            message: 'نرخ دالر در جدول ارزها ثبت نشده'
           })
         }
-        totalAmount += receipt.totalAmount * rate.usdToAfn
-        remainAmount += receipt.remainingAmount * rate.usdToAfn
-        totalDiscount += receipt.discount * rate.usdToAfn
+        totalAmount += receipt.totalAmount * usdRate
+        remainAmount += receipt.remainingAmount * usdRate
+        totalDiscount += receipt.discount * usdRate
       } else {
         totalAmount += receipt.totalAmount
         remainAmount += receipt.remainingAmount

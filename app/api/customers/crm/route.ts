@@ -31,26 +31,8 @@ export async function GET(request: NextRequest) {
       []
     )) as any[]
 
-    const today = new Date().toISOString().split('T')[0]
-    const rates = (await query('SELECT usdToAfn FROM currency_rates WHERE date = ? LIMIT 1', [today])) as any[]
-    const defaultRate = rates?.[0]?.usdToAfn ?? 1
-
-    const rateByDate: Record<string, number> = {}
-    const allDates = new Set<string>()
-    for (const t of transactions) {
-      allDates.add(new Date(t.createdAt).toISOString().split('T')[0])
-    }
-    if (allDates.size > 0) {
-      const dateArr = Array.from(allDates)
-      const placeholders = dateArr.map(() => '?').join(',')
-      const rateRows = (await query(
-        `SELECT date, usdToAfn FROM currency_rates WHERE date IN (${placeholders})`,
-        dateArr
-      )) as any[]
-      for (const r of rateRows || []) {
-        rateByDate[r.date] = Number(r.usdToAfn) || 1
-      }
-    }
+    const rateRows = (await query("SELECT rate FROM currencies WHERE code = 'USD' AND active = 1 LIMIT 1", [])) as { rate?: number }[]
+    const defaultRate = rateRows?.[0]?.rate != null ? Number(rateRows[0].rate) : 1
 
     const byCustomer: Record<
       number,
@@ -70,8 +52,7 @@ export async function GET(request: NextRequest) {
       if (!byCustomer[cid]) continue
       const products = parseJson(trx.product) as any[]
       const receipt = parseJson(trx.receipt) as any
-      const dateStr = new Date(trx.createdAt).toISOString().split('T')[0]
-      const rate = rateByDate[dateStr] ?? defaultRate
+      const rate = defaultRate
       const isDollar = products?.some((p: any) => p.salePrice?.currency === 'دالر')
       const amount = (receipt?.totalAmount ?? 0) * (isDollar ? rate : 1)
       byCustomer[cid].totalSpent += amount

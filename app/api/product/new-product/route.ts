@@ -46,17 +46,16 @@ export async function POST(request: NextRequest) {
       await writeFile(join(uploadDir, filename), buffer)
     }
 
-    const today = new Date().toISOString().split('T')[0]
-    const rates = (await query('SELECT * FROM currency_rates WHERE date = ? LIMIT 1', [today])) as { usdToAfn?: number }[]
-    const rate = rates?.[0]
-    if (!rate?.usdToAfn) {
+    const rateRows = (await query("SELECT rate FROM currencies WHERE code = 'USD' AND active = 1 LIMIT 1", [])) as { rate?: number }[]
+    const usdRate = rateRows?.[0]?.rate
+    if (usdRate == null || Number(usdRate) <= 0) {
       return NextResponse.json({
         success: false,
-        message: 'نرخ امروز دالر ثبت نشده'
+        message: 'نرخ دالر در جدول ارزها ثبت نشده'
       })
     }
 
-    const purchasePriceToAfn = (Number(auns / 12.15 / 24) * (Number(karat) + 0.12) + Number(wage)) * Number(rate.usdToAfn) * Number(gram)
+    const purchasePriceToAfn = (Number(auns / 12.15 / 24) * (Number(karat) + 0.12) + Number(wage)) * Number(usdRate) * Number(gram)
 
     await query(
       `INSERT INTO products (productName, type, gram, karat, purchasePriceToAfn, bellNumber, isSold, barcode, image, wage, auns, pricing_mode, wage_per_gram, isFragment)

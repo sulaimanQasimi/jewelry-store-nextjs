@@ -38,16 +38,10 @@ export async function GET(request: NextRequest) {
     for (const trx of transactions) {
       datesNeeded.add(new Date(trx.createdAt).toISOString().split('T')[0])
     }
-    if (datesNeeded.size > 0) {
-      const dateArr = Array.from(datesNeeded)
-      const placeholders = dateArr.map(() => '?').join(',')
-      const rates = (await query(
-        `SELECT date, usdToAfn FROM currency_rates WHERE date IN (${placeholders})`,
-        dateArr
-      )) as any[]
-      for (const r of rates || []) {
-        rateByDate[r.date] = Number(r.usdToAfn) || 1
-      }
+    const rateRows = (await query("SELECT rate FROM currencies WHERE code = 'USD' AND active = 1 LIMIT 1", [])) as { rate?: number }[]
+    const usdRate = rateRows?.[0]?.rate != null ? Number(rateRows[0].rate) : 1
+    for (const d of datesNeeded) {
+      rateByDate[d] = usdRate
     }
 
     const byType: Record<string, { quantity: number; revenue: number }> = {}

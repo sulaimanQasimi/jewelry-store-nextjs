@@ -22,9 +22,8 @@ export async function GET(
       [id]
     )) as any[]
 
-    const today = new Date().toISOString().split('T')[0]
-    const rates = (await query('SELECT usdToAfn FROM currency_rates WHERE date = ? LIMIT 1', [today])) as any[]
-    const rate = rates?.[0]?.usdToAfn ?? 1
+    const rateRows = (await query("SELECT rate FROM currencies WHERE code = 'USD' AND active = 1 LIMIT 1", [])) as { rate?: number }[]
+    const rate = rateRows?.[0]?.rate != null ? Number(rateRows[0].rate) : 1
 
     let totalSpent = 0
     let lastPurchaseAt: string | null = null

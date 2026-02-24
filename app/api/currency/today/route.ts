@@ -1,47 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 
-export async function GET(request: NextRequest) {
+/** GET: return current USD rate from currencies table */
+export async function GET() {
   try {
-    const today = new Date().toISOString().split('T')[0]
+    const rows = (await query(
+      "SELECT rate FROM currencies WHERE code = 'USD' AND active = 1 LIMIT 1",
+      []
+    )) as { rate?: number }[]
 
-    const rates = await query(
-      'SELECT * FROM currency_rates WHERE date = ?',
-      [today]
-    ) as any[]
-
-    if (!rates || rates.length === 0) {
-      return NextResponse.json({ success: false, message: 'نرخ را تعیین کنید' })
+    if (!rows?.length || rows[0].rate == null) {
+      return NextResponse.json({ success: false, message: 'نرخ دالر تعیین نشده' })
     }
 
-    return NextResponse.json({ success: true, rate: rates[0] })
-  } catch (error: any) {
-    console.log(error)
-    return NextResponse.json({ success: false, message: error.message })
+    return NextResponse.json({ success: true, rate: { usdToAfn: Number(rows[0].rate) } })
+  } catch (error: unknown) {
+    console.error(error)
+    return NextResponse.json({ success: false, message: (error as Error).message })
   }
 }
 
+/** POST: update USD rate in currencies table */
 export async function POST(request: NextRequest) {
   try {
     const { usdToAfn } = await request.json()
-    const today = new Date().toISOString().split('T')[0]
+    const rate = Number(usdToAfn)
+    if (isNaN(rate) || rate <= 0) {
+      return NextResponse.json({ success: false, message: 'نرخ نامعتبر' }, { status: 400 })
+    }
 
-    // Use INSERT ... ON DUPLICATE KEY UPDATE for upsert
-    await query(
-      `INSERT INTO currency_rates (date, usdToAfn) 
-       VALUES (?, ?) 
-       ON DUPLICATE KEY UPDATE usdToAfn = ?`,
-      [today, usdToAfn, usdToAfn]
-    )
+    await query("UPDATE currencies SET rate = ? WHERE code = 'USD'", [rate])
 
-    const rates = await query(
-      'SELECT * FROM currency_rates WHERE date = ?',
-      [today]
-    ) as any[]
+    const rows = (await query(
+      "SELECT rate FROM currencies WHERE code = 'USD' LIMIT 1",
+      []
+    )) as { rate?: number }[]
 
-    return NextResponse.json({ success: true, rate: rates[0] })
-  } catch (error: any) {
-    console.log(error)
-    return NextResponse.json({ success: false, message: error.message })
+    return NextResponse.json({ success: true, rate: { usdToAfn: Number(rows?.[0]?.rate ?? rate) } })
+  } catch (error: unknown) {
+    console.error(error)
+    return NextResponse.json({ success: false, message: (error as Error).message })
   }
 }
