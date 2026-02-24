@@ -333,7 +333,15 @@ export default function SignupPage() {
 
             <motion.div variants={itemVariants} className="mt-4 text-center">
               <p className="text-[#666] text-xs" style={{ fontFamily: "'Inter', sans-serif" }}>
-                © تمام حقوق متعلق به شرکت گلگسی تکنالوچی
+                © تمام حقوق متعلق به{' '}
+                <a
+                  href="https://galaxy-technology.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#D4AF37] font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 rounded"
+                >
+                  شرکت گلکسی تکنولوژی
+                </a>
               </p>
             </motion.div>
           </div>
