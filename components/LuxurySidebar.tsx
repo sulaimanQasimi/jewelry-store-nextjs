@@ -142,6 +142,7 @@ const LuxuryMenuItem: React.FC<{
     <Link
       href={href}
       dir="rtl"
+      title={isCollapsed ? label : undefined}
       className={`
         relative group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-300 text-right
         ${isCollapsed ? 'justify-center px-2' : ''}
@@ -163,6 +164,18 @@ const LuxuryMenuItem: React.FC<{
           ${isHovered || isActive ? 'bg-[#d4af37]/10' : ''}
         `}
       />
+
+      {/* Tooltip when collapsed */}
+      {isCollapsed && (
+        <div
+          className="pointer-events-none absolute right-full top-1/2 -translate-y-1/2 me-2 z-[100] px-3 py-2 rounded-lg bg-[#064e3b] border border-[#d4af37]/40 text-[#fefaf0] text-sm font-medium whitespace-nowrap shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200"
+          style={{
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3), 0 0 0 1px rgba(212,175,55,0.2)',
+          }}
+        >
+          {label}
+        </div>
+      )}
 
       {/* Icon on the right of text in RTL (first in DOM = right side) */}
       <div
@@ -302,8 +315,9 @@ const LuxurySidebar: React.FC = () => {
                       type="button"
                       onClick={() => toggleGroup(group.id)}
                       dir="rtl"
+                      title={isCollapsed ? group.label : undefined}
                       className={`
-                        w-full flex items-center justify-between gap-2 rounded-lg px-3 py-2.5 transition-all duration-300 text-right
+                        relative group/btn w-full flex items-center justify-between gap-2 rounded-lg px-3 py-2.5 transition-all duration-300 text-right
                         ${isCollapsed ? 'justify-center px-2' : ''}
                         ${hasActive
                           ? 'text-[#d4af37] bg-[#d4af37]/15'
@@ -311,6 +325,17 @@ const LuxurySidebar: React.FC = () => {
                         }
                       `}
                     >
+                      {/* Tooltip when sidebar collapsed */}
+                      {isCollapsed && (
+                        <div
+                          className="pointer-events-none absolute right-full top-1/2 -translate-y-1/2 me-2 z-[100] px-3 py-2 rounded-lg bg-[#064e3b] border border-[#d4af37]/40 text-[#fefaf0] text-sm font-medium whitespace-nowrap shadow-lg opacity-0 invisible group-hover/btn:opacity-100 group-hover/btn:visible transition-all duration-200"
+                          style={{
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.3), 0 0 0 1px rgba(212,175,55,0.2)',
+                          }}
+                        >
+                          {group.label}
+                        </div>
+                      )}
                       <div className={`flex items-center gap-2 min-w-0 ${isCollapsed ? 'justify-center' : ''}`} dir="rtl">
                         <group.icon
                           className={`
