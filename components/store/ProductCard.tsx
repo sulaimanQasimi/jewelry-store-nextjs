@@ -21,6 +21,7 @@ export interface StoreProduct {
 interface ProductCardProps {
   product: StoreProduct
   className?: string
+  variant?: 'light' | 'dark'
 }
 
 function toImgSrc(path: string | null | undefined): string | null {
@@ -28,20 +29,20 @@ function toImgSrc(path: string | null | undefined): string | null {
   return path.startsWith('/') ? path : `/${path}`
 }
 
-export default function ProductCard({ product, className = '' }: ProductCardProps) {
+export default function ProductCard({ product, className = '', variant = 'light' }: ProductCardProps) {
   const [isHover, setIsHover] = useState(false)
   const price = product.purchasePriceToAfn ?? (product as unknown as Record<string, unknown>).purchasePriceToAfn
   const imgSrc = toImgSrc(product.image)
   const imgSecondary = toImgSrc(product.imageSecondary)
+  const isDark = variant === 'dark'
 
   return (
     <article
       className={`
         group relative overflow-hidden
-        bg-[#FDFBF7] rounded-sm
         transition-all duration-500 ease-out
-        shadow-[0_1px_3px_rgba(45,45,45,0.06)]
-        hover:shadow-[0_12px_40px_rgba(45,45,45,0.08)]
+        ${isDark ? 'bg-[#1a1a1a]' : 'bg-[#FDFBF7] shadow-[0_1px_3px_rgba(45,45,45,0.06)] hover:shadow-[0_12px_40px_rgba(45,45,45,0.08)]'}
+        rounded-none
         ${className}
       `}
       onMouseEnter={() => setIsHover(true)}
@@ -49,9 +50,9 @@ export default function ProductCard({ product, className = '' }: ProductCardProp
     >
       <Link
         href={`/shop/${product.id}`}
-        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] focus-visible:ring-offset-2 rounded-sm"
+        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] focus-visible:ring-offset-2 rounded-none"
       >
-        <div className="aspect-[3/4] relative bg-[#F0EDE8]/50 overflow-hidden">
+        <div className={`aspect-[3/4] relative overflow-hidden ${isDark ? 'bg-white/5' : 'bg-[#F0EDE8]/50'}`}>
           {imgSrc && (
             <>
               <Image
@@ -78,21 +79,21 @@ export default function ProductCard({ product, className = '' }: ProductCardProp
             </>
           )}
           {!imgSrc && (
-            <div className="absolute inset-0 flex items-center justify-center text-[#2D2D2D]/20">
+            <div className={`absolute inset-0 flex items-center justify-center ${isDark ? 'text-white/20' : 'text-[#2D2D2D]/20'}`}>
               <span className="text-5xl">◆</span>
             </div>
           )}
           <div
-            className="absolute inset-0 bg-gradient-to-t from-[#2D2D2D]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+            className={`absolute inset-0 bg-gradient-to-t ${isDark ? 'from-[#0C0C0C]/60' : 'from-[#2D2D2D]/20'} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`}
             aria-hidden
           />
         </div>
-        <div className="p-5">
-          <h3 className="text-[#2D2D2D] font-semibold text-base mb-1 line-clamp-2 leading-snug">
+        <div className={isDark ? 'p-5 border border-t-0 border-white/10' : 'p-5'}>
+          <h3 className={`font-semibold text-base mb-1 line-clamp-2 leading-snug ${isDark ? 'text-white' : 'text-[#2D2D2D]'}`}>
             {product.productName}
           </h3>
           {product.categories?.length ? (
-            <p className="text-sm text-[#2D2D2D]/60 mb-3">
+            <p className={`text-sm mb-3 ${isDark ? 'text-white/60' : 'text-[#2D2D2D]/60'}`}>
               {product.categories.map((c) => c.name).join(', ')}
             </p>
           ) : null}
@@ -100,14 +101,16 @@ export default function ProductCard({ product, className = '' }: ProductCardProp
             {formatPriceAfn(Number(price))}
           </p>
           <span
-            className="
-              inline-flex items-center justify-center gap-2 w-full py-2.5 text-sm font-medium
-              rounded-sm border border-[#2D2D2D]/20 text-[#2D2D2D]
-              bg-transparent hover:bg-[#2D2D2D] hover:text-[#FDFBF7] hover:border-[#2D2D2D]
-              transition-all duration-300
-            "
+            className={`
+              inline-flex items-center justify-center gap-2 w-full py-2.5 text-xs font-semibold tracking-widest uppercase
+              rounded-none transition-all duration-300
+              ${isDark
+                ? 'border border-white text-white bg-transparent hover:bg-white hover:text-[#0C0C0C]'
+                : 'border border-[#2D2D2D]/20 text-[#2D2D2D] bg-transparent hover:bg-[#2D2D2D] hover:text-[#FDFBF7]'
+              }
+            `}
           >
-            مشاهدهٔ جزئیات
+            مشاهده
             <Eye className="w-4 h-4 shrink-0" aria-hidden />
           </span>
         </div>

@@ -25,13 +25,7 @@ export default function ProductShowcase() {
 
   useEffect(() => {
     let cancelled = false
-    const params = new URLSearchParams({
-      isSold: 'false',
-      page: '1',
-      limit: '8',
-      sortBy: 'createdAt',
-      sortOrder: 'desc',
-    })
+    const params = new URLSearchParams({ isSold: 'false', page: '1', limit: '8', sortBy: 'createdAt', sortOrder: 'desc' })
     fetch(`/api/product/list?${params.toString()}`)
       .then((res) => res.json())
       .then((json) => {
@@ -45,10 +39,10 @@ export default function ProductShowcase() {
   }, [])
 
   return (
-    <section className="py-20 md:py-28 px-4 bg-[#FAF8F5]">
+    <section className="py-24 md:py-32 px-4 bg-[#0C0C0C] text-white">
       <div className="max-w-7xl mx-auto">
         <motion.p
-          className="font-[var(--font-playfair)] text-[#D4AF37] tracking-[0.25em] text-sm text-center mb-2"
+          className="font-[var(--font-playfair)] text-[#D4AF37] tracking-[0.35em] text-xs text-center mb-3 uppercase"
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
@@ -57,25 +51,25 @@ export default function ProductShowcase() {
           پرفروش‌ترین‌ها
         </motion.p>
         <motion.h2
-          className="font-[var(--font-playfair)] text-3xl md:text-4xl font-light text-[#2C2C2C] text-center mb-14"
+          className="font-[var(--font-playfair)] text-3xl md:text-5xl font-light text-white text-center mb-16 tracking-tight"
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.6, delay: 0.1 }}
+          transition={{ duration: 0.6, delay: 0.08 }}
         >
-          گزیدهٔ جواهرات
+          گزیده جواهرات
         </motion.h2>
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="aspect-[3/4] rounded-sm bg-[#E5E0D9]/50 animate-pulse" />
+              <div key={i} className="aspect-[3/4] rounded-none bg-white/10 animate-pulse" />
             ))}
           </div>
         ) : products.length === 0 ? (
-          <div className="text-center py-16 text-[#2C2C2C]/70">
-            <p className="font-[var(--font-playfair)] text-xl text-[#2C2C2C] mb-2">قطعه‌ای یافت نشد</p>
-            <Link href="/shop" className="text-[#D4AF37] font-medium hover:underline">مشاهدهٔ مجموعه</Link>
+          <div className="text-center py-20 text-white/70">
+            <p className="font-[var(--font-playfair)] text-xl text-white mb-3">قطعه‌ای یافت نشد</p>
+            <Link href="/shop" className="text-sm font-semibold tracking-widest uppercase text-[#D4AF37] hover:underline">مشاهده مجموعه</Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
@@ -85,26 +79,26 @@ export default function ProductShowcase() {
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.6, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.6, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
               >
-                <ProductCard product={product} />
+                <ProductCard product={product} variant="dark" />
               </motion.div>
             ))}
           </div>
         )}
 
         <motion.div
-          className="text-center mt-14"
+          className="text-center mt-16"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
           <Link
             href="/shop"
-            className="inline-flex items-center justify-center px-8 py-3 text-sm font-medium border border-[#2C2C2C] text-[#2C2C2C] bg-transparent hover:bg-[#2C2C2C] hover:text-[#FDFBF7] transition-all duration-300"
+            className="inline-flex items-center justify-center min-w-[180px] px-8 py-4 text-xs font-semibold tracking-widest uppercase border-2 border-white text-white bg-transparent hover:bg-white hover:text-[#0C0C0C] transition-all duration-300"
           >
-            مشاهدهٔ همه
+            مشاهده همه
           </Link>
         </motion.div>
       </div>

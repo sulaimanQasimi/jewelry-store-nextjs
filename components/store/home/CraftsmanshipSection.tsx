@@ -16,20 +16,18 @@ const PERSIAN_TEXT = [
 
 export default function CraftsmanshipSection() {
   return (
-    <section className="relative py-24 md:py-32 overflow-hidden bg-[#2C2C2C]">
+    <section className="relative py-24 md:py-32 overflow-hidden bg-[#0C0C0C]">
       <div className="absolute inset-0">
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{
-            backgroundImage: "url('/images/home/craftsmanship-bg.jpg')",
-          }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-15"
+          style={{ backgroundImage: "url('/images/home/craftsmanship-bg.jpg')" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#2C2C2C]/95 via-[#2C2C2C] to-[#2C2C2C]/95" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0C0C0C]/95 via-[#0C0C0C] to-[#0C0C0C]/95" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4">
         <motion.p
-          className="font-[var(--font-playfair)] text-[#D4AF37] tracking-[0.3em] text-sm text-center mb-4"
+          className="font-[var(--font-playfair)] text-[#D4AF37] tracking-[0.35em] text-xs text-center mb-3 uppercase"
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
@@ -38,7 +36,7 @@ export default function CraftsmanshipSection() {
           هنر و اصالت
         </motion.p>
         <motion.h2
-          className="font-[var(--font-playfair)] text-3xl md:text-4xl lg:text-5xl font-light text-[#FDFBF7] text-center mb-16 max-w-3xl mx-auto leading-snug"
+          className="font-[var(--font-playfair)] text-3xl md:text-4xl lg:text-5xl font-light text-white text-center mb-16 max-w-3xl mx-auto leading-snug tracking-tight"
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
@@ -58,7 +56,7 @@ export default function CraftsmanshipSection() {
           {MACRO_IMAGES.map((src, i) => (
             <div
               key={i}
-              className="aspect-[4/3] rounded-sm overflow-hidden bg-[#1a1a1a]"
+              className="aspect-[4/3] rounded-none overflow-hidden bg-[#1a1a1a]"
             >
               <div
                 className="w-full h-full bg-cover bg-center bg-no-repeat hover:scale-105 transition-transform duration-700"
@@ -73,7 +71,7 @@ export default function CraftsmanshipSection() {
           {PERSIAN_TEXT.map((line, i) => (
             <motion.p
               key={i}
-              className="font-[var(--font-playfair)] text-lg md:text-xl text-[#FDFBF7]/90 text-center leading-loose"
+              className="font-[var(--font-playfair)] text-lg md:text-xl text-white/85 text-center leading-loose"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}

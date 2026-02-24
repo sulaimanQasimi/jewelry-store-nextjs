@@ -32,7 +32,7 @@ export default function TestimonialSlider() {
   }, [])
 
   return (
-    <section className="py-20 md:py-28 px-4 bg-[#FDFBF7]">
+    <section className="py-20 md:py-28 px-4 bg-[#FAFAFA]">
       <div className="max-w-4xl mx-auto text-center">
         <Quote className="w-10 h-10 md:w-12 md:h-12 text-[#D4AF37]/50 mx-auto mb-8" aria-hidden />
         <AnimatePresence mode="wait">
@@ -43,10 +43,10 @@ export default function TestimonialSlider() {
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.4 }}
           >
-            <blockquote className="font-[var(--font-playfair)] text-xl md:text-2xl lg:text-3xl font-light text-[#2C2C2C] leading-relaxed">
+            <blockquote className="font-[var(--font-playfair)] text-xl md:text-2xl lg:text-3xl font-light text-[#0C0C0C] leading-relaxed tracking-tight">
               «{TESTIMONIALS[index].text}»
             </blockquote>
-            <p className="mt-6 text-[#2C2C2C]/70 text-sm font-medium">
+            <p className="mt-6 text-[#0C0C0C]/70 text-sm font-semibold tracking-wide">
               — {TESTIMONIALS[index].author}
             </p>
           </motion.div>

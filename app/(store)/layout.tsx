@@ -16,20 +16,20 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: 'مایسون | جواهرات ناب',
-    template: '%s | مایسون',
+    default: 'Gemify | جواهرات ناب',
+    template: '%s | Gemify',
   },
   description: 'زیبایی ماندگار. جواهراتی برای همیشه.',
   openGraph: {
-    title: 'مایسون | جواهرات ناب',
+    title: 'Gemify | جواهرات ناب',
     description: 'زیبایی ماندگار. جواهراتی برای همیشه.',
     locale: 'fa',
     type: 'website',
-    images: [{ url: '/assets/logo.svg', width: 512, height: 512, alt: 'مایسون' }],
+    images: [{ url: '/assets/logo.svg', width: 512, height: 512, alt: 'Gemify' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'مایسون | جواهرات ناب',
+    title: 'Gemify | جواهرات ناب',
     description: 'زیبایی ماندگار. جواهراتی برای همیشه.',
   },
 }
@@ -39,19 +39,19 @@ const baseUrl =
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 
 function StoreJsonLd() {
-  const jsonLd = {
+    const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
       {
         '@type': 'Organization',
         '@id': `${baseUrl}/#organization`,
-        name: 'مایسون',
+        name: 'Gemify',
         url: baseUrl,
         logo: `${baseUrl}/assets/logo.svg`,
       },
       {
         '@type': 'WebSite',
-        name: 'مایسون | جواهرات ناب',
+        name: 'Gemify | جواهرات ناب',
         url: baseUrl,
         description: 'زیبایی ماندگار. جواهراتی برای همیشه.',
         publisher: { '@id': `${baseUrl}/#organization` },
@@ -72,7 +72,14 @@ export default function StoreLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className={`store-layout min-h-screen text-[#2D2D2D] ${vazirmatn.className} ${vazirmatn.variable} ${playfair.variable}`} style={{ backgroundColor: '#FDFBF7' }} dir="rtl">
+    <div
+      className={`store-layout min-h-screen ${vazirmatn.className} ${vazirmatn.variable} ${playfair.variable}`}
+      style={{
+        backgroundColor: 'var(--store-bg, #FAFAFA)',
+        color: 'var(--store-text, #0C0C0C)',
+      }}
+      dir="rtl"
+    >
       <StoreJsonLd />
       <StoreNavbar />
       <main className="relative">{children}</main>

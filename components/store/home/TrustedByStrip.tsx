@@ -12,9 +12,9 @@ const LOGOS = [
 
 export default function TrustedByStrip() {
   return (
-    <section className="py-12 md:py-16 px-4 border-t border-b border-[#E5E0D9]/80 bg-[#FAF8F5]">
+    <section className="py-12 md:py-16 px-4 border-t border-b border-[#E5E0D9]/60 bg-[#FAFAFA]">
       <motion.p
-        className="text-center text-[#2C2C2C]/60 text-xs tracking-[0.25em] uppercase mb-8 font-medium"
+        className="text-center text-[#0C0C0C]/50 text-xs tracking-[0.3em] uppercase mb-8 font-semibold"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
@@ -26,7 +26,7 @@ export default function TrustedByStrip() {
         {LOGOS.map((logo, i) => (
           <motion.div
             key={logo.name}
-            className="text-[#2C2C2C]/40 font-[var(--font-playfair)] text-lg md:text-xl font-light tracking-wide hover:text-[#D4AF37]/70 transition-colors duration-300"
+            className="text-[#0C0C0C]/40 font-[var(--font-playfair)] text-lg md:text-xl font-light tracking-wide hover:text-[#D4AF37] transition-colors duration-300"
             initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}

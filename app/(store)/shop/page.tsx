@@ -107,14 +107,14 @@ export default function ShopPage() {
   const totalPages = Math.ceil(total / limit)
 
   return (
-    <div className="store-products min-h-screen" style={{ backgroundColor: '#FDFBF7' }}>
-      <section className="py-12 md:py-14 px-4 sm:px-6 lg:px-8 border-b border-[#F0EDE8]">
+    <div className="store-products min-h-screen bg-[#FAFAFA]">
+      <section className="py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-[#0C0C0C] text-white">
         <div className="max-w-[1600px] mx-auto">
-          <p className="text-[#D4AF37] tracking-[0.2em] text-sm mb-1 font-medium">مجموعه</p>
-          <h1 className="text-2xl md:text-4xl font-semibold text-[#2D2D2D]">
+          <p className="text-[#D4AF37] tracking-[0.35em] text-xs mb-2 uppercase font-semibold">مجموعه</p>
+          <h1 className="font-[var(--font-playfair)] text-3xl md:text-5xl font-light tracking-tight">
             جواهرات ما
           </h1>
-          <p className="text-[#2D2D2D]/70 mt-2 text-sm">فقط قطعات موجود نمایش داده می‌شوند.</p>
+          <p className="text-white/60 mt-2 text-sm">فقط قطعات موجود نمایش داده می‌شوند.</p>
         </div>
       </section>
 
@@ -138,8 +138,8 @@ export default function ShopPage() {
                 ))}
               </div>
             ) : products.length === 0 ? (
-              <div className="text-center py-24 text-[#2D2D2D]/70">
-                <p className="text-xl font-semibold text-[#2D2D2D] mb-2">قطعه‌ای یافت نشد</p>
+              <div className="text-center py-24 text-[#0C0C0C]/70">
+                <p className="text-xl font-semibold text-[#0C0C0C] mb-2">قطعه‌ای یافت نشد</p>
                 <p className="text-sm">فیلترها را تغییر دهید یا بعداً مراجعه کنید.</p>
               </div>
             ) : (
@@ -155,18 +155,18 @@ export default function ShopPage() {
                       type="button"
                       onClick={() => setPage((p) => Math.max(1, p - 1))}
                       disabled={page <= 1}
-                      className="px-5 py-2.5 rounded-sm border border-[#E5E0D9] text-[#2D2D2D] disabled:opacity-40 hover:bg-[#F0EDE8]/60 transition-all duration-300 text-sm font-medium"
+                      className="px-6 py-3 rounded-none border-2 border-[#0C0C0C]/20 text-[#0C0C0C] disabled:opacity-40 hover:bg-[#0C0C0C] hover:text-white transition-all duration-300 text-xs font-semibold tracking-widest uppercase"
                     >
                       قبلی
                     </button>
-                    <span className="px-4 py-2 text-[#2D2D2D]/80 text-sm">
+                    <span className="px-4 py-2 text-[#0C0C0C]/80 text-sm">
                       صفحهٔ {page} از {totalPages}
                     </span>
                     <button
                       type="button"
                       onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                       disabled={page >= totalPages}
-                      className="px-5 py-2.5 rounded-sm border border-[#E5E0D9] text-[#2D2D2D] disabled:opacity-40 hover:bg-[#F0EDE8]/60 transition-all duration-300 text-sm font-medium"
+                      className="px-6 py-3 rounded-none border-2 border-[#0C0C0C]/20 text-[#0C0C0C] disabled:opacity-40 hover:bg-[#0C0C0C] hover:text-white transition-all duration-300 text-xs font-semibold tracking-widest uppercase"
                     >
                       بعدی
                     </button>
