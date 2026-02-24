@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import CurrencyExchange from './CurrencyExchange'
 import { AppContext } from '@/lib/context/AppContext'
 import StorageRate from './StorageRate'
 import ThemeToggle from './ThemeToggle'
@@ -244,11 +243,6 @@ const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 <DatabaseBackup className="h-5 w-5 transition-transform group-hover:rotate-12" />
               </button>
 
-              {/* Currency Exchange */}
-              <div className="hidden md:block">
-                <CurrencyExchange isCurrencyToggle={false} />
-              </div>
-
               {/* Primary CTA Button */}
               {primaryCTA && (
                 <>
@@ -312,9 +306,6 @@ const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
               <div className="border-t border-slate-200 dark:border-slate-700 mt-2 pt-2 px-4 space-y-2">
                 <div className="md:hidden">
                   <StorageRate />
-                </div>
-                <div className="md:hidden">
-                  <CurrencyExchange isCurrencyToggle={false} />
                 </div>
               </div>
             </div>
