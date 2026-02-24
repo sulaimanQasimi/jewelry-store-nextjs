@@ -5,20 +5,45 @@ import { spReturnProduct, parseJson } from '@/lib/db-sp'
 export async function POST(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
-    const transactionId = searchParams.get('transactionId')
-    const productId = searchParams.get('productId')
+    const transactionIdParam = searchParams.get('transactionId')
+    const productIdParam = searchParams.get('productId')
+    let note: string | null = null
+    try {
+      const body = await request.json().catch(() => ({}))
+      note = typeof body.note === 'string' ? body.note.trim() || null : null
+    } catch {
+      // no body
+    }
 
-    if (!transactionId || !productId) {
+    if (!transactionIdParam || !productIdParam) {
       return NextResponse.json({
         success: false,
         message: 'transactionId و productId الزامی است'
       })
     }
 
-    const { success, errorMsg } = await spReturnProduct(
-      parseInt(transactionId),
-      parseInt(productId)
-    )
+    const transactionId = parseInt(transactionIdParam)
+    const productId = parseInt(productIdParam)
+    if (Number.isNaN(transactionId) || Number.isNaN(productId)) {
+      return NextResponse.json({
+        success: false,
+        message: 'شناسه ترانسکشن یا محصول نامعتبر است'
+      })
+    }
+
+    const transactions = (await query(
+      'SELECT id, product, customerName, customerPhone, bellNumber FROM transactions WHERE id = ? LIMIT 1',
+      [transactionId]
+    )) as any[]
+    const tx = transactions?.[0]
+    const productJson = tx ? parseJson(tx.product) : null
+    const products = Array.isArray(productJson) ? productJson : []
+    const productSnapshot = products.find((p: any) => Number(p?.productId) === productId) ?? null
+    const customerName = tx?.customerName ?? ''
+    const customerPhone = tx?.customerPhone ?? ''
+    const bellNumber = Number(tx?.bellNumber) ?? 0
+
+    const { success, errorMsg } = await spReturnProduct(transactionId, productId)
 
     if (!success) {
       return NextResponse.json({
@@ -27,12 +52,25 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    const transactions = (await query(
-      'SELECT * FROM transactions WHERE id = ? LIMIT 1',
-      [parseInt(transactionId)]
-    )) as any[]
+    await query(
+      `INSERT INTO returns (transactionId, productId, customerName, customerPhone, bellNumber, productSnapshot, note)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [
+        transactionId,
+        productId,
+        customerName,
+        customerPhone,
+        bellNumber,
+        JSON.stringify(productSnapshot ?? { productId, note: 'returned' }),
+        note
+      ]
+    )
 
-    const updatedTransaction = transactions?.[0] ?? null
+    const updatedRows = (await query(
+      'SELECT * FROM transactions WHERE id = ? LIMIT 1',
+      [transactionId]
+    )) as any[]
+    const updatedTransaction = updatedRows?.[0] ?? null
 
     if (updatedTransaction) {
       updatedTransaction.product = parseJson(updatedTransaction.product)

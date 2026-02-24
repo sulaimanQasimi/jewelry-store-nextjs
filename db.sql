@@ -128,6 +128,25 @@ CREATE TABLE IF NOT EXISTS transactions (
     FOREIGN KEY (customerId) REFERENCES customers(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Returns (returnee) log: one row per returned product from a sale
+CREATE TABLE IF NOT EXISTS returns (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    transactionId INT NULL COMMENT 'NULL if original transaction was deleted (full return)',
+    productId INT NOT NULL,
+    customerName VARCHAR(255) NOT NULL,
+    customerPhone VARCHAR(50) NOT NULL,
+    bellNumber INT NOT NULL,
+    productSnapshot JSON NOT NULL COMMENT 'Product at time of return: name, barcode, gram, karat, salePrice, etc.',
+    note TEXT,
+    returnedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_transactionId (transactionId),
+    INDEX idx_returnedAt (returnedAt),
+    INDEX idx_productId (productId),
+    INDEX idx_customer_phone (customerPhone),
+    INDEX idx_bellNumber (bellNumber),
+    FOREIGN KEY (transactionId) REFERENCES transactions(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Suppliers Table
 CREATE TABLE IF NOT EXISTS suppliers (
     id INT AUTO_INCREMENT PRIMARY KEY,

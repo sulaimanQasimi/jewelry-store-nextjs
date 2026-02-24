@@ -34,7 +34,8 @@ import {
   Coins,
   Wrench,
   TrendingUp,
-  Heart
+  Heart,
+  RotateCcw
 } from 'lucide-react'
 
 /** Single source of truth for sidebar navigation. Persian labels, RTL-friendly. */
@@ -56,6 +57,7 @@ const NAV_GROUPS: Array<{
     icon: FileText,
     items: [
       { href: '/sales', icon: FileText, label: 'فروشات' },
+      { href: '/returns', icon: RotateCcw, label: 'مرجوعات' },
       { href: '/product-from-supplier', icon: ShoppingBag, label: 'خرید جنس از تمویل کننده' },
       { href: '/purchases', icon: ShoppingCart, label: 'خریدها' },
       { href: '/add-fragment', icon: Puzzle, label: 'خرید شکسته' }
