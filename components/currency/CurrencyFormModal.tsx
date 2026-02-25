@@ -53,7 +53,7 @@ export default function CurrencyFormModal({
           code: initialData.code ?? '',
           name_fa: initialData.name_fa ?? '',
           symbol: initialData.symbol ?? '',
-          rate: initialData.rate != null && initialData.rate !== '' ? Number(initialData.rate) : null,
+          rate: initialData.rate != null ? Number(initialData.rate) : null,
           is_default: initialData.is_default === true || initialData.is_default === 1 ? 1 : 0,
           active: initialData.active === false || initialData.active === 0 ? 0 : 1,
           sort_order: typeof initialData.sort_order === 'number' ? initialData.sort_order : parseInt(String(initialData.sort_order || 0), 10) || 0
