@@ -93,14 +93,14 @@ export default function ReportsSummaryPage() {
       if (res?.success) setData(res)
       else {
         setData(null)
-        setError('Failed to load summary')
+        setError('بارگذاری خلاصه گزارشات ناموفق بود')
       }
     } catch (e: unknown) {
       const msg =
         e && typeof e === 'object' && 'response' in e
           ? (e as { response?: { data?: { message?: string } } }).response?.data?.message
           : null
-      setError(msg ?? (e instanceof Error ? e.message : 'Failed to load summary'))
+      setError(msg ?? (e instanceof Error ? e.message : 'بارگذاری خلاصه گزارشات ناموفق بود'))
       setData(null)
     } finally {
       setLoading(false)
@@ -126,7 +126,7 @@ export default function ReportsSummaryPage() {
 
   const headerSubtitle = useMemo(() => {
     const shop = data?.company?.companyName ? `— ${data.company.companyName}` : ''
-    return `All key business reports in one place ${shop}`
+    return `همه گزارشات مهم کسب‌وکار در یک جا ${shop}`
   }, [data?.company?.companyName])
 
   const topKpis = data?.kpis
@@ -167,7 +167,7 @@ export default function ReportsSummaryPage() {
       <header className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
         <div className="min-w-0">
           <h1 className="font-heading text-2xl font-semibold text-charcoal dark:text-white">
-            Reports Summary
+            خلاصه گزارشات
           </h1>
           <p className="mt-1 text-sm text-charcoal-soft dark:text-slate-400 font-stat">
             {headerSubtitle}
@@ -177,15 +177,15 @@ export default function ReportsSummaryPage() {
         <div className="flex flex-wrap items-center gap-2 print:hidden">
           <button type="button" className="btn-luxury btn-luxury-outline px-4 py-2 inline-flex items-center gap-2" onClick={onPrint}>
             <Printer className="w-4 h-4" />
-            Print Page
+            چاپ صفحه
           </button>
           <button type="button" className="btn-luxury btn-luxury-primary px-4 py-2 inline-flex items-center gap-2" onClick={exportPageExcel}>
             <FileSpreadsheet className="w-4 h-4" />
-            Export Summary (Excel)
+            خروجی خلاصه (اکسل)
           </button>
           <button type="button" className="btn-luxury btn-luxury-primary px-4 py-2 inline-flex items-center gap-2" onClick={exportPagePdf}>
             <FileText className="w-4 h-4" />
-            Export Summary (PDF)
+            خروجی خلاصه (PDF)
           </button>
         </div>
       </header>
@@ -193,31 +193,31 @@ export default function ReportsSummaryPage() {
       <section className="card-luxury p-6 border border-amber-200/50 dark:border-slate-600/50 print:hidden">
         <h2 className="font-heading text-lg font-semibold text-charcoal dark:text-white mb-4 flex items-center gap-2">
           <BarChart3 className="h-5 w-5 text-amber-600" />
-          Filters
+          فیلترها
         </h2>
 
         <div className="flex flex-wrap gap-4 items-end">
           <div>
-            <label className="block text-sm font-medium text-charcoal dark:text-slate-300 mb-1">From</label>
+            <label className="block text-sm font-medium text-charcoal dark:text-slate-300 mb-1">از تاریخ</label>
             <PersianDatePicker value={dateFrom || null} onChange={(v) => setDateFrom(v ?? '')} className="input-luxury" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-charcoal dark:text-slate-300 mb-1">To</label>
+            <label className="block text-sm font-medium text-charcoal dark:text-slate-300 mb-1">تا تاریخ</label>
             <PersianDatePicker value={dateTo || null} onChange={(v) => setDateTo(v ?? '')} className="input-luxury" />
           </div>
 
           <div className="flex items-center gap-2">
             <button type="button" className="btn-luxury btn-luxury-outline px-3 py-2 text-sm" onClick={() => setPreset('today')}>
-              Today
+              امروز
             </button>
             <button type="button" className="btn-luxury btn-luxury-outline px-3 py-2 text-sm" onClick={() => setPreset('week')}>
-              This Week
+              این هفته
             </button>
             <button type="button" className="btn-luxury btn-luxury-outline px-3 py-2 text-sm" onClick={() => setPreset('month')}>
-              This Month
+              این ماه
             </button>
             <button type="button" className="btn-luxury btn-luxury-outline px-3 py-2 text-sm" onClick={() => setPreset('year')}>
-              This Year
+              امسال
             </button>
           </div>
 
@@ -229,7 +229,7 @@ export default function ReportsSummaryPage() {
               setSelectedCustomer(c)
             }}
             className="min-w-[240px]"
-            label="Customer"
+            label="مشتری"
           />
 
           <SupplierCombobox
@@ -240,17 +240,17 @@ export default function ReportsSummaryPage() {
               setSelectedSupplier(s)
             }}
             className="min-w-[240px]"
-            label="Vendor/Supplier"
+            label="تمویل‌کننده / فروشنده"
           />
 
           <div className="min-w-[200px]">
-            <label className="block text-sm font-medium text-charcoal dark:text-slate-300 mb-1">Category</label>
+            <label className="block text-sm font-medium text-charcoal dark:text-slate-300 mb-1">دسته‌بندی</label>
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(parseInt(e.target.value, 10) || 0)}
               className="input-luxury"
             >
-              <option value={0}>All</option>
+              <option value={0}>همه</option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -260,12 +260,12 @@ export default function ReportsSummaryPage() {
           </div>
 
           <div className="min-w-[200px]">
-            <label className="block text-sm font-medium text-charcoal dark:text-slate-300 mb-1">Product type</label>
+            <label className="block text-sm font-medium text-charcoal dark:text-slate-300 mb-1">نوع محصول</label>
             <input
               value={productType}
               onChange={(e) => setProductType(e.target.value)}
               className="input-luxury"
-              placeholder="e.g. انگشتر"
+              placeholder="مثال: انگشتر"
             />
           </div>
 
@@ -276,7 +276,7 @@ export default function ReportsSummaryPage() {
             className="btn-luxury btn-luxury-primary px-6 py-2 disabled:opacity-60 inline-flex items-center gap-2"
           >
             <Calendar className="w-4 h-4" />
-            {loading ? 'Loading…' : 'Apply'}
+            {loading ? 'در حال بارگذاری…' : 'اعمال'}
           </button>
         </div>
       </section>
@@ -288,26 +288,26 @@ export default function ReportsSummaryPage() {
       ) : null}
 
       {loading ? (
-        <Loader message="Loading reports summary…" className="min-h-[380px]" />
+        <Loader message="در حال بارگذاری خلاصه گزارشات…" className="min-h-[380px]" />
       ) : !data ? (
         <div className="card-luxury p-8 text-center text-charcoal-soft dark:text-slate-400">
-          No data
+          داده‌ای یافت نشد
         </div>
       ) : (
         <div ref={printRef} className="space-y-8">
           <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard label="Total Sales" value={formatAfn(topKpis?.totalSalesAfn ?? 0)} sub="AFN" icon={TrendingUp} variant="gold" href="/report" />
-            <StatCard label="Net Profit" value={formatAfn(topKpis?.netProfitAfn ?? 0)} sub="AFN" icon={Receipt} variant="emerald" href="/report/summary" />
-            <StatCard label="Receivables" value={formatAfn(topKpis?.receivablesAfn ?? 0)} sub="AFN" icon={Wallet} variant="ruby" href="/report/summary" />
-            <StatCard label="Stock Value" value={formatAfn(topKpis?.stockValueAfn ?? 0)} sub="AFN" icon={Package} variant="neutral" href="/products" />
+            <StatCard label="مجموع فروش" value={formatAfn(topKpis?.totalSalesAfn ?? 0)} sub="افغانی" icon={TrendingUp} variant="gold" href="/report" />
+            <StatCard label="سود خالص" value={formatAfn(topKpis?.netProfitAfn ?? 0)} sub="افغانی" icon={Receipt} variant="emerald" href="/report/summary" />
+            <StatCard label="دریافتنی‌ها" value={formatAfn(topKpis?.receivablesAfn ?? 0)} sub="افغانی" icon={Wallet} variant="ruby" href="/report/summary" />
+            <StatCard label="ارزش موجودی" value={formatAfn(topKpis?.stockValueAfn ?? 0)} sub="افغانی" icon={Package} variant="neutral" href="/products" />
           </section>
 
           <section className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="card-luxury p-6 border border-amber-200/50 dark:border-slate-600/50">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm text-charcoal-soft dark:text-slate-400">Sales trend</p>
-                  <p className="mt-1 text-lg font-semibold text-charcoal dark:text-white">{formatAfn(data.kpis.totalSalesAfn)} AFN</p>
+                  <p className="text-sm text-charcoal-soft dark:text-slate-400">روند فروش</p>
+                  <p className="mt-1 text-lg font-semibold text-charcoal dark:text-white">{formatAfn(data.kpis.totalSalesAfn)} افغانی</p>
                 </div>
                 <TrendingUp className="w-5 h-5 text-amber-600" />
               </div>
@@ -319,8 +319,8 @@ export default function ReportsSummaryPage() {
             <div className="card-luxury p-6 border border-amber-200/50 dark:border-slate-600/50">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm text-charcoal-soft dark:text-slate-400">Purchase trend</p>
-                  <p className="mt-1 text-lg font-semibold text-charcoal dark:text-white">{formatAfn(data.kpis.totalPurchasesAfn)} AFN</p>
+                  <p className="text-sm text-charcoal-soft dark:text-slate-400">روند خرید</p>
+                  <p className="mt-1 text-lg font-semibold text-charcoal dark:text-white">{formatAfn(data.kpis.totalPurchasesAfn)} افغانی</p>
                 </div>
                 <ShoppingBag className="w-5 h-5 text-amber-600" />
               </div>
@@ -332,8 +332,8 @@ export default function ReportsSummaryPage() {
             <div className="card-luxury p-6 border border-amber-200/50 dark:border-slate-600/50">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm text-charcoal-soft dark:text-slate-400">Profit trend</p>
-                  <p className="mt-1 text-lg font-semibold text-charcoal dark:text-white">{formatAfn(data.kpis.netProfitAfn)} AFN</p>
+                  <p className="text-sm text-charcoal-soft dark:text-slate-400">روند سود</p>
+                  <p className="mt-1 text-lg font-semibold text-charcoal dark:text-white">{formatAfn(data.kpis.netProfitAfn)} افغانی</p>
                 </div>
                 <Receipt className="w-5 h-5 text-amber-600" />
               </div>
@@ -345,8 +345,8 @@ export default function ReportsSummaryPage() {
 
           <section className="grid grid-cols-1 xl:grid-cols-2 gap-4">
             <ReportWidget
-              title="Daily Report"
-              subtitle="Today’s transactions preview (sales)"
+              title="گزارش یومیه"
+              subtitle="پیش‌نمایش تراکنش‌های امروز (فروش)"
               icon={Calendar}
               href="/daily-report"
               actions={{ onExportExcel: () => exportExcel('daily_report'), onExportPdf: () => exportPdf('daily_report'), onPrint }}
@@ -355,17 +355,17 @@ export default function ReportsSummaryPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-amber-200/60 dark:border-slate-600">
-                      <th className="text-right py-2 px-2">Bell</th>
-                      <th className="text-right py-2 px-2">Customer</th>
-                      <th className="text-right py-2 px-2">Total</th>
-                      <th className="text-right py-2 px-2">Paid</th>
-                      <th className="text-right py-2 px-2">Remain</th>
+                      <th className="text-right py-2 px-2">بل</th>
+                      <th className="text-right py-2 px-2">مشتری</th>
+                      <th className="text-right py-2 px-2">کل</th>
+                      <th className="text-right py-2 px-2">پرداختی</th>
+                      <th className="text-right py-2 px-2">باقی</th>
                     </tr>
                   </thead>
                   <tbody>
                     {data.reports.daily.preview.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="py-6 text-center text-slate-500 dark:text-slate-400">No transactions</td>
+                        <td colSpan={5} className="py-6 text-center text-slate-500 dark:text-slate-400">تراکنشی نیست</td>
                       </tr>
                     ) : (
                       data.reports.daily.preview.map((r) => (
@@ -384,31 +384,31 @@ export default function ReportsSummaryPage() {
             </ReportWidget>
 
             <ReportWidget
-              title="Sales Report"
-              subtitle="Totals for selected range"
+              title="گزارش فروش"
+              subtitle="مجموع برای بازه انتخاب‌شده"
               icon={TrendingUp}
               href="/report"
               actions={{ onExportExcel: () => exportExcel('sales_report'), onExportPdf: () => exportPdf('sales_report'), onPrint }}
             >
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <div className="p-4 bg-amber-50 dark:bg-amber-900/15 rounded-xl">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Total sales</p>
-                  <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.sales.totalAmountAfn)} AFN</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">مجموع فروش</p>
+                  <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.sales.totalAmountAfn)} افغانی</p>
                 </div>
                 <div className="p-4 bg-emerald-50 dark:bg-emerald-900/15 rounded-xl">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Receivables</p>
-                  <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.sales.remainAmountAfn)} AFN</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">دریافتنی‌ها</p>
+                  <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.sales.remainAmountAfn)} افغانی</p>
                 </div>
                 <div className="p-4 bg-rose-50 dark:bg-rose-900/15 rounded-xl">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Discount</p>
-                  <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.sales.totalDiscountAfn)} AFN</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">تخفیف</p>
+                  <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.sales.totalDiscountAfn)} افغانی</p>
                 </div>
                 <div className="p-4 bg-white/70 dark:bg-slate-800/40 rounded-xl border border-amber-200/40 dark:border-slate-600/40">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Products sold</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">محصولات فروخته‌شده</p>
                   <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.sales.totalProducts)}</p>
                 </div>
                 <div className="p-4 bg-white/70 dark:bg-slate-800/40 rounded-xl border border-amber-200/40 dark:border-slate-600/40">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Total gram</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">وزن کل (گرم)</p>
                   <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.sales.totalGram)}</p>
                 </div>
               </div>
@@ -417,8 +417,8 @@ export default function ReportsSummaryPage() {
 
           <section className="grid grid-cols-1 xl:grid-cols-3 gap-4">
             <ReportWidget
-              title="Purchases Report"
-              subtitle="Purchases totals & outstanding"
+              title="گزارش خرید"
+              subtitle="مجموع خریدها و مانده پرداخت‌نشده"
               icon={ShoppingBag}
               href="/purchases"
               actions={{ onExportExcel: () => exportExcel('purchase_report'), onExportPdf: () => exportPdf('purchase_report'), onPrint }}
@@ -426,46 +426,46 @@ export default function ReportsSummaryPage() {
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-3">
                   <div className="p-4 bg-amber-50 dark:bg-amber-900/15 rounded-xl">
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Total purchases</p>
-                    <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.purchases.totalAmountAfn)} AFN</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">مجموع خرید</p>
+                    <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.purchases.totalAmountAfn)} افغانی</p>
                   </div>
                   <div className="p-4 bg-rose-50 dark:bg-rose-900/15 rounded-xl">
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Outstanding</p>
-                    <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.purchases.totalRemainingAfn)} AFN</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">مانده</p>
+                    <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.purchases.totalRemainingAfn)} افغانی</p>
                   </div>
                 </div>
-                <p className="text-sm text-charcoal-soft dark:text-slate-400">Count: {formatAfn(data.reports.purchases.purchasesCount)}</p>
+                <p className="text-sm text-charcoal-soft dark:text-slate-400">تعداد: {formatAfn(data.reports.purchases.purchasesCount)}</p>
               </div>
             </ReportWidget>
 
             <ReportWidget
-              title="Expense Report"
-              subtitle="Total expenses + top categories"
+              title="گزارش مصارف"
+              subtitle="مجموع مصارف و دسته‌های برتر"
               icon={Receipt}
               href="/expenses"
               actions={{ onExportExcel: () => exportExcel('expenses'), onExportPdf: () => exportPdf('expenses'), onPrint }}
             >
               <div className="space-y-3">
                 <div className="p-4 bg-rose-50 dark:bg-rose-900/15 rounded-xl">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Total expenses</p>
-                  <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.expenses.totalAmountAfn)} AFN</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">مجموع مصارف</p>
+                  <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.expenses.totalAmountAfn)} افغانی</p>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-amber-200/60 dark:border-slate-600">
-                        <th className="text-right py-2 px-2">Type</th>
-                        <th className="text-right py-2 px-2">Total</th>
+                        <th className="text-right py-2 px-2">نوع</th>
+                        <th className="text-right py-2 px-2">مجموع</th>
                       </tr>
                     </thead>
                     <tbody>
                       {data.reports.expenses.byType.length === 0 ? (
-                        <tr><td colSpan={2} className="py-6 text-center text-slate-500 dark:text-slate-400">No expenses</td></tr>
+                        <tr><td colSpan={2} className="py-6 text-center text-slate-500 dark:text-slate-400">مصرفی نیست</td></tr>
                       ) : (
                         data.reports.expenses.byType.map((r) => (
                           <tr key={r.type} className="border-b border-amber-100 dark:border-slate-700/50">
                             <td className="py-2 px-2">{r.type}</td>
-                            <td className="py-2 px-2 font-stat">{formatAfn(r.totalAfn)} AFN</td>
+                            <td className="py-2 px-2 font-stat">{formatAfn(r.totalAfn)} افغانی</td>
                           </tr>
                         ))
                       )}
@@ -476,8 +476,8 @@ export default function ReportsSummaryPage() {
             </ReportWidget>
 
             <ReportWidget
-              title="Profit & Loss"
-              subtitle="Sales − COGS − Expenses"
+              title="سود و زیان"
+              subtitle="فروش − بهای تمام‌شده − مصارف"
               icon={Receipt}
               href="/report/summary"
               actions={{ onExportExcel: () => exportExcel('profit_loss'), onExportPdf: () => exportPdf('profit_loss'), onPrint }}
@@ -485,20 +485,20 @@ export default function ReportsSummaryPage() {
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-3">
                   <div className="p-4 bg-amber-50 dark:bg-amber-900/15 rounded-xl">
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Sales</p>
-                    <p className="mt-1 text-base font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.profitLoss.salesAfn)} AFN</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">فروش</p>
+                    <p className="mt-1 text-base font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.profitLoss.salesAfn)} افغانی</p>
                   </div>
                   <div className="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl">
-                    <p className="text-xs text-slate-500 dark:text-slate-400">COGS</p>
-                    <p className="mt-1 text-base font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.profitLoss.cogsAfn)} AFN</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">بهای تمام‌شده</p>
+                    <p className="mt-1 text-base font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.profitLoss.cogsAfn)} افغانی</p>
                   </div>
                   <div className="p-4 bg-rose-50 dark:bg-rose-900/15 rounded-xl">
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Expenses</p>
-                    <p className="mt-1 text-base font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.profitLoss.expensesAfn)} AFN</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">مصارف</p>
+                    <p className="mt-1 text-base font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.profitLoss.expensesAfn)} افغانی</p>
                   </div>
                   <div className="p-4 bg-emerald-50 dark:bg-emerald-900/15 rounded-xl">
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Net profit</p>
-                    <p className="mt-1 text-base font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.profitLoss.netProfitAfn)} AFN</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">سود خالص</p>
+                    <p className="mt-1 text-base font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.profitLoss.netProfitAfn)} افغانی</p>
                   </div>
                 </div>
               </div>
@@ -507,8 +507,8 @@ export default function ReportsSummaryPage() {
 
           <section className="grid grid-cols-1 xl:grid-cols-2 gap-4">
             <ReportWidget
-              title="Stock / Inventory Report"
-              subtitle="Available vs sold + stock value"
+              title="گزارش موجودی انبار"
+              subtitle="موجود در انبار در مقابل فروخته‌شده + ارزش موجودی"
               icon={Package}
               href="/products"
               actions={{ onExportExcel: () => exportExcel('stock_report'), onExportPdf: () => exportPdf('stock_report'), onPrint }}
@@ -516,25 +516,25 @@ export default function ReportsSummaryPage() {
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-3">
                   <div className="p-4 bg-amber-50 dark:bg-amber-900/15 rounded-xl">
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Available</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">موجود</p>
                     <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.stock.availableCount)}</p>
                   </div>
                   <div className="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl">
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Sold</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">فروخته‌شده</p>
                     <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.stock.soldCount)}</p>
                   </div>
                 </div>
                 <div className="p-4 bg-emerald-50 dark:bg-emerald-900/15 rounded-xl">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Stock value</p>
-                  <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.stock.stockValueAfn)} AFN</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">ارزش موجودی</p>
+                  <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.stock.stockValueAfn)} افغانی</p>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-amber-200/60 dark:border-slate-600">
-                        <th className="text-right py-2 px-2">Type</th>
-                        <th className="text-right py-2 px-2">Available</th>
-                        <th className="text-right py-2 px-2">Sold</th>
+                        <th className="text-right py-2 px-2">نوع</th>
+                        <th className="text-right py-2 px-2">موجود</th>
+                        <th className="text-right py-2 px-2">فروخته‌شده</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -552,23 +552,23 @@ export default function ReportsSummaryPage() {
             </ReportWidget>
 
             <ReportWidget
-              title="Low Stock Report"
-              subtitle={`Types with available ≤ ${data.reports.lowStock.threshold}`}
+              title="گزارش کمبود موجودی"
+              subtitle={`انواع با موجودی ≤ ${data.reports.lowStock.threshold}`}
               icon={AlertTriangle}
               href="/products"
               actions={{ onExportExcel: () => exportExcel('low_stock'), onExportPdf: () => exportPdf('low_stock'), onPrint }}
             >
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-amber-200/60 dark:border-slate-600">
-                      <th className="text-right py-2 px-2">Type</th>
-                      <th className="text-right py-2 px-2">Available</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.reports.lowStock.lowTypes.length === 0 ? (
-                      <tr><td colSpan={2} className="py-6 text-center text-slate-500 dark:text-slate-400">No low-stock types</td></tr>
+<thead>
+                  <tr className="border-b border-amber-200/60 dark:border-slate-600">
+                    <th className="text-right py-2 px-2">نوع</th>
+                    <th className="text-right py-2 px-2">موجود</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.reports.lowStock.lowTypes.length === 0 ? (
+                    <tr><td colSpan={2} className="py-6 text-center text-slate-500 dark:text-slate-400">نوع کم‌موجودی نیست</td></tr>
                     ) : (
                       data.reports.lowStock.lowTypes.map((r) => (
                         <tr key={r.type} className="border-b border-amber-100 dark:border-slate-700/50">
@@ -585,33 +585,33 @@ export default function ReportsSummaryPage() {
 
           <section className="grid grid-cols-1 xl:grid-cols-2 gap-4">
             <ReportWidget
-              title="Receivables Report"
-              subtitle="Total receivable from customers"
+              title="گزارش دریافتنی‌ها"
+              subtitle="مجموع قابل دریافت از مشتریان"
               icon={Wallet}
               href="/report/summary"
               actions={{ onExportExcel: () => exportExcel('receivables'), onExportPdf: () => exportPdf('receivables'), onPrint }}
             >
               <div className="space-y-3">
                 <div className="p-4 bg-rose-50 dark:bg-rose-900/15 rounded-xl">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Receivables total</p>
-                  <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.receivables.totalAfn)} AFN</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">مجموع دریافتنی‌ها</p>
+                  <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.receivables.totalAfn)} افغانی</p>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-amber-200/60 dark:border-slate-600">
-                        <th className="text-right py-2 px-2">Customer</th>
-                        <th className="text-right py-2 px-2">Sales</th>
+                        <th className="text-right py-2 px-2">مشتری</th>
+                        <th className="text-right py-2 px-2">فروش</th>
                       </tr>
                     </thead>
                     <tbody>
                       {data.reports.receivables.topCustomers.length === 0 ? (
-                        <tr><td colSpan={2} className="py-6 text-center text-slate-500 dark:text-slate-400">No data</td></tr>
+                        <tr><td colSpan={2} className="py-6 text-center text-slate-500 dark:text-slate-400">داده‌ای نیست</td></tr>
                       ) : (
                         data.reports.receivables.topCustomers.map((r) => (
                           <tr key={r.label} className="border-b border-amber-100 dark:border-slate-700/50">
                             <td className="py-2 px-2">{r.label}</td>
-                            <td className="py-2 px-2 font-stat">{formatAfn(r.valueAfn)} AFN</td>
+                            <td className="py-2 px-2 font-stat">{formatAfn(r.valueAfn)} افغانی</td>
                           </tr>
                         ))
                       )}
@@ -622,33 +622,33 @@ export default function ReportsSummaryPage() {
             </ReportWidget>
 
             <ReportWidget
-              title="Payables Report"
-              subtitle="Total payable to vendors/suppliers"
+              title="گزارش پرداختنی‌ها"
+              subtitle="مجموع قابل پرداخت به تمویل‌کنندگان / فروشندگان"
               icon={Landmark}
               href="/purchases"
               actions={{ onExportExcel: () => exportExcel('payables'), onExportPdf: () => exportPdf('payables'), onPrint }}
             >
               <div className="space-y-3">
                 <div className="p-4 bg-rose-50 dark:bg-rose-900/15 rounded-xl">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Payables total</p>
-                  <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.payables.totalAfn)} AFN</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">مجموع پرداختنی‌ها</p>
+                  <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.payables.totalAfn)} افغانی</p>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-amber-200/60 dark:border-slate-600">
-                        <th className="text-right py-2 px-2">Supplier</th>
-                        <th className="text-right py-2 px-2">Outstanding</th>
+                        <th className="text-right py-2 px-2">تمویل‌کننده</th>
+                        <th className="text-right py-2 px-2">مانده</th>
                       </tr>
                     </thead>
                     <tbody>
                       {data.reports.payables.topSuppliers.length === 0 ? (
-                        <tr><td colSpan={2} className="py-6 text-center text-slate-500 dark:text-slate-400">No data</td></tr>
+                        <tr><td colSpan={2} className="py-6 text-center text-slate-500 dark:text-slate-400">داده‌ای نیست</td></tr>
                       ) : (
                         data.reports.payables.topSuppliers.map((r) => (
                           <tr key={r.label} className="border-b border-amber-100 dark:border-slate-700/50">
                             <td className="py-2 px-2">{r.label}</td>
-                            <td className="py-2 px-2 font-stat">{formatAfn(r.valueAfn)} AFN</td>
+                            <td className="py-2 px-2 font-stat">{formatAfn(r.valueAfn)} افغانی</td>
                           </tr>
                         ))
                       )}
@@ -661,8 +661,8 @@ export default function ReportsSummaryPage() {
 
           <section className="grid grid-cols-1 xl:grid-cols-2 gap-4">
             <ReportWidget
-              title="Cash / Bank Summary"
-              subtitle="Accounts balances (approx cash vs bank)"
+              title="خلاصه نقد / بانک"
+              subtitle="موجودی حساب‌ها (تقریبی نقد در مقابل بانک)"
               icon={Wallet}
               href="/accounts"
               actions={{ onExportExcel: () => exportExcel('cash_bank'), onExportPdf: () => exportPdf('cash_bank'), onPrint }}
@@ -670,27 +670,27 @@ export default function ReportsSummaryPage() {
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-3">
                   <div className="p-4 bg-amber-50 dark:bg-amber-900/15 rounded-xl">
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Cash in hand</p>
-                    <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.cashBank.cashInHandAfn)} AFN</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">نقد در دست</p>
+                    <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.cashBank.cashInHandAfn)} افغانی</p>
                   </div>
                   <div className="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl">
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Bank balance</p>
-                    <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.cashBank.bankBalanceAfn)} AFN</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">موجودی بانک</p>
+                    <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.cashBank.bankBalanceAfn)} افغانی</p>
                   </div>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-amber-200/60 dark:border-slate-600">
-                        <th className="text-right py-2 px-2">Account</th>
-                        <th className="text-right py-2 px-2">Balance (AFN)</th>
+                        <th className="text-right py-2 px-2">حساب</th>
+                        <th className="text-right py-2 px-2">موجودی (افغانی)</th>
                       </tr>
                     </thead>
                     <tbody>
                       {data.reports.cashBank.accounts.slice(0, 8).map((a) => (
                         <tr key={a.id} className="border-b border-amber-100 dark:border-slate-700/50">
                           <td className="py-2 px-2">{a.name}</td>
-                          <td className="py-2 px-2 font-stat">{formatAfn(a.balanceAfn)} AFN</td>
+                          <td className="py-2 px-2 font-stat">{formatAfn(a.balanceAfn)} افغانی</td>
                         </tr>
                       ))}
                     </tbody>
@@ -700,24 +700,24 @@ export default function ReportsSummaryPage() {
             </ReportWidget>
 
             <ReportWidget
-              title="Trial Balance (Accounts)"
-              subtitle="Simple trial view from cash/bank accounts (no chart of accounts)"
+              title="تراز آزمایشی (حساب‌ها)"
+              subtitle="نمای ساده تراز از حساب‌های نقد/بانک"
               icon={Scale}
               href="/accounts"
               actions={{ onExportExcel: () => exportExcel('trial_balance'), onExportPdf: () => exportPdf('trial_balance'), onPrint }}
             >
               <div className="space-y-3">
                 <div className="p-4 bg-white/70 dark:bg-slate-800/40 rounded-xl border border-amber-200/40 dark:border-slate-600/40">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Total debit</p>
-                  <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.trialBalance.totalDebitAfn)} AFN</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">مجموع بدهکار</p>
+                  <p className="mt-1 text-lg font-bold text-charcoal dark:text-white font-stat">{formatAfn(data.reports.trialBalance.totalDebitAfn)} افغانی</p>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-amber-200/60 dark:border-slate-600">
-                        <th className="text-right py-2 px-2">Account</th>
-                        <th className="text-right py-2 px-2">Debit</th>
-                        <th className="text-right py-2 px-2">Credit</th>
+                        <th className="text-right py-2 px-2">حساب</th>
+                        <th className="text-right py-2 px-2">بدهکار</th>
+                        <th className="text-right py-2 px-2">بستانکار</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -739,15 +739,15 @@ export default function ReportsSummaryPage() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
                 <h3 className="font-heading text-lg font-semibold text-charcoal dark:text-white">
-                  Top Selling Items
+                  پرفروش‌ترین اقلام
                 </h3>
                 <p className="mt-1 text-sm text-charcoal-soft dark:text-slate-400">
-                  Highest revenue items in selected range
+                  اقلام با بیشترین درآمد در بازه انتخاب‌شده
                 </p>
               </div>
               <Link href="/report/analytics" className="btn-luxury btn-luxury-outline px-4 py-2 inline-flex items-center gap-2 print:hidden">
                 <BarChart3 className="w-4 h-4" />
-                Open Analytics
+                باز کردن تحلیل
               </Link>
             </div>
 
@@ -755,14 +755,14 @@ export default function ReportsSummaryPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-amber-200/60 dark:border-slate-600">
-                    <th className="text-right py-2 px-2">Item</th>
-                    <th className="text-right py-2 px-2">Qty</th>
-                    <th className="text-right py-2 px-2">Revenue (AFN)</th>
+                    <th className="text-right py-2 px-2">قلم</th>
+                    <th className="text-right py-2 px-2">تعداد</th>
+                    <th className="text-right py-2 px-2">درآمد (افغانی)</th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.charts.topSellingItems.length === 0 ? (
-                    <tr><td colSpan={3} className="py-6 text-center text-slate-500 dark:text-slate-400">No data</td></tr>
+                    <tr><td colSpan={3} className="py-6 text-center text-slate-500 dark:text-slate-400">داده‌ای نیست</td></tr>
                   ) : (
                     data.charts.topSellingItems.map((r) => (
                       <tr key={r.label} className="border-b border-amber-100 dark:border-slate-700/50">

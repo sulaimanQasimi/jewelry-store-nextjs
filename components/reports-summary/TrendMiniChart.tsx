@@ -55,7 +55,7 @@ export default function TrendMiniChart({
         />
       ) : (
         <div className="h-full flex items-center justify-center text-xs text-slate-500 dark:text-slate-400">
-          No data
+          داده‌ای نیست
         </div>
       )}
     </div>

@@ -50,7 +50,7 @@ export default function ReportWidget({
                 className="btn-luxury btn-luxury-outline px-3 py-2 text-xs sm:text-sm inline-flex items-center gap-2"
               >
                 <ExternalLink className="w-4 h-4" />
-                View Details
+                مشاهده جزئیات
               </Link>
             ) : null}
             {actions?.onExportExcel ? (
@@ -60,7 +60,7 @@ export default function ReportWidget({
                 className="btn-luxury btn-luxury-outline px-3 py-2 text-xs sm:text-sm inline-flex items-center gap-2"
               >
                 <FileDown className="w-4 h-4" />
-                Excel
+                اکسل
               </button>
             ) : null}
             {actions?.onExportPdf ? (
@@ -80,7 +80,7 @@ export default function ReportWidget({
                 className="btn-luxury btn-luxury-outline px-3 py-2 text-xs sm:text-sm inline-flex items-center gap-2"
               >
                 <Printer className="w-4 h-4" />
-                Print
+                چاپ
               </button>
             ) : null}
           </div>
