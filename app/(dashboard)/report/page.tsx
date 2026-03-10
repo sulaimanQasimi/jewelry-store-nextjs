@@ -81,13 +81,22 @@ export default function ReportPage() {
           <h1 className="font-heading text-2xl font-semibold text-charcoal dark:text-white">گزارشات</h1>
           <p className="mt-1 text-sm text-charcoal-soft dark:text-slate-400">گزارش فروش بر اساس بازه تاریخی</p>
         </div>
-        <Link
-          href="/daily-report"
-          className="btn-luxury btn-luxury-outline px-6 py-2 flex items-center gap-2 shrink-0"
-        >
-          <Calendar className="h-4 w-4" />
-          گزارش یومیه
-        </Link>
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <Link
+            href="/report/summary"
+            className="btn-luxury btn-luxury-primary px-6 py-2 flex items-center gap-2"
+          >
+            <BarChart3 className="h-4 w-4" />
+            خلاصه گزارشات
+          </Link>
+          <Link
+            href="/daily-report"
+            className="btn-luxury btn-luxury-outline px-6 py-2 flex items-center gap-2"
+          >
+            <Calendar className="h-4 w-4" />
+            گزارش یومیه
+          </Link>
+        </div>
       </header>
 
       <section className="card-luxury p-6 border border-gold-200/50 dark:border-slate-600/50">
