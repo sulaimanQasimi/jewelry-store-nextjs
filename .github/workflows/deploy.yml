@@ -1,0 +1,62 @@
+# Deploy to VPS: upload project, rebuild Next.js, restart PM2
+# WARNING: Credentials are hardcoded. Prefer GitHub Secrets for production.
+
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: "20"
+  DEPLOY_PATH: "/var/www/gemify"
+  PM2_APP: "gemify"
+  VPS_HOST: "76.13.42.156"
+  VPS_USER: "root"
+  VPS_PASSWORD: "?4-gOD'IX6ezugnthMBr"
+
+jobs:
+  deploy:
+    name: Deploy to VPS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install SSH and rsync
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y sshpass rsync
+
+      - name: Add VPS to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ env.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Upload project and rebuild on VPS
+        env:
+          VPS_PASSWORD: ${{ env.VPS_PASSWORD }}
+        run: |
+          # Upload source (exclude heavy dirs; VPS will run npm ci)
+          sshpass -p "$VPS_PASSWORD" rsync -avz --delete \
+            --exclude=node_modules \
+            --exclude=.next \
+            --exclude=.git \
+            --exclude=backups \
+            --exclude=.env \
+            --exclude=.env.local \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            . ${{ env.VPS_USER }}@${{ env.VPS_HOST }}:${{ env.DEPLOY_PATH }}/
+
+          # On VPS: install deps, build Next.js, restart PM2
+          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no \
+            ${{ env.VPS_USER }}@${{ env.VPS_HOST }} \
+            "cd ${{ env.DEPLOY_PATH }} && \
+             npm ci && \
+             npm run build && \
+             pm2 restart ${{ env.PM2_APP }}"
+        working-directory: .
+
+  # Optional: run only after CI passes (uncomment needs and ensure CI workflow name matches)
+  # needs: [lint, build]
