@@ -36,7 +36,8 @@ import {
   TrendingUp,
   Heart,
   RotateCcw,
-  X
+  X,
+  DatabaseBackup
 } from 'lucide-react'
 
 /** Single source of truth for sidebar navigation. Persian labels, RTL-friendly. */
@@ -120,12 +121,21 @@ const NAV_GROUPS: Array<{
     ]
   },
   {
+    id: 'general',
+    label: 'عمومی',
+    icon: DatabaseBackup,
+    items: [
+      { href: '/backup', icon: DatabaseBackup, label: 'پشتیبان و بازیابی' },
+      { href: '/company-settings', icon: Settings, label: 'تنظیمات شرکت' },
+      { href: '/company-information', icon: Info, label: 'درباره ما' },
+      { href: '/currencies', icon: Banknote, label: 'مدیریت ارزها' }
+    ]
+  },
+  {
     id: 'settings',
     label: 'تنظیمات',
     icon: Settings,
     items: [
-      { href: '/company-settings', icon: Settings, label: 'تنظیمات شرکت' },
-      { href: '/company-information', icon: Info, label: 'درباره ما' },
       { href: '/users', icon: UserCog, label: 'مدیریت کاربران' }
     ]
   }
