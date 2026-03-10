@@ -49,4 +49,4 @@ jobs:
 
           sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no \
             ${{ env.VPS_USER }}@${{ env.VPS_HOST }} \
-            "cd ${{ env.DEPLOY_PATH }} && npm ci && npm run build && pm2 restart ${{ env.PM2_APP }}"
+            "cd ${{ env.DEPLOY_PATH }} && npm install && npm run build && pm2 restart ${{ env.PM2_APP }}"
