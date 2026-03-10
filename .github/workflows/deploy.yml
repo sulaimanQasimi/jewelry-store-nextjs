@@ -1,5 +1,5 @@
-# Deploy to VPS: upload project, rebuild Next.js, restart PM2
-# WARNING: Credentials are hardcoded. Prefer GitHub Secrets for production.
+# Deploy to VPS: upload via rsync (root + password), then build and restart PM2 over SSH
+# Port 22 must be open on the VPS for GitHub Actions IPs (or 0.0.0.0/0).
 
 name: Deploy to VPS
 
@@ -9,7 +9,6 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: "20"
   DEPLOY_PATH: "/var/www/gemify"
   PM2_APP: "gemify"
   VPS_HOST: "76.13.42.156"
@@ -34,11 +33,10 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ env.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
 
-      - name: Upload project and rebuild on VPS
+      - name: Upload and build on VPS
         env:
           VPS_PASSWORD: ${{ env.VPS_PASSWORD }}
         run: |
-          # Upload source (exclude heavy dirs; VPS will run npm ci)
           sshpass -p "$VPS_PASSWORD" rsync -avz --delete \
             --exclude=node_modules \
             --exclude=.next \
@@ -49,11 +47,6 @@ jobs:
             -e "ssh -o StrictHostKeyChecking=no" \
             . ${{ env.VPS_USER }}@${{ env.VPS_HOST }}:${{ env.DEPLOY_PATH }}/
 
-          # On VPS: install deps, build Next.js, restart PM2
           sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no \
             ${{ env.VPS_USER }}@${{ env.VPS_HOST }} \
-            "cd ${{ env.DEPLOY_PATH }} && \
-             npm ci && \
-             npm run build && \
-             pm2 restart ${{ env.PM2_APP }}"
-        working-directory: .
+            "cd ${{ env.DEPLOY_PATH }} && npm ci && npm run build && pm2 restart ${{ env.PM2_APP }}"

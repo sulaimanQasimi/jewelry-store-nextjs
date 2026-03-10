@@ -2,7 +2,14 @@
 
 ## Deploy to VPS (`deploy.yml`)
 
-Deploys the app to your VPS: uploads source, runs `npm ci`, `npm run build`, and `pm2 restart gemify`.
+Runs **on the VPS** via a self-hosted runner: no SSH from GitHub, so no port 22 / firewall issues.
+
+### One-time setup: add a self-hosted runner on the VPS
+
+1. On the repo: **Settings → Actions → Runners → New self-hosted runner**.
+2. Pick **Linux** and follow the commands on the VPS (e.g. download, configure, run as service).
+3. Run the runner **as a user that can write to `/var/www/gemify`** (e.g. root or a user with access).
+4. Ensure on the VPS: Node.js 20, npm, PM2, and app already registered (e.g. `pm2 start npm --name gemify -- start` from `/var/www/gemify`). Create `/var/www/gemify` if needed.
 
 ### Triggers
 
@@ -11,10 +18,9 @@ Deploys the app to your VPS: uploads source, runs `npm ci`, `npm run build`, and
 
 ### What it does
 
-1. Checkout repo on the runner.
-2. Install `sshpass` and `rsync`.
-3. **Rsync** project to the VPS at `/var/www/gemify/` (excluding `node_modules`, `.next`, `.git`, `backups`, `.env`, `.env.local`).
-4. **SSH** into the VPS and run: `cd /var/www/gemify && npm ci && npm run build && pm2 restart gemify`.
+1. **Checkout** the repo into `/var/www/gemify` on the runner (your VPS).
+2. **Setup Node** (20) and npm cache.
+3. **Run** `npm ci`, `npm run build`, `pm2 restart gemify` in `/var/www/gemify`.
 
 ### Email on success/failure (GitHub notifications)
 
