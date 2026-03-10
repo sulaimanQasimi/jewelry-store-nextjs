@@ -9,22 +9,28 @@ Deploys the app to your VPS: uploads source, runs `npm ci`, `npm run build`, and
 - Push to `master` or `main`
 - Manual run (Actions → Deploy to VPS → Run workflow)
 
-### Required GitHub Secrets
-
-In **Settings → Secrets and variables → Actions**, add:
-
-| Secret         | Example / description                    |
-|----------------|------------------------------------------|
-| `VPS_HOST`     | `76.13.42.156`                           |
-| `VPS_USER`     | `root`                                   |
-| `VPS_PASSWORD` | Your VPS SSH password                    |
-
 ### What it does
 
 1. Checkout repo on the runner.
 2. Install `sshpass` and `rsync`.
-3. **Rsync** project to `VPS_USER@VPS_HOST:/var/www/gemify/` (excluding `node_modules`, `.next`, `.git`, `backups`, `.env`, `.env.local`).
+3. **Rsync** project to the VPS at `/var/www/gemify/` (excluding `node_modules`, `.next`, `.git`, `backups`, `.env`, `.env.local`).
 4. **SSH** into the VPS and run: `cd /var/www/gemify && npm ci && npm run build && pm2 restart gemify`.
+5. **Email**: After deploy (success or failure), an email is sent if SMTP secrets are set (see below).
+
+### Email on success/failure
+
+To receive an email when deploy succeeds or fails, add these **Secrets** in **Settings → Secrets and variables → Actions**:
+
+| Secret          | Example / description                          |
+|-----------------|------------------------------------------------|
+| `MAIL_TO`       | Your email (e.g. `you@example.com`)            |
+| `MAIL_FROM`     | Sender address (e.g. same as SMTP_USER)        |
+| `SMTP_HOST`     | e.g. `smtp.gmail.com`                          |
+| `SMTP_PORT`     | e.g. `587`                                     |
+| `SMTP_USER`     | Your SMTP login (e.g. Gmail address)           |
+| `SMTP_PASSWORD` | SMTP password (for Gmail use an App Password)  |
+
+If these secrets are not set, the workflow still completes; the email step is skipped without failing the run.
 
 ### VPS requirements
 

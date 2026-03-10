@@ -58,5 +58,28 @@ jobs:
              pm2 restart ${{ env.PM2_APP }}"
         working-directory: .
 
-  # Optional: run only after CI passes (uncomment needs and ensure CI workflow name matches)
-  # needs: [lint, build]
+  notify:
+    name: Email result
+    needs: [deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send deploy result email
+        uses: dawidd6/action-send-mail@v3
+        continue-on-error: true
+        with:
+          server_address: ${{ secrets.SMTP_HOST }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USER }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "Deploy to VPS: ${{ needs.deploy.result == 'success' && 'Success' || 'Failed' }} — ${{ github.repository }}"
+          body: |
+            Deploy to VPS finished.
+
+            Result: ${{ needs.deploy.result }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          to: ${{ secrets.MAIL_TO }}
+          from: ${{ secrets.MAIL_FROM }}
