@@ -27,6 +27,23 @@ GitHub sends workflow result emails to your account email. Turn them on: **GitHu
 - Directory `/var/www/gemify` exists and is writable by `VPS_USER`.
 - Keep `.env` (and secrets) only on the server; the workflow does not overwrite `.env`.
 
+### "Connection timed out" / SSH (port 22) blocked
+
+If the workflow fails with `ssh: connect to host … port 22: Connection timed out` or `rsync: connection unexpectedly closed`, the **VPS or its firewall is blocking SSH from GitHub’s IPs**. Fix it in one of these ways:
+
+1. **Allow SSH from GitHub Actions IPs**  
+   GitHub publishes IP ranges for Actions:  
+   https://api.github.com/meta → use the `actions` list.  
+   On the VPS (or in your cloud firewall), allow **TCP port 22** from those IPs.  
+   (Ranges can change; you may need to allow a broader set or update periodically.)
+
+2. **Allow SSH from anywhere (less secure)**  
+   If your provider uses a security group / firewall (e.g. UFW, cloud console), open **port 22** to `0.0.0.0/0`.  
+   Harden the server: SSH key-only auth, strong passwords, and e.g. fail2ban.
+
+3. **Use a self-hosted runner on the VPS**  
+   Install a [GitHub Actions self-hosted runner](https://docs.github.com/en/actions/guides/adding-self-hosted-runners) on the same VPS (or a machine that can reach it). In the workflow set `runs-on: self-hosted` (or your runner label) so the job runs there and SSH is to `localhost` (or an allowed IP). No need to open port 22 to the internet for GitHub.
+
 ---
 
 ## CI (`ci.yml`)
