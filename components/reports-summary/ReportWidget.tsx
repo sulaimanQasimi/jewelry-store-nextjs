@@ -10,6 +10,49 @@ export type ReportWidgetActionHandlers = {
   onPrint?: () => void
 }
 
+function IconAction({
+  label,
+  onClick,
+  children
+}: {
+  label: string
+  onClick: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="btn-luxury btn-luxury-outline p-2.5 sm:p-2 inline-flex items-center justify-center"
+      aria-label={label}
+      title={label}
+    >
+      {children}
+    </button>
+  )
+}
+
+function IconLinkAction({
+  label,
+  href,
+  children
+}: {
+  label: string
+  href: string
+  children: React.ReactNode
+}) {
+  return (
+    <Link
+      href={href}
+      className="btn-luxury btn-luxury-outline p-2.5 sm:p-2 inline-flex items-center justify-center"
+      aria-label={label}
+      title={label}
+    >
+      {children}
+    </Link>
+  )
+}
+
 export default function ReportWidget({
   title,
   subtitle,
@@ -45,43 +88,24 @@ export default function ReportWidget({
 
           <div className="flex items-center gap-2 shrink-0 print:hidden">
             {href ? (
-              <Link
-                href={href}
-                className="btn-luxury btn-luxury-outline px-3 py-2 text-xs sm:text-sm inline-flex items-center gap-2"
-              >
+              <IconLinkAction label="مشاهده جزئیات" href={href}>
                 <ExternalLink className="w-4 h-4" />
-                مشاهده جزئیات
-              </Link>
+              </IconLinkAction>
             ) : null}
             {actions?.onExportExcel ? (
-              <button
-                type="button"
-                onClick={actions.onExportExcel}
-                className="btn-luxury btn-luxury-outline px-3 py-2 text-xs sm:text-sm inline-flex items-center gap-2"
-              >
+              <IconAction label="خروجی اکسل" onClick={actions.onExportExcel}>
                 <FileDown className="w-4 h-4" />
-                اکسل
-              </button>
+              </IconAction>
             ) : null}
             {actions?.onExportPdf ? (
-              <button
-                type="button"
-                onClick={actions.onExportPdf}
-                className="btn-luxury btn-luxury-outline px-3 py-2 text-xs sm:text-sm inline-flex items-center gap-2"
-              >
+              <IconAction label="خروجی PDF" onClick={actions.onExportPdf}>
                 <FileText className="w-4 h-4" />
-                PDF
-              </button>
+              </IconAction>
             ) : null}
             {actions?.onPrint ? (
-              <button
-                type="button"
-                onClick={actions.onPrint}
-                className="btn-luxury btn-luxury-outline px-3 py-2 text-xs sm:text-sm inline-flex items-center gap-2"
-              >
+              <IconAction label="چاپ" onClick={actions.onPrint}>
                 <Printer className="w-4 h-4" />
-                چاپ
-              </button>
+              </IconAction>
             ) : null}
           </div>
         </header>

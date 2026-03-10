@@ -175,17 +175,32 @@ export default function ReportsSummaryPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2 print:hidden">
-          <button type="button" className="btn-luxury btn-luxury-outline px-4 py-2 inline-flex items-center gap-2" onClick={onPrint}>
+          <button
+            type="button"
+            onClick={onPrint}
+            className="btn-luxury btn-luxury-outline p-2.5 sm:p-2 inline-flex items-center justify-center"
+            aria-label="چاپ صفحه"
+            title="چاپ صفحه"
+          >
             <Printer className="w-4 h-4" />
-            چاپ صفحه
           </button>
-          <button type="button" className="btn-luxury btn-luxury-primary px-4 py-2 inline-flex items-center gap-2" onClick={exportPageExcel}>
+          <button
+            type="button"
+            onClick={exportPageExcel}
+            className="btn-luxury btn-luxury-primary p-2.5 sm:p-2 inline-flex items-center justify-center"
+            aria-label="خروجی خلاصه (اکسل)"
+            title="خروجی خلاصه (اکسل)"
+          >
             <FileSpreadsheet className="w-4 h-4" />
-            خروجی خلاصه (اکسل)
           </button>
-          <button type="button" className="btn-luxury btn-luxury-primary px-4 py-2 inline-flex items-center gap-2" onClick={exportPagePdf}>
+          <button
+            type="button"
+            onClick={exportPagePdf}
+            className="btn-luxury btn-luxury-primary p-2.5 sm:p-2 inline-flex items-center justify-center"
+            aria-label="خروجی خلاصه (PDF)"
+            title="خروجی خلاصه (PDF)"
+          >
             <FileText className="w-4 h-4" />
-            خروجی خلاصه (PDF)
           </button>
         </div>
       </header>
