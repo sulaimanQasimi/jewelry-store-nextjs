@@ -84,29 +84,17 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen w-full flex" dir="rtl">
-      {/* Left: Full-bleed image / diamond-silk visual */}
+      {/* Left: Banner image */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-        <div
-          className="absolute inset-0 bg-gradient-to-br from-[#2c2c2c] via-[#1a1a1a] to-[#0d0d0d]"
-          aria-hidden
+        <Image
+          src="/images/home/banner.png"
+          alt=""
+          fill
+          className="object-cover"
+          priority
+          sizes="50vw"
         />
-        <div
-          className="absolute inset-0 opacity-40"
-          style={{
-            backgroundImage: `
-              radial-gradient(ellipse 80% 50% at 30% 50%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
-              radial-gradient(ellipse 60% 80% at 70% 30%, rgba(255,255,255,0.06) 0%, transparent 50%)
-            `
-          }}
-        />
-        <div className="absolute inset-0 backdrop-blur-[2px]" />
-        {/* Soft diamond/silk texture overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.07]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm40 40h40v40H40V40z' fill='%23fff' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E")`
-          }}
-        />
+        <div className="absolute inset-0 bg-black/25" aria-hidden />
         <div className="relative z-10 flex items-center justify-center w-full p-16">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -114,7 +102,7 @@ export default function LoginPage() {
             transition={{ duration: 1, ease: 'easeOut' }}
             className="text-center"
           >
-            <div className="inline-flex items-center justify-center w-32 h-32 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-6">
+            <div className="inline-flex items-center justify-center w-32 h-32 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm">
               <Sparkles className="w-16 h-16 text-[#D4AF37]/80" />
             </div>
           </motion.div>
@@ -286,7 +274,7 @@ export default function LoginPage() {
               <p className="text-[#666] text-xs" style={{ fontFamily: "'Inter', sans-serif" }}>
                 © تمام حقوق متعلق به{' '}
                 <a
-                  href="https://galaxy-technology.com"
+                  href="https://galaxytechology.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#D4AF37] font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 rounded"
