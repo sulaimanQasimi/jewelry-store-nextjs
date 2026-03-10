@@ -1,4 +1,4 @@
-# Deploy to VPS: upload via rsync (root + password), then build and restart PM2 over SSH
+# Deploy to VPS: upload only via rsync (root + password). Build/restart on server manually if needed.
 # Port 22 must be open on the VPS for GitHub Actions IPs (or 0.0.0.0/0).
 
 name: Deploy to VPS
@@ -10,7 +10,6 @@ on:
 
 env:
   DEPLOY_PATH: "/var/www/gemify"
-  PM2_APP: "gemify"
   VPS_HOST: "76.13.42.156"
   VPS_USER: "root"
   VPS_PASSWORD: "?4-gOD'IX6ezugnthMBr"
@@ -33,7 +32,7 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ env.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
 
-      - name: Upload and build on VPS
+      - name: Upload to server
         env:
           VPS_PASSWORD: ${{ env.VPS_PASSWORD }}
         run: |
@@ -46,7 +45,3 @@ jobs:
             --exclude=.env.local \
             -e "ssh -o StrictHostKeyChecking=no" \
             . ${{ env.VPS_USER }}@${{ env.VPS_HOST }}:${{ env.DEPLOY_PATH }}/
-
-          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no \
-            ${{ env.VPS_USER }}@${{ env.VPS_HOST }} \
-            "cd ${{ env.DEPLOY_PATH }} && npm install && npm run build && pm2 restart ${{ env.PM2_APP }}"
