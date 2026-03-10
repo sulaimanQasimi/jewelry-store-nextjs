@@ -157,7 +157,7 @@ export default function AboutPage() {
             مراحل رشد کسب‌وکار شما
           </h2>
           <div className="grid md:grid-cols-3 gap-10">
-            {PROCESS.map(({ step, titleFa, descFa }) => (
+            {PROCESS.map(({ step, title, titleFa, descFa }) => (
               <div key={step} className="text-center">
                 <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#0C0C0C] text-[#D4AF37] font-bold text-lg mb-4">
                   {step}

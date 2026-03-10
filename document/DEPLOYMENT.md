@@ -41,6 +41,10 @@ JWT_SECRET="your-long-random-secret"
 
 NEXT_PUBLIC_UPLOAD_DIR="/uploads"
 
+# Optional: Firebase for "Continue with Google" login
+# NEXT_PUBLIC_FIREBASE_* from Firebase Console → Project settings → General
+# FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY from Service accounts
+
 # Public site URL for SEO (sitemap, Open Graph, canonical). Set in production to your public URL (e.g. https://yourdomain.com)
 # NEXT_PUBLIC_SITE_URL="https://yourdomain.com"
 ```
